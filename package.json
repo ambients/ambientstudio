@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "rinss": "*",
+    "vue": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^10.3.0",
+    "typescript": "*",
+    "ts-loader": "^4.3.1",
+    "webpack": "^4.10.1",
+    "webpack-cli": "^2.1.5",
+    "html-webpack-plugin": "*"
+  },
+  "false": {}
+}

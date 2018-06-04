@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowUnusedLabels": true,
+        "removeComments": true,
+        "sourceMap": true,
+        "declaration": true,
+        "outDir": "dist-esm",
+        "watch": false
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "src/test.ts"
+    ]
+}
