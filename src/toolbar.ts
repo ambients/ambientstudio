@@ -22,19 +22,41 @@ const css = rinss.create({
         floatTop: 0
     },
     icon: {
-        width: 25,
+        width: 20,
         centerX: true,
         centerY: true
     }
 });
 
+const nameSelected = { value: '' };
+
 Vue.component('toolbar-button', {
     template: `
         <div class="${ css.toolbarButton }">
-            <img class="${ css.icon }" :src="src"></img>
+            <img class="${ css.icon }" :src="getSrc(name, getSelected())" @click="select()"></img>
         </div>
     `,
-    props: ['src']
+    props: {
+        name: String,
+        selected: Boolean
+    },
+    data: function() { return {
+        nameSelected: nameSelected
+    }},
+    mounted: function() {
+        if (this.selected) this.nameSelected.value = this.name;
+    },
+    methods: {
+        getSrc: function(str, filled) {
+            return 'icons/' + str + (filled ? '-filled' : '') + '.svg';
+        },
+        getSelected: function() {
+            return this.name === this.nameSelected.value;
+        },
+        select: function() {
+            this.nameSelected.value = this.name;
+        }
+    }
 });
 
 Vue.component('toolbar-section', {

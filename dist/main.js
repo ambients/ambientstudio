@@ -13304,7 +13304,7 @@ module.exports = g;
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
-/* harmony import */ var _panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panel */ "./src/panel.ts");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
 
 
@@ -13314,15 +13314,6 @@ const container = document.createElement('div');
 document.body.appendChild(container);
 container.id = 'container';
 const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
-    panels: {
-        width: 250,
-        height: '100vh',
-        background: 'rgb(247, 247, 247)',
-        absRight: 0,
-        absTop: 0,
-        overflowX: 'hidden',
-        overflowY: "scroll"
-    },
     stage: {
         width: '100vw',
         height: '100vh',
@@ -13334,31 +13325,31 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
 new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
     template: `
         <div class="${css.stage}">
-            <div class="${css.panels}">
+            <panels>
                 <panel>align</panel>
                 <panel>grid</panel>
-                <panel>size</panel>
-                <panel>text</panel>
-                <panel>appearance</panel>
-            </div>
+                <panel collapsed>size</panel>
+                <panel collapsed>text</panel>
+                <panel collapsed>appearance</panel>
+            </panels>
             <toolbar>
                 <toolbar-section>
-                    <toolbar-button src="icons/cursor.svg"></toolbar-button>
-                    <toolbar-button src="icons/transform.svg"></toolbar-button>
+                    <toolbar-button name="cursor" selected></toolbar-button>
+                    <toolbar-button name="transform"></toolbar-button>
                 </toolbar-section>
                 <toolbar-section>
-                    <toolbar-button src="icons/rectangle.svg"></toolbar-button>
-                    <toolbar-button src="icons/circle.svg"></toolbar-button>
-                    <toolbar-button src="icons/line.svg"></toolbar-button>
-                    <toolbar-button src="icons/textarea.svg"></toolbar-button>
-                    <toolbar-button src="icons/textfield.svg"></toolbar-button>
-                    <toolbar-button src="icons/type.svg"></toolbar-button>
-                    <toolbar-button src="icons/checkbox-checked.svg"></toolbar-button>
+                    <toolbar-button name="rectangle"></toolbar-button>
+                    <toolbar-button name="circle"></toolbar-button>
+                    <toolbar-button name="line"></toolbar-button>
+                    <toolbar-button name="textarea"></toolbar-button>
+                    <toolbar-button name="textfield"></toolbar-button>
+                    <toolbar-button name="type"></toolbar-button>
+                    <toolbar-button name="checkbox"></toolbar-button>
                 </toolbar-section>
                 <toolbar-section>
-                    <toolbar-button src="icons/dropper.svg"></toolbar-button>
-                    <toolbar-button src="icons/magnet.svg"></toolbar-button>
-                    <toolbar-button src="icons/paint.svg"></toolbar-button>
+                    <toolbar-button name="dropper"></toolbar-button>
+                    <toolbar-button name="magnet"></toolbar-button>
+                    <toolbar-button name="paint"></toolbar-button>
                 </toolbar-section>
             </toolbar>
         </div>
@@ -13368,10 +13359,10 @@ new vue__WEBPACK_IMPORTED_MODULE_0__["default"]({
 
 /***/ }),
 
-/***/ "./src/panel.ts":
-/*!**********************!*\
-  !*** ./src/panel.ts ***!
-  \**********************/
+/***/ "./src/panels.ts":
+/*!***********************!*\
+  !*** ./src/panels.ts ***!
+  \***********************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -13382,9 +13373,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    panels: {
+        width: 250,
+        height: '100vh',
+        background: 'rgb(247, 247, 247)',
+        absRight: 0,
+        absTop: 0,
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+        userSelect: 'none'
+    },
     panel: {
         width: '100%',
-        height: 30,
+        height: 300,
         floatTop: 0,
         borderTop: '2px solid rgb(228, 228, 228)',
         background: 'rgb(247, 247, 247)',
@@ -13398,30 +13399,44 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         background: 'rgb(247, 247, 247)'
     }
 });
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panels', {
+    template: `
+        <div class="${css.panels}"><slot></slot></div>
+    `
+});
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panel', {
     template: `
         <div class=${css.panel}>
             <div class=${css.titleBar} @click="collapse()"><slot></slot></div>
         </div>
     `,
+    props: {
+        collapsed: Boolean
+    },
     data: function () {
         return {
-            folded: true
+            isCollapsed: this.collapsed
         };
+    },
+    mounted: function () {
+        if (this.isCollapsed)
+            rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, { height: 30 });
+        else
+            rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, { height: 300 });
     },
     methods: {
         collapse: function () {
-            if (this.folded) {
+            if (this.isCollapsed) {
                 rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, {
                     height: { to: 300 }
                 });
-                this.folded = false;
+                this.isCollapsed = false;
             }
             else {
                 rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, {
                     height: { to: 30 }
                 });
-                this.folded = true;
+                this.isCollapsed = true;
             }
         }
     }
@@ -13464,18 +13479,42 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         floatTop: 0
     },
     icon: {
-        width: 25,
+        width: 20,
         centerX: true,
         centerY: true
     }
 });
+const nameSelected = { value: '' };
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
     template: `
         <div class="${css.toolbarButton}">
-            <img class="${css.icon}" :src="src"></img>
+            <img class="${css.icon}" :src="getSrc(name, getSelected())" @click="select()"></img>
         </div>
     `,
-    props: ['src']
+    props: {
+        name: String,
+        selected: Boolean
+    },
+    data: function () {
+        return {
+            nameSelected: nameSelected
+        };
+    },
+    mounted: function () {
+        if (this.selected)
+            this.nameSelected.value = this.name;
+    },
+    methods: {
+        getSrc: function (str, filled) {
+            return 'icons/' + str + (filled ? '-filled' : '') + '.svg';
+        },
+        getSelected: function () {
+            return this.name === this.nameSelected.value;
+        },
+        select: function () {
+            this.nameSelected.value = this.name;
+        }
+    }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-section', {
     template: `
