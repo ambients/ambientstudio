@@ -42253,13 +42253,12 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     title: {
         width: '100%',
         floatTop: 0,
-        color: '#999999',
+        color: '#c0c0c0',
         fontSize: 13,
         fontWeight: 'bold',
     },
     container: {
-        width: '100%',
-        floatTop: 10
+        width: '100%'
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panels', {
@@ -42270,8 +42269,8 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panels', {
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panel', {
     template: `
         <div class=${css.panel}>
-            <div class=${css.title} @click="collapse()">{{title}}</div>
-            <div class=${css.container}><slot></slot></div>
+            <div class=${css.title} @click="toggleCollapse()">{{title}}</div>
+            <div class=${css.container} :style="getStyle()"><slot></slot></div>
         </div>
     `,
     props: {
@@ -42281,31 +42280,25 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panel', {
     data: function () {
         return {
             isCollapsed: this.collapsed,
-            titleHeight: 0
         };
     },
-    mounted: function () {
-        const padding = parseFloat(rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].computed(this.$el, 'padding'));
-        this.titleHeight = this.$el.querySelector('.' + css.title).clientHeight + (padding * 2);
-        if (this.isCollapsed)
-            rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, { height: this.titleHeight });
-    },
     methods: {
-        collapse: function () {
-            const containerHeight = this.$el.querySelector('.' + css.container).clientHeight;
-            const padding = parseFloat(rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].computed(this.$el, 'padding'));
-            if (this.isCollapsed) {
-                rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, {
-                    height: { from: this.titleHeight, to: containerHeight + this.titleHeight + padding }
+        toggleCollapse: function () {
+            this.isCollapsed = !this.isCollapsed;
+        },
+        getStyle: function () {
+            if (this.isCollapsed)
+                return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
+                    height: { to: 0 },
+                    floatTop: { to: 0 },
+                    opacity: { to: 0 }
                 });
-                this.isCollapsed = false;
-            }
-            else {
-                rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.$el, {
-                    height: { from: containerHeight + this.titleHeight + padding, to: this.titleHeight }
+            else
+                return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
+                    height: { to: 'auto', el: this.$el },
+                    floatTop: { to: 10 },
+                    opacity: { to: 1 }
                 });
-                this.isCollapsed = true;
-            }
         }
     }
 });
