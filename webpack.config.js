@@ -15,7 +15,8 @@ module.exports = {
         test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/, options: {
           compilerOptions: { declaration: false, sourceMap: false }
         }
-      }
+      },
+      { test: /\.css$/, use: [{ loader: 'style-loader' }, { loader: 'css-loader' }] }      
     ]
   },
   devtool: 'source-map',

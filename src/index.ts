@@ -1,3 +1,4 @@
+import "normalize.css";
 import Vue from "vue";
 import { rinss } from "rinss";
 import "./panels";
@@ -7,13 +8,17 @@ const container = document.createElement('div');
 document.body.appendChild(container);
 container.id = 'container';
 
+rinss.inline(document.body, {
+    overflow: 'hidden',
+    fontFamily: '"Arial", "Hiragino Sans GB", "STXihei", "华文细黑", "Microsoft Yahei", "微软雅黑", "sans-serif"'    
+});
+
 const css = rinss.create({
     stage: {
         width: '100vw',
         height: '100vh',
         top: 0,
-        left: 0,
-        position: 'fixed'
+        left: 0
     }
 });
 

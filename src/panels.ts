@@ -16,7 +16,7 @@ const css = rinss.create({
         width: '100%',
         height: 300,
         floatTop: 0,
-        borderTop: '2px solid rgb(228, 228, 228)',
+        borderBottom: '1px solid rgb(228, 228, 228)',
         background: 'rgb(247, 247, 247)',
         padding: 10,
         color: 'rgb(177, 177, 177)',
