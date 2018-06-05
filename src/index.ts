@@ -1,7 +1,14 @@
 import "normalize.css";
 import Vue from "vue";
 import { rinss } from "rinss";
+
+import VueMaterial from "vue-material";
+import "vue-material/dist/vue-material.min.css";
+import 'vue-material/dist/theme/default.css';
+Vue.use(VueMaterial);
+
 import "./panels";
+import "./propertiesPanel";
 import "./toolbar";
 
 const container = document.createElement('div');
@@ -26,11 +33,12 @@ new Vue({
     template: `
         <div class="${ css.stage }">
             <panels>
-                <panel>align</panel>
-                <panel>grid</panel>
-                <panel collapsed>size</panel>
-                <panel collapsed>text</panel>
-                <panel collapsed>appearance</panel>
+                <properties-panel></properties-panel>
+                <panel title="Alignment" collapsed></panel>
+                <panel title="Dimensions" collapsed></panel>
+                <panel title="Typography" collapsed></panel>
+                <panel title="Backgrounds" collapsed></panel>
+                <panel title="Effects" collapsed></panel>
             </panels>
             <toolbar>
                 <toolbar-section>

@@ -4,7 +4,7 @@ import { rinss } from "rinss";
 const css = rinss.create({
     panels: {
         width: 250,
-        height: '100vh',
+        height: '100%',
         background: 'rgb(247, 247, 247)',
         absRight: 0,
         absTop: 0,
@@ -14,18 +14,21 @@ const css = rinss.create({
     },
     panel: {
         width: '100%',
-        height: 300,
         floatTop: 0,
         borderBottom: '1px solid rgb(228, 228, 228)',
-        background: 'rgb(247, 247, 247)',
-        padding: 10,
-        color: 'rgb(177, 177, 177)',
-        fontSize: 14
+        padding: 20,
+        overflow: 'hidden'
     },
-    titleBar:{
+    title:{
         width: '100%',
-        height: 30,
-        background: 'rgb(247, 247, 247)'
+        floatTop: 0,
+        color: '#999999',
+        fontSize: 13,
+        fontWeight: 'bold',
+    },
+    container: {
+        width: '100%',
+        floatTop: 10
     }
 });
 
@@ -38,30 +41,37 @@ Vue.component('panels', {
 Vue.component('panel', {
     template: `
         <div class=${ css.panel }>
-            <div class=${ css.titleBar } @click="collapse()"><slot></slot></div>
+            <div class=${ css.title } @click="collapse()">{{title}}</div>
+            <div class=${ css.container }><slot></slot></div>
         </div>
     `,
     props: {
-        collapsed: Boolean
+        collapsed: Boolean,
+        title: String
     },
     data: function(){ return {
-        isCollapsed: this.collapsed
+        isCollapsed: this.collapsed,
+        titleHeight: 0
     }},
     mounted: function() {
-        if (this.isCollapsed) rinss.inline(this.$el, { height: 30 });
-        else rinss.inline(this.$el, { height: 300 });
+        const padding = parseFloat(rinss.computed(this.$el, 'padding'));
+        this.titleHeight = this.$el.querySelector('.' + css.title).clientHeight + (padding * 2);
+        if (this.isCollapsed) rinss.inline(this.$el, { height: this.titleHeight });
     },
     methods: {
         collapse: function(){
+            const containerHeight = this.$el.querySelector('.' + css.container).clientHeight;
+            const padding = parseFloat(rinss.computed(this.$el, 'padding'));
+
             if (this.isCollapsed) {
                 rinss.inline(this.$el, {
-                    height: { to: 300 }
+                    height: { from: this.titleHeight, to: containerHeight + this.titleHeight + padding }
                 });
                 this.isCollapsed = false;
             }
             else {
                 rinss.inline(this.$el, {
-                    height: { to: 30 }
+                    height: { from: containerHeight + this.titleHeight + padding, to: this.titleHeight }
                 });
                 this.isCollapsed = true;
             }

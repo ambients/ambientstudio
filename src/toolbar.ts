@@ -4,7 +4,7 @@ import { rinss } from "rinss";
 const css = rinss.create({
     toolbar: {
         width: 50,
-        height: '100vh',
+        height: '100%',
         background: 'rgb(247, 247, 247)',
         absLeft: 0,
         absTop: 0,
