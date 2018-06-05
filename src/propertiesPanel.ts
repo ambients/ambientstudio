@@ -11,7 +11,7 @@ const css = rinss.create({
 
 Vue.component('properties-panel', {
     template: `
-        <panel title="Properties">
+        <panel title="Properties" expanded>
             <md-field>
                 <label class="${ css.label }">Element id</label>
                 <md-input></md-input>

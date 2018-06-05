@@ -46,27 +46,33 @@ Vue.component('panel', {
         </div>
     `,
     props: {
-        collapsed: Boolean,
-        title: String
+        title: String,
+        expanded: Boolean
     },
-    data: function(){ return {
-        isCollapsed: this.collapsed,
-    }},
+    data: function(){
+        return {
+            isCollapsed: !this.expanded
+        }
+    },
     methods: {
         toggleCollapse: function() {
-            this.isCollapsed = !this.isCollapsed
+            this.isCollapsed = !this.isCollapsed;
         },
         getStyle: function() {
-            if (this.isCollapsed) return rinss.compile({
-                height: { to: 0 },
-                floatTop: { to: 0 },
-                opacity: { to: 0 }
-            });
-            else return rinss.compile({
-                height: { to: 'auto', el: this.$el },
-                floatTop: { to: 10 },
-                opacity: { to: 1 }
-            });
+            if (this.isCollapsed) {
+                return rinss.compile({
+                    height: { to: 0 },
+                    floatTop: { to: 0 }, 
+                    opacity: { to: 0 }
+                });
+            }
+            else {
+                return rinss.compile({
+                    height: { to: 'auto', el: this.$el },
+                    floatTop: { to: 10 },
+                    opacity: { to: 1 }
+                });
+            }
         }
     }
 });

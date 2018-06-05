@@ -9,7 +9,9 @@ Vue.use(VueMaterial);
 
 import "./panels";
 import "./propertiesPanel";
+import "./alignmentPanel";
 import "./toolbar";
+import "./dimensions";
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -17,7 +19,7 @@ container.id = 'container';
 
 rinss.inline(document.body, {
     overflow: 'hidden',
-    fontFamily: '"Arial", "Hiragino Sans GB", "STXihei", "华文细黑", "Microsoft Yahei", "微软雅黑", "sans-serif"'    
+    fontFamily: '"Arial", "sans-serif"'
 });
 
 const css = rinss.create({
@@ -26,6 +28,12 @@ const css = rinss.create({
         height: '100vh',
         top: 0,
         left: 0
+    },
+    test: {
+        width: 100,
+        height: 100,
+        background: 'red',
+        floatTop: 10
     }
 });
 
@@ -34,11 +42,11 @@ new Vue({
         <div class="${ css.stage }">
             <panels>
                 <properties-panel></properties-panel>
-                <panel title="Alignment" collapsed></panel>
-                <panel title="Dimensions" collapsed></panel>
-                <panel title="Typography" collapsed></panel>
-                <panel title="Backgrounds" collapsed></panel>
-                <panel title="Effects" collapsed></panel>
+                <alignment-panel></alignment-panel>
+                <dimensions-panel></dimensions-panel>
+                <panel title="Typography"></panel>
+                <panel title="Backgrounds"></panel>
+                <panel title="Effects"></panel>
             </panels>
             <toolbar>
                 <toolbar-section>

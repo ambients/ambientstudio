@@ -25,4 +25,8 @@ typings/
 .env
 .vscode/*
 .history
-lib/lib-esm/*
+dist/
+dist/index.html
+dist/main.js
+dist/main.js.map
+package-lock.json
