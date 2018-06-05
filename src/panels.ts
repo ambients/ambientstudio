@@ -10,7 +10,8 @@ const css = rinss.create({
         absTop: 0,
         overflowX: 'hidden',
         overflowY: 'scroll',
-        userSelect: 'none'
+        userSelect: 'none',
+        boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)'
     },
     panel: {
         width: '100%',

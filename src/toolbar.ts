@@ -8,7 +8,8 @@ const css = rinss.create({
         background: 'rgb(247, 247, 247)',
         absLeft: 0,
         absTop: 0,
-        overflow: "hidden"
+        overflow: "hidden",
+        boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)'
     },
     toolbarSection: {
         width: '100%',
