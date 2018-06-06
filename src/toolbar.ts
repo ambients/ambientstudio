@@ -33,8 +33,8 @@ const nameSelected = { value: '' };
 
 Vue.component('toolbar-button', {
     template: `
-        <div class="${ css.toolbarButton }">
-            <img class="${ css.icon }" :src="getSrc(name, getSelected())" @click="select()"></img>
+        <div class="${ css.toolbarButton }" @click="select()">
+            <img class="${ css.icon }" :src="getSrc()"></img>
         </div>
     `,
     props: {
@@ -48,11 +48,9 @@ Vue.component('toolbar-button', {
         if (this.selected) this.nameSelected.value = this.name;
     },
     methods: {
-        getSrc: function(str, filled) {
-            return 'icons/' + str + (filled ? '-filled' : '') + '.svg';
-        },
-        getSelected: function() {
-            return this.name === this.nameSelected.value;
+        getSrc: function() {
+            const filled = this.name === this.nameSelected.value;
+            return 'icons/' + this.name + (filled ? '-filled' : '') + '.svg';
         },
         select: function() {
             this.nameSelected.value = this.name;

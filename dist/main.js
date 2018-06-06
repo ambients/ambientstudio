@@ -42178,6 +42178,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _materialInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialInput */ "./src/materialInput.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 
@@ -42201,13 +42203,13 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     },
     horizontalButtons: {
         floatLeft: 0,
-        borderRight: "1px solid rgb(228,228,228)",
+        borderRight: `1px solid ${_theme__WEBPACK_IMPORTED_MODULE_4__["theme"].background}`,
         flex: '1 1 auto',
         display: 'flex',
     },
     verticalButtons: {
         floatLeft: 0,
-        borderLeft: "1px solid rgb(228,228,228)",
+        borderLeft: "1px solid " + _theme__WEBPACK_IMPORTED_MODULE_4__["theme"].background,
         flex: '1 1 auto',
         display: 'flex'
     },
@@ -42263,6 +42265,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _materialInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialInput */ "./src/materialInput.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 
@@ -42311,7 +42315,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     separator: {
         width: '100%',
         height: 0,
-        borderBottom: '1px solid rgb(228, 228, 228)',
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_4__["theme"].background,
         floatTop: 0
     }
 });
@@ -42643,6 +42647,24 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('properties-panel', {
 
 /***/ }),
 
+/***/ "./src/theme.ts":
+/*!**********************!*\
+  !*** ./src/theme.ts ***!
+  \**********************/
+/*! exports provided: theme */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "theme", function() { return theme; });
+const theme = {
+    primary: '#448aff',
+    background: 'rgb(228,228,228)'
+};
+
+
+/***/ }),
+
 /***/ "./src/toolbar.ts":
 /*!************************!*\
   !*** ./src/toolbar.ts ***!
@@ -42686,8 +42708,8 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
 const nameSelected = { value: '' };
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
     template: `
-        <div class="${css.toolbarButton}">
-            <img class="${css.icon}" :src="getSrc(name, getSelected())" @click="select()"></img>
+        <div class="${css.toolbarButton}" @click="select()">
+            <img class="${css.icon}" :src="getSrc()"></img>
         </div>
     `,
     props: {
@@ -42704,11 +42726,9 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
             this.nameSelected.value = this.name;
     },
     methods: {
-        getSrc: function (str, filled) {
-            return 'icons/' + str + (filled ? '-filled' : '') + '.svg';
-        },
-        getSelected: function () {
-            return this.name === this.nameSelected.value;
+        getSrc: function () {
+            const filled = this.name === this.nameSelected.value;
+            return 'icons/' + this.name + (filled ? '-filled' : '') + '.svg';
         },
         select: function () {
             this.nameSelected.value = this.name;
@@ -42741,6 +42761,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 
@@ -42754,7 +42776,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         width: '70%',
         flex: '1 1 auto',
         display: 'flex',
-        background: 'rgb(228,228,228)',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
     },
     fontMenuInput: {
         border: 'none',
@@ -42774,13 +42796,13 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         width: '40%',
         marginLeft: 10,
         border: 'none',
-        background: 'rgb(228,228,228)',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
         fontsize: 10
     },
     fontSize: {
         flex: '1 1 auto',
         display: 'flex',
-        background: 'rgb(228,228,228)'
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background
     },
     fontSpacing: {
         marginLeft: 10
@@ -42800,7 +42822,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     fontStyles: {
         flex: '1 1 auto',
         display: 'flex',
-        background: 'rgb(228,228,228)',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
         marginLeft: 10
     },
     fontStyle: {
@@ -42812,7 +42834,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     separator: {
         width: '100%',
         height: 0,
-        borderBottom: '1px solid rgb(228, 228, 228)',
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
         floatTop: 5
     },
     alignment: {
@@ -42827,10 +42849,19 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-panel', {
     <panel title="typography" expanded>
         <div class="${css.fontRow}">
             <div class="${css.fontType}">
-                <input class="${css.fontMenuInput}" placeholder="font"></input>
-                <div class="${css.dropdown}" @click="dropdown()"><img src="icons/dropdown.svg"></img></div>
+                <input class="${css.fontMenuInput}" placeholder="font" list="font-data"></input>
+                <datalist id="font-data">
+                    <option>Arial</option>
+                    <option>Helvetica</option>
+                </datalist>
             </div>
-            <input class="${css.what}" placeholder="weight"></input>
+            <select class="${css.what}">
+                <option>Bold</option>
+                <option>Bolder</option>
+                <option>Normal</option>
+                <option>Lighter</option>
+                <option>Light</option>
+            </select>
         </div>
         <div class="${css.fontRow}">
             <div class="${css.fontSize}">

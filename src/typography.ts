@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { rinss } from "rinss";
 import "./panels";
+import {theme} from "./theme";
 
 const css = rinss.create({
     fontRow: {
@@ -12,7 +13,7 @@ const css = rinss.create({
         width: '70%',
         flex: '1 1 auto',
         display: 'flex',
-        background:'rgb(228,228,228)',
+        background: theme.background,
     },
     fontMenuInput: {
         border: 'none',
@@ -32,13 +33,13 @@ const css = rinss.create({
         width: '40%',
         marginLeft: 10,
         border:'none',
-        background: 'rgb(228,228,228)',
+        background:  theme.background,
         fontsize:10
     },
     fontSize: {
         flex:'1 1 auto',
         display:'flex',
-        background:'rgb(228,228,228)'
+        background: theme.background
     },
     fontSpacing: {
         marginLeft: 10
@@ -58,7 +59,7 @@ const css = rinss.create({
     fontStyles:{
         flex: '1 1 auto',
         display: 'flex',
-        background: 'rgb(228,228,228)',
+        background:  theme.background,
         marginLeft: 10
     },
     fontStyle:{
@@ -70,7 +71,7 @@ const css = rinss.create({
     separator: {
         width: '100%',
         height: 0,
-        borderBottom: '1px solid rgb(228, 228, 228)',
+        borderBottom: '1px solid ' + theme.background,
         floatTop: 5
     },
     alignment: {
@@ -86,10 +87,19 @@ Vue.component('typography-panel',{
     <panel title="typography" expanded>
         <div class="${css.fontRow}">
             <div class="${css.fontType}">
-                <input class="${css.fontMenuInput}" placeholder="font"></input>
-                <div class="${css.dropdown}" @click="dropdown()"><img src="icons/dropdown.svg"></img></div>
+                <input class="${css.fontMenuInput}" placeholder="font" list="font-data"></input>
+                <datalist id="font-data">
+                    <option>Arial</option>
+                    <option>Helvetica</option>
+                </datalist>
             </div>
-            <input class="${css.what}" placeholder="weight"></input>
+            <select class="${css.what}">
+                <option>Bold</option>
+                <option>Bolder</option>
+                <option>Normal</option>
+                <option>Lighter</option>
+                <option>Light</option>
+            </select>
         </div>
         <div class="${css.fontRow}">
             <div class="${css.fontSize}">

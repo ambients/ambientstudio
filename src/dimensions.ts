@@ -2,6 +2,7 @@ import Vue from "vue";
 import { rinss } from "rinss";
 import "./panels";
 import "./materialInput"
+import { theme } from "./theme";
 
 const css = rinss.create({
     dimensionRow: {
@@ -47,7 +48,7 @@ const css = rinss.create({
     separator: {
         width: '100%',
         height: 0,
-        borderBottom: '1px solid rgb(228, 228, 228)',
+        borderBottom: '1px solid ' + theme.background,
         floatTop: 0
     }
 });

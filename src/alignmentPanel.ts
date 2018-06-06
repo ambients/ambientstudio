@@ -2,6 +2,7 @@ import Vue from "vue";
 import { rinss } from "rinss";
 import "./panels";
 import "./materialInput";
+import { theme } from "./theme";
 
 const css = rinss.create({
     inputs: {
@@ -22,13 +23,13 @@ const css = rinss.create({
     },
     horizontalButtons: {
         floatLeft: 0,
-        borderRight: "1px solid rgb(228,228,228)",
+        borderRight: `1px solid ${ theme.background }`,
         flex: '1 1 auto',
         display: 'flex',
     },
     verticalButtons: {
         floatLeft: 0,
-        borderLeft: "1px solid rgb(228,228,228)",
+        borderLeft: "1px solid " + theme.background,
         flex: '1 1 auto',
         display: 'flex'
     },
