@@ -1,95 +1,98 @@
 import Vue from "vue";
 import { rinss } from "rinss";
 import "./panels";
+import "./materialInput"
 
 const css = rinss.create({
-    inputs: {
-        width: '100%',
-        floatTop: 10
-    },
-    input: {
-        width: 40,
-        height: 20,
-        overflow: "hidden"
-    },
-    dimensions: {
-        centerX: true,
-        floatTop: 1,
-        borderBottom: "1px solid rgb(228,228,228)"
-    },
-    dimension: {
-        floatLeft: 0,
-        width: 40,
-        margin: 1,
-        border: "1px solid black"
-    },
-    dimensionTable: {
+    dimensionRow: {
         borderBottom: "1px solid rgb(228,228,228)",
-        width: "100%"
+        display: 'flex',
+        width:'100%'
     },
-    paddingSection: {
-        height: 70,
-        floatTop: 10,
-        centerX: true
-    },
-    paddingTable: {
-        floatLeft: 0
-    },
-    paddingInput: {
-        floatLeft: 10,
-        centerY: true,
-        width: 80
-    },
-    paddingGrid: {
+    dimensionsIcon: {
         width: 20,
         height: 20,
-        border: "1px solid black",
+        flex: '0 0 20px'
+    },
+    minMaxIcon: {
+        width: 10,
+        height: 10,
+        flex: '0 0 10px',
+        marginRight: 5
+    },
+    dimensionsInput: {
+        width: '100%',
+        overflow: "hidden",
+        flex: '1 1 auto',
+        background: 'transparent',
+        border: 'none'
+    },
+    dimensionsRendered: {
+        fontSize: 10,
+        width: '100%',
+        flex: '1 1 auto',
+        overflow:'hidden'      
+    },
+    paddingRow: {
+        display: 'flex',
+        floatTop: 0,
+        width: '100%'
+    },
+    paddingInput: {
+        width: '100%',
+        flex: '1 1 auto',
+        ':not(:first-child)': {
+            marginLeft: 10
+        }
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid rgb(228, 228, 228)',
+        floatTop: 0
     }
 });
 
 Vue.component('dimensions-panel',{
     template: `
     <panel title="Dimensions" expanded>
-        <table class="${ css.dimensionTable }">
-            <tr>
-                <td align="center">
-                    <input class="${css.input}" placeholder="width" v-model="widthRendered"></input>
-                </td>
-                <td align="center">
-                    <input class="${css.input}" placeholder="height" v-model="heightRendered"></input>
-                </td>
-             </tr>
-             <tr>
-                <td align="center">
-                    <input class="${css.input}" placeholder="none"></input>
-                </td>
-                <td align="center">
-                    <input class="${css.input}" placeholder="none"></input>
-                </td>
-            </tr>
-            <tr>
-                <td align="center">
-                    <div class="${css.input}">{{widthRendered}}</div>
-                </td>
-                <td aligh="center">
-                    <div class="${css.input}">{{heightRendered}}</div>
-                </td>
-            </tr>
-        </table>
-        <div class="${css.paddingSection}">
-            <table class="${css.paddingTable}">
-                <tr>
-                    <td class="${css.paddingGrid}"></td><td class="${css.paddingGrid}"></td><td class="${css.paddingGrid}"></td>
-                </tr>
-                <tr>
-                    <td class="${css.paddingGrid}"></td><td class="${css.paddingGrid}"></td><td class="${css.paddingGrid}"></td>
-                </tr>
-                <tr>
-                    <td class="${css.paddingGrid}"></td><td class="${css.paddingGrid}"></td><td class="${css.paddingGrid}"></td>
-                </tr>
-            </table>
-            <input class="${css.paddingInput}"></input>
-        </div>   
+        <div class="${ css.dimensionRow }">
+            <div class="${ css.dimensionsIcon }"><img src="icons/width.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="width" v-model="widthRendered"></input>
+            <div class="${ css.dimensionsIcon }"><img src="icons/height.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="height" v-model="heightRendered"></input>
+        </div>
+        <div class="${ css.dimensionRow }">
+            <div class="${ css.minMaxIcon }"><img src="icons/min.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="min"></input>
+            <div class="${ css.minMaxIcon }"><img src="icons/max.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="max"></input>
+            <div class="${ css.minMaxIcon }"><img src="icons/min.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="min"></input>
+            <div class="${ css.minMaxIcon }"><img src="icons/max.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="max"></input>
+        </div>
+        <div class="${ css.dimensionRow }">
+            <div class="${css.dimensionsRendered}">Rendered: {{widthRendered}}</div>
+            <div class="${css.dimensionsRendered}">Rendered: {{wheightRendered}}</div>
+        </div>
+        <div class="${ css.paddingRow }">
+            <material-input class="${ css.paddingInput }">padding-left</material-input>
+            <material-input class="${ css.paddingInput }">padding-right</material-input>
+        </div>
+        <div class="${ css.paddingRow }">
+            <material-input class="${ css.paddingInput }">padding-top</material-input>
+            <material-input class="${ css.paddingInput }">padding-bottom</material-input>
+        </div>
+        <div class="${ css.separator }"></div>
+        <div class="${ css.paddingRow }">
+            <material-input class="${ css.paddingInput }">margin-left</material-input>
+            <material-input class="${ css.paddingInput }">margin-right</material-input>
+        </div>
+        <div class="${ css.paddingRow }">
+            <material-input class="${ css.paddingInput }">margin-top</material-input>
+            <material-input class="${ css.paddingInput }">margin-bottom</material-input>
+        </div>
     </panel>
     `,
     data: function() {

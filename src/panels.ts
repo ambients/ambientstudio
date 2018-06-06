@@ -3,7 +3,7 @@ import { rinss } from "rinss";
 
 const css = rinss.create({
     panels: {
-        width: 250,
+        width: 300,
         height: '100%',
         background: 'rgb(247, 247, 247)',
         absRight: 0,
