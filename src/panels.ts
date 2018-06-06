@@ -42,7 +42,7 @@ Vue.component('panel', {
     template: `
         <div class=${ css.panel }>
             <div class=${ css.title } @click="toggleCollapse()">{{title}}</div>
-            <div class=${ css.container } :style="getStyle()"><slot></slot></div>
+            <div class=${ css.container }><slot></slot></div>
         </div>
     `,
     props: {
@@ -51,28 +51,38 @@ Vue.component('panel', {
     },
     data: function(){
         return {
-            isCollapsed: !this.expanded
+            isCollapsed: !this.expanded,
+            container: undefined
         }
+    },
+    mounted: function() {
+        this.container = this.$el.querySelector('.' + css.container);
+
+        if (this.isCollapsed) rinss.inline(this.container, {
+            height: 0,
+            floatTop: 0,
+            opacity: 0
+        });
+        else rinss.inline(this.container, {
+            height: 'auto',
+            floatTop: 10,
+            opacity: 1
+        });
     },
     methods: {
         toggleCollapse: function() {
             this.isCollapsed = !this.isCollapsed;
-        },
-        getStyle: function() {
-            if (this.isCollapsed) {
-                return rinss.compile({
-                    height: { to: 0 },
-                    floatTop: { to: 0 }, 
-                    opacity: { to: 0 }
-                });
-            }
-            else {
-                return rinss.compile({
-                    height: { to: 'auto', el: this.$el },
-                    floatTop: { to: 10 },
-                    opacity: { to: 1 }
-                });
-            }
+
+            if (this.isCollapsed) rinss.inline(this.container, {
+                height: { from: 'auto', to: 0 },
+                floatTop: { to: 0 },
+                opacity: { to: 0 }
+            });
+            else rinss.inline(this.container, {
+                height: { from: 0, to: 'auto' },
+                floatTop: { to: 10 },
+                opacity: { to: 1 }
+            });
         }
     }
 });

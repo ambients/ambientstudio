@@ -1,21 +1,19 @@
 import Vue from "vue";
 import { rinss } from "rinss";
 import "./panels";
+import "./materialInput";
 
 const css = rinss.create({
-    input: {
-        floatLeft: 10,
-        width: '40%',
-    },
     inputs: {
-        floatTop: 0
+        display: 'flex',
+        floatTop: 0,
+        width: '100%'
     },
-    label: {
-        fontSize: 13,
-        important: true
-    },
-    wrap: {
-        width: 80
+    input: {
+        flex: '1 1 auto',
+        ':not(:first-child)': {
+            marginLeft: 10
+        }
     },
     alignmentButtons: {
         centerX: true,
@@ -37,27 +35,16 @@ const css = rinss.create({
     }
 });
 
-Vue.component('wrap-input', {
-    template: `
-        <div class="${ css.wrap }">
-            <md-field>
-                <label class="${ css.label }"><slot></slot></label>
-                <md-input></md-input>
-            </md-field>
-        </div>
-    `
-});
-
 Vue.component('alignment-panel', {
     template: `
-        <panel title="Alignment">
+        <panel title="Alignment" expanded>
             <div class="${ css.inputs }">
-                <wrap-input class="${ css.input }">left</wrap-input>
-                <wrap-input class="${ css.input }">right</wrap-input>
+                <material-input class="${ css.input }">Left</material-input>
+                <material-input class="${ css.input }">Right</material-input>
             </div>
-            <div class="${ css.inputs }">
-                <wrap-input class="${ css.input }">top</wrap-input>
-                <wrap-input class="${ css.input }">bottom</wrap-input>
+            <div class="${ css.inputs}">
+                <material-input class="${ css.input}">Top</material-input>
+                <material-input class="${ css.input }">Bottom</material-input>
             </div>
             <div class="${ css.alignmentButtons }">
                 <div class="${ css.horizontalButtons }">
