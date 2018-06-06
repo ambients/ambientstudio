@@ -5,7 +5,6 @@ import "./materialInput"
 
 const css = rinss.create({
     dimensionRow: {
-        borderBottom: "1px solid rgb(228,228,228)",
         display: 'flex',
         width:'100%'
     },
@@ -76,6 +75,7 @@ Vue.component('dimensions-panel',{
             <div class="${css.dimensionsRendered}">Rendered: {{widthRendered}}</div>
             <div class="${css.dimensionsRendered}">Rendered: {{wheightRendered}}</div>
         </div>
+        <div class="${ css.separator }"></div>
         <div class="${ css.paddingRow }">
             <material-input class="${ css.paddingInput }">padding-left</material-input>
             <material-input class="${ css.paddingInput }">padding-right</material-input>

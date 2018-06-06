@@ -12,6 +12,7 @@ import "./propertiesPanel";
 import "./alignmentPanel";
 import "./toolbar";
 import "./dimensions";
+import "./typography";
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -44,7 +45,7 @@ new Vue({
                 <properties-panel></properties-panel>
                 <alignment-panel></alignment-panel>
                 <dimensions-panel></dimensions-panel>
-                <panel title="Typography"></panel>
+                <typography-panel></typography-panel>
                 <panel title="Backgrounds"></panel>
                 <panel title="Effects"></panel>
             </panels>

@@ -1524,12 +1524,16 @@ function kebab(text) {
 function unitize(v, k) {
     return Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["isNumber"])(v) ? v + Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["defaultTo"])(_definitions__WEBPACK_IMPORTED_MODULE_0__["defaultUnits"][k], 'px') : v.toString();
 }
-function flatten(o, parentKey, root) {
+function flatten(o, parentKey, root, el) {
     if (parentKey === void 0) { parentKey = ''; }
     return Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["reduce"])(o, function (r, v, k) {
         if (root == undefined)
             root = r;
-        if (!Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["isObject"])(v) || v.to != undefined || v['100%'] != undefined) {
+        var isAnimDesc = v.to != undefined || v['100%'] != undefined;
+        if (el != undefined && isAnimDesc && (k === 'height' || k === 'width'))
+            if (((v.from || v['0%']) === 'auto') || ((v.to || v['100%']) === 'auto'))
+                v.el = el;
+        if (!Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["isObject"])(v) || isAnimDesc) {
             if (k[0] === '@')
                 root[k] = v;
             else
@@ -1538,20 +1542,20 @@ function flatten(o, parentKey, root) {
         }
         if (parentKey !== '') {
             if (k[0] === ':')
-                root[parentKey + k] = flatten(v, parentKey + k, root);
+                root[parentKey + k] = flatten(v, parentKey + k, root, el);
             else if (k[0] === '@') {
-                var a = flatten(v, k, root);
+                var a = flatten(v, k, root, el);
                 if (k[1] === 'm')
                     a = (_a = {}, _a[parentKey] = a, _a);
                 Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["merge"])(root, (_b = {}, _b[k] = a, _b));
             }
             else
-                root[parentKey + ' ' + k] = flatten(v, parentKey + ' ' + k, root);
+                root[parentKey + ' ' + k] = flatten(v, parentKey + ' ' + k, root, el);
         }
         else if (k[0] === '@')
             r[k] = v;
         else
-            r[k] = flatten(v, k, root);
+            r[k] = flatten(v, k, root, el);
         return r;
         var _a, _b;
     }, {});
@@ -1733,6 +1737,30 @@ var Rinss = (function () {
                     result[key] = _this.standardize(value, key, root, kf);
             }
             else if (value.to != undefined || value['100%'] != undefined) {
+                if (value.el != undefined && (key === 'height' || key === 'width')) {
+                    var el_1 = value.el;
+                    value.el = undefined;
+                    if (key === 'height')
+                        Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["forOwn"])(value, function (v, k) {
+                            if (v !== 'auto')
+                                return;
+                            var clone = el_1.cloneNode(true);
+                            clone.style.height = 'auto';
+                            document.body.appendChild(clone);
+                            value[k] = clone.clientHeight;
+                            document.body.removeChild(clone);
+                        });
+                    else
+                        Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["forOwn"])(value, function (v, k) {
+                            if (v !== 'auto')
+                                return;
+                            var clone = el_1.cloneNode(true);
+                            clone.style.width = 'auto';
+                            document.body.appendChild(clone);
+                            value[k] = clone.clientWidth;
+                            document.body.removeChild(clone);
+                        });
+                }
                 var steps = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["mapKeys"])(value, function (v, k) {
                     if (k === 'from')
                         return '0%';
@@ -1780,6 +1808,8 @@ var Rinss = (function () {
                 else {
                     var transProps_1 = __assign({}, _this.transitionVals);
                     Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["forOwn"])(steps, function (v, k) {
+                        if (v == undefined)
+                            return;
                         if (k === '100%')
                             result[key] = v;
                         else
@@ -2108,7 +2138,9 @@ var Rinss = (function () {
                     listener.on(['animationend', 'animationcancel'], function (e) {
                         if (e.target !== el || e.animationName !== k)
                             return;
-                        _this.setStyle(el, keyframes['@keyframes ' + k]['100%']);
+                        var steps = keyframes['@keyframes ' + k];
+                        if (steps != undefined)
+                            _this.setStyle(el, steps['100%']);
                         listener.reset(), animationCache[k] = undefined, resolve();
                     });
                 }));
@@ -2174,7 +2206,7 @@ var Rinss = (function () {
         else
             map = {}, inlineMap.set(el, map);
         Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["extend"])(map, applyExtensions(arg1, true));
-        this.setStyle(el, this.standardize(flatten(arg1)));
+        this.setStyle(el, this.standardize(flatten(arg1, undefined, undefined, el)));
     };
     Rinss.prototype.number = function (el, name) {
         if (inlineMap.has(el)) {
@@ -42133,6 +42165,210 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/alignmentPanel.ts":
+/*!*******************************!*\
+  !*** ./src/alignmentPanel.ts ***!
+  \*******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _materialInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialInput */ "./src/materialInput.ts");
+
+
+
+
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    inputs: {
+        display: 'flex',
+        floatTop: 0,
+        width: '100%'
+    },
+    input: {
+        flex: '1 1 auto',
+        ':not(:first-child)': {
+            marginLeft: 10
+        }
+    },
+    alignmentButtons: {
+        centerX: true,
+        floatTop: 10,
+        display: 'flex',
+    },
+    horizontalButtons: {
+        floatLeft: 0,
+        borderRight: "1px solid rgb(228,228,228)",
+        flex: '1 1 auto',
+        display: 'flex',
+    },
+    verticalButtons: {
+        floatLeft: 0,
+        borderLeft: "1px solid rgb(228,228,228)",
+        flex: '1 1 auto',
+        display: 'flex'
+    },
+    alignmentButton: {
+        width: 30,
+        height: 30,
+        floatLeft: 0
+    },
+    rotated: {
+        rotate: -90
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('alignment-panel', {
+    template: `
+        <panel title="Alignment" expanded>
+            <div class="${css.inputs}">
+                <material-input class="${css.input}">Left</material-input>
+                <material-input class="${css.input}">Right</material-input>
+            </div>
+            <div class="${css.inputs}">
+                <material-input class="${css.input}">Top</material-input>
+                <material-input class="${css.input}">Bottom</material-input>
+            </div>
+            <div class="${css.alignmentButtons}">
+                <div class="${css.horizontalButtons}">
+                    <div class="${css.alignmentButton}"><img src="icons/align-top.svg"></img></div>
+                    <div class="${css.alignmentButton}"></div>
+                    <div class="${css.alignmentButton}"><img src="icons/align-bottom.svg"></img></div>
+                </div>
+                <div class="${css.verticalButtons}">
+                    <div class="${css.alignmentButton}"><img class="${css.rotated}" src="icons/align-top.svg"></img></div>
+                    <div class="${css.alignmentButton}"></div>
+                    <div class="${css.alignmentButton}"><img class="${css.rotated}" src="icons/align-bottom.svg"></img></div>
+                </div>
+            </div>
+        </panel>
+    `
+});
+
+
+/***/ }),
+
+/***/ "./src/dimensions.ts":
+/*!***************************!*\
+  !*** ./src/dimensions.ts ***!
+  \***************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _materialInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./materialInput */ "./src/materialInput.ts");
+
+
+
+
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    dimensionRow: {
+        display: 'flex',
+        width: '100%'
+    },
+    dimensionsIcon: {
+        width: 20,
+        height: 20,
+        flex: '0 0 20px'
+    },
+    minMaxIcon: {
+        width: 10,
+        height: 10,
+        flex: '0 0 10px',
+        marginRight: 5
+    },
+    dimensionsInput: {
+        width: '100%',
+        overflow: "hidden",
+        flex: '1 1 auto',
+        background: 'transparent',
+        border: 'none'
+    },
+    dimensionsRendered: {
+        fontSize: 10,
+        width: '100%',
+        flex: '1 1 auto',
+        overflow: 'hidden'
+    },
+    paddingRow: {
+        display: 'flex',
+        floatTop: 0,
+        width: '100%'
+    },
+    paddingInput: {
+        width: '100%',
+        flex: '1 1 auto',
+        ':not(:first-child)': {
+            marginLeft: 10
+        }
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid rgb(228, 228, 228)',
+        floatTop: 0
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('dimensions-panel', {
+    template: `
+    <panel title="Dimensions" expanded>
+        <div class="${css.dimensionRow}">
+            <div class="${css.dimensionsIcon}"><img src="icons/width.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="width" v-model="widthRendered"></input>
+            <div class="${css.dimensionsIcon}"><img src="icons/height.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="height" v-model="heightRendered"></input>
+        </div>
+        <div class="${css.dimensionRow}">
+            <div class="${css.minMaxIcon}"><img src="icons/min.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="min"></input>
+            <div class="${css.minMaxIcon}"><img src="icons/max.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="max"></input>
+            <div class="${css.minMaxIcon}"><img src="icons/min.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="min"></input>
+            <div class="${css.minMaxIcon}"><img src="icons/max.svg"></img></div>
+            <input class="${css.dimensionsInput}" placeholder="max"></input>
+        </div>
+        <div class="${css.dimensionRow}">
+            <div class="${css.dimensionsRendered}">Rendered: {{widthRendered}}</div>
+            <div class="${css.dimensionsRendered}">Rendered: {{wheightRendered}}</div>
+        </div>
+        <div class="${css.separator}"></div>
+        <div class="${css.paddingRow}">
+            <material-input class="${css.paddingInput}">padding-left</material-input>
+            <material-input class="${css.paddingInput}">padding-right</material-input>
+        </div>
+        <div class="${css.paddingRow}">
+            <material-input class="${css.paddingInput}">padding-top</material-input>
+            <material-input class="${css.paddingInput}">padding-bottom</material-input>
+        </div>
+        <div class="${css.separator}"></div>
+        <div class="${css.paddingRow}">
+            <material-input class="${css.paddingInput}">margin-left</material-input>
+            <material-input class="${css.paddingInput}">margin-right</material-input>
+        </div>
+        <div class="${css.paddingRow}">
+            <material-input class="${css.paddingInput}">margin-top</material-input>
+            <material-input class="${css.paddingInput}">margin-bottom</material-input>
+        </div>
+    </panel>
+    `,
+    data: function () {
+        return {
+            widthRendered: '',
+            heightRendered: ''
+        };
+    }
+});
+
+
+/***/ }),
+
 /***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
@@ -42154,7 +42390,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _propertiesPanel__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propertiesPanel */ "./src/propertiesPanel.ts");
-/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
+/* harmony import */ var _alignmentPanel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./alignmentPanel */ "./src/alignmentPanel.ts");
+/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
+/* harmony import */ var _dimensions__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./dimensions */ "./src/dimensions.ts");
+/* harmony import */ var _typography__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./typography */ "./src/typography.ts");
 
 
 
@@ -42165,12 +42404,15 @@ vue__WEBPACK_IMPORTED_MODULE_1__["default"].use(vue_material__WEBPACK_IMPORTED_M
 
 
 
+
+
+
 const container = document.createElement('div');
 document.body.appendChild(container);
 container.id = 'container';
 rinss__WEBPACK_IMPORTED_MODULE_2__["rinss"].inline(document.body, {
     overflow: 'hidden',
-    fontFamily: '"Arial", "Hiragino Sans GB", "STXihei", "华文细黑", "Microsoft Yahei", "微软雅黑", "sans-serif"'
+    fontFamily: '"Arial", "sans-serif"'
 });
 const css = rinss__WEBPACK_IMPORTED_MODULE_2__["rinss"].create({
     stage: {
@@ -42178,6 +42420,12 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_2__["rinss"].create({
         height: '100vh',
         top: 0,
         left: 0
+    },
+    test: {
+        width: 100,
+        height: 100,
+        background: 'red',
+        floatTop: 10
     }
 });
 new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
@@ -42185,11 +42433,11 @@ new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
         <div class="${css.stage}">
             <panels>
                 <properties-panel></properties-panel>
-                <panel title="Alignment" collapsed></panel>
-                <panel title="Dimensions" collapsed></panel>
-                <panel title="Typography" collapsed></panel>
-                <panel title="Backgrounds" collapsed></panel>
-                <panel title="Effects" collapsed></panel>
+                <alignment-panel></alignment-panel>
+                <dimensions-panel></dimensions-panel>
+                <typography-panel></typography-panel>
+                <panel title="Backgrounds"></panel>
+                <panel title="Effects"></panel>
             </panels>
             <toolbar>
                 <toolbar-section>
@@ -42218,6 +42466,42 @@ new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
 
 /***/ }),
 
+/***/ "./src/materialInput.ts":
+/*!******************************!*\
+  !*** ./src/materialInput.ts ***!
+  \******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+
+
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    label: {
+        fontSize: 13,
+        important: true
+    },
+    wrapper: {
+        width: 50
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-input', {
+    template: `
+        <div class="${css.wrapper}">
+            <md-field>
+                <label class="${css.label}"><slot></slot></label>
+                <md-input></md-input>
+            </md-field>
+        </div>
+    `
+});
+
+
+/***/ }),
+
 /***/ "./src/panels.ts":
 /*!***********************!*\
   !*** ./src/panels.ts ***!
@@ -42233,7 +42517,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     panels: {
-        width: 250,
+        width: 300,
         height: '100%',
         background: 'rgb(247, 247, 247)',
         absRight: 0,
@@ -42270,32 +42554,46 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panel', {
     template: `
         <div class=${css.panel}>
             <div class=${css.title} @click="toggleCollapse()">{{title}}</div>
-            <div class=${css.container} :style="getStyle()"><slot></slot></div>
+            <div class=${css.container}><slot></slot></div>
         </div>
     `,
     props: {
-        collapsed: Boolean,
-        title: String
+        title: String,
+        expanded: Boolean
     },
     data: function () {
         return {
-            isCollapsed: this.collapsed,
+            isCollapsed: !this.expanded,
+            container: undefined
         };
+    },
+    mounted: function () {
+        this.container = this.$el.querySelector('.' + css.container);
+        if (this.isCollapsed)
+            rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.container, {
+                height: 0,
+                floatTop: 0,
+                opacity: 0
+            });
+        else
+            rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.container, {
+                height: 'auto',
+                floatTop: 10,
+                opacity: 1
+            });
     },
     methods: {
         toggleCollapse: function () {
             this.isCollapsed = !this.isCollapsed;
-        },
-        getStyle: function () {
             if (this.isCollapsed)
-                return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
-                    height: { to: 0 },
+                rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.container, {
+                    height: { from: 'auto', to: 0 },
                     floatTop: { to: 0 },
                     opacity: { to: 0 }
                 });
             else
-                return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
-                    height: { to: 'auto', el: this.$el },
+                rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].inline(this.container, {
+                    height: { from: 0, to: 'auto' },
                     floatTop: { to: 10 },
                     opacity: { to: 1 }
                 });
@@ -42329,7 +42627,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('properties-panel', {
     template: `
-        <panel title="Properties">
+        <panel title="Properties" expanded>
             <md-field>
                 <label class="${css.label}">Element id</label>
                 <md-input></md-input>
@@ -42425,6 +42723,56 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-section', {
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
     template: `
         <div class="${css.toolbar}"><slot></slot></div>
+    `
+});
+
+
+/***/ }),
+
+/***/ "./src/typography.ts":
+/*!***************************!*\
+  !*** ./src/typography.ts ***!
+  \***************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+
+
+
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    fontRow: {
+        display: 'flex',
+        flowTop: 0,
+        width: '100%'
+    },
+    fontMenu: {
+        overflow: 'hidden',
+        flow: '1 1 auto',
+        height: 20,
+        width: '70%',
+        background: 'red'
+    },
+    fontSize: {
+        flow: '1 1 auto',
+        height: 20,
+        width: '30%',
+        background: 'blue',
+        marginLeft: 10
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-panel', {
+    template: `
+    <panel title="typography" expanded>
+        <div class="${css.fontRow}">
+            <div class="${css.fontMenu}"></div>
+            <input class="${css.fontSize}"></input>
+        </div>
+    </panel>
     `
 });
 
