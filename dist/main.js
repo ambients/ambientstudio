@@ -42168,6 +42168,65 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/borderPanel.ts":
+/*!****************************!*\
+  !*** ./src/borderPanel.ts ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+
+
+
+
+const borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_3__["processSvg"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
+const borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_3__["processSvg"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    borderIcon: {
+        widith: 20,
+        height: 20,
+        cursor: 'pointer',
+    },
+    borderIconTable: {
+        floatTop: 0,
+        width: '100%',
+        border: '1px solid black'
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-icon', {
+    template: `
+        <div class="${css.borderIcon}"><slot></slot></div>
+    `
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-panel', {
+    template: `
+    <panel title="Border" expanded>
+        <div>
+            <table class="${css.borderIconTable}">
+                <tr>
+                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
+                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
+                </tr>
+                <tr>
+                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
+                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
+                </tr>
+            </table>
+        </div>
+
+    </panel>
+    `
+});
+
+
+/***/ }),
+
 /***/ "./src/dimensionsPanel.ts":
 /*!********************************!*\
   !*** ./src/dimensionsPanel.ts ***!
@@ -42319,6 +42378,28 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 2.976563 1.984375 L 2.976563 3.96875 L 46.628906 3.96875 L 46.628906 1.984375 Z M 7.75 5.953125 C 7.277344 6.042969 6.9375 6.460938 6.945313 6.945313 L 6.945313 45.636719 C 6.945313 46.179688 7.390625 46.628906 7.9375 46.628906 L 21.824219 46.628906 C 22.371094 46.628906 22.816406 46.179688 22.816406 45.636719 L 22.816406 6.945313 C 22.816406 6.398438 22.371094 5.953125 21.824219 5.953125 L 7.9375 5.953125 C 7.90625 5.953125 7.875 5.953125 7.84375 5.953125 C 7.8125 5.953125 7.78125 5.953125 7.75 5.953125 Z M 27.777344 5.953125 C 27.226563 5.953125 26.785156 6.398438 26.785156 6.945313 L 26.785156 35.714844 C 26.785156 36.265625 27.226563 36.707031 27.777344 36.707031 L 41.667969 36.707031 C 42.21875 36.707031 42.660156 36.265625 42.660156 35.714844 L 42.660156 6.945313 C 42.660156 6.398438 42.21875 5.953125 41.667969 5.953125 Z M 8.929688 7.9375 L 20.832031 7.9375 L 20.832031 44.644531 L 8.929688 44.644531 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-top-right.svg":
+/*!****************************************!*\
+  !*** ./src/icons/border-top-right.svg ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 7.8125 3.125 C 6.949219 3.125 6.25 3.824219 6.25 4.6875 C 6.25 5.550781 6.949219 6.25 7.8125 6.25 C 8.675781 6.25 9.375 5.550781 9.375 4.6875 C 9.375 3.824219 8.675781 3.125 7.8125 3.125 Z M 14.0625 3.125 C 13.199219 3.125 12.5 3.824219 12.5 4.6875 C 12.5 5.550781 13.199219 6.25 14.0625 6.25 C 14.925781 6.25 15.625 5.550781 15.625 4.6875 C 15.625 3.824219 14.925781 3.125 14.0625 3.125 Z M 20.3125 3.125 C 19.449219 3.125 18.75 3.824219 18.75 4.6875 C 18.75 5.550781 19.449219 6.25 20.3125 6.25 C 21.175781 6.25 21.875 5.550781 21.875 4.6875 C 21.875 3.824219 21.175781 3.125 20.3125 3.125 Z M 25 3.125 L 25 6.25 C 33.648438 6.25 40.625 13.226563 40.625 21.875 L 43.75 21.875 C 43.75 11.535156 35.339844 3.125 25 3.125 Z M 4.6875 6.25 C 3.824219 6.25 3.125 6.949219 3.125 7.8125 C 3.125 8.675781 3.824219 9.375 4.6875 9.375 C 5.550781 9.375 6.25 8.675781 6.25 7.8125 C 6.25 6.949219 5.550781 6.25 4.6875 6.25 Z M 4.6875 12.5 C 3.824219 12.5 3.125 13.199219 3.125 14.0625 C 3.125 14.925781 3.824219 15.625 4.6875 15.625 C 5.550781 15.625 6.25 14.925781 6.25 14.0625 C 6.25 13.199219 5.550781 12.5 4.6875 12.5 Z M 4.6875 18.75 C 3.824219 18.75 3.125 19.449219 3.125 20.3125 C 3.125 21.175781 3.824219 21.875 4.6875 21.875 C 5.550781 21.875 6.25 21.175781 6.25 20.3125 C 6.25 19.449219 5.550781 18.75 4.6875 18.75 Z M 4.6875 25 C 3.824219 25 3.125 25.699219 3.125 26.5625 C 3.125 27.425781 3.824219 28.125 4.6875 28.125 C 5.550781 28.125 6.25 27.425781 6.25 26.5625 C 6.25 25.699219 5.550781 25 4.6875 25 Z M 42.1875 25 C 41.324219 25 40.625 25.699219 40.625 26.5625 C 40.625 27.425781 41.324219 28.125 42.1875 28.125 C 43.050781 28.125 43.75 27.425781 43.75 26.5625 C 43.75 25.699219 43.050781 25 42.1875 25 Z M 4.6875 31.25 C 3.824219 31.25 3.125 31.949219 3.125 32.8125 C 3.125 33.675781 3.824219 34.375 4.6875 34.375 C 5.550781 34.375 6.25 33.675781 6.25 32.8125 C 6.25 31.949219 5.550781 31.25 4.6875 31.25 Z M 42.1875 31.25 C 41.324219 31.25 40.625 31.949219 40.625 32.8125 C 40.625 33.675781 41.324219 34.375 42.1875 34.375 C 43.050781 34.375 43.75 33.675781 43.75 32.8125 C 43.75 31.949219 43.050781 31.25 42.1875 31.25 Z M 4.6875 37.5 C 3.824219 37.5 3.125 38.199219 3.125 39.0625 C 3.125 39.925781 3.824219 40.625 4.6875 40.625 C 5.550781 40.625 6.25 39.925781 6.25 39.0625 C 6.25 38.199219 5.550781 37.5 4.6875 37.5 Z M 42.1875 37.5 C 41.324219 37.5 40.625 38.199219 40.625 39.0625 C 40.625 39.925781 41.324219 40.625 42.1875 40.625 C 43.050781 40.625 43.75 39.925781 43.75 39.0625 C 43.75 38.199219 43.050781 37.5 42.1875 37.5 Z M 7.8125 40.625 C 6.949219 40.625 6.25 41.324219 6.25 42.1875 C 6.25 43.050781 6.949219 43.75 7.8125 43.75 C 8.675781 43.75 9.375 43.050781 9.375 42.1875 C 9.375 41.324219 8.675781 40.625 7.8125 40.625 Z M 14.0625 40.625 C 13.199219 40.625 12.5 41.324219 12.5 42.1875 C 12.5 43.050781 13.199219 43.75 14.0625 43.75 C 14.925781 43.75 15.625 43.050781 15.625 42.1875 C 15.625 41.324219 14.925781 40.625 14.0625 40.625 Z M 20.3125 40.625 C 19.449219 40.625 18.75 41.324219 18.75 42.1875 C 18.75 43.050781 19.449219 43.75 20.3125 43.75 C 21.175781 43.75 21.875 43.050781 21.875 42.1875 C 21.875 41.324219 21.175781 40.625 20.3125 40.625 Z M 26.5625 40.625 C 25.699219 40.625 25 41.324219 25 42.1875 C 25 43.050781 25.699219 43.75 26.5625 43.75 C 27.425781 43.75 28.125 43.050781 28.125 42.1875 C 28.125 41.324219 27.425781 40.625 26.5625 40.625 Z M 32.8125 40.625 C 31.949219 40.625 31.25 41.324219 31.25 42.1875 C 31.25 43.050781 31.949219 43.75 32.8125 43.75 C 33.675781 43.75 34.375 43.050781 34.375 42.1875 C 34.375 41.324219 33.675781 40.625 32.8125 40.625 Z M 39.0625 40.625 C 38.199219 40.625 37.5 41.324219 37.5 42.1875 C 37.5 43.050781 38.199219 43.75 39.0625 43.75 C 39.925781 43.75 40.625 43.050781 40.625 42.1875 C 40.625 41.324219 39.925781 40.625 39.0625 40.625 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-top.svg":
+/*!**********************************!*\
+  !*** ./src/icons/border-top.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 21h2v-2H7v2zm0-8h2v-2H7v2zm4 0h2v-2h-2v2zm0 8h2v-2h-2v2zm-8-4h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2v-2H3v2zm0-4h2V7H3v2zm8 8h2v-2h-2v2zm8-8h2V7h-2v2zm0 4h2v-2h-2v2zM3 3v2h18V3H3zm16 14h2v-2h-2v2zm-4 4h2v-2h-2v2zM11 9h2V7h-2v2zm8 12h2v-2h-2v2zm-4-8h2v-2h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
 
 /***/ }),
 
@@ -42623,6 +42704,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
 /* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
 /* harmony import */ var _transformPanel__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./transformPanel */ "./src/transformPanel.ts");
+/* harmony import */ var _borderPanel__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./borderPanel */ "./src/borderPanel.ts");
+
 
 
 
@@ -42670,6 +42753,7 @@ new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
                 <panel title="Backgrounds"></panel>
                 <panel title="Effects"></panel>
                 <transform-panel></transform-panel>
+                <border-panel></border-panel>
             </panels>
             <toolbar></toolbar>
         </div>
@@ -43240,19 +43324,31 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     transformRow: {
         display: 'flex',
         width: '100%',
-        floatTop: 5,
+        floatTop: 0,
+        marginBottom: 5
     },
     transformInputs: {
         flex: '1 1 auto',
         display: 'flex',
         width: '33%',
         background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
-        border: 'none',
+        ':not(:first-child)': {
+            marginLeft: 5
+        }
     },
     transformInput: {
         flex: '1 1 auto',
         width: '100%',
         background: 'none',
+        border: 'none',
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
+        floatTop: 0,
+        marginBottom: 10,
+        marginTop: 5
     },
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-icon', {
@@ -43262,15 +43358,59 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-icon', {
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-panel', {
     template: `
-    <panel title="transform" expanded>
+    <panel title="Transform" expanded>
         <div class="${css.transformRow}">
             <div class="${css.transformInputs}">
                 <transform-icon>${iconholder}</transform-icon>
-                <input class="${css.transformInput}" placeholder="  transformX"></input>
+                <input class="${css.transformInput}" placeholder="  trans.X"></input>
             </div>
             <div class="${css.transformInputs}">
                 <transform-icon>${iconholder}</transform-icon>
-                <input class="${css.transformInput}" placeholder="  transformX"></input>
+                <input class="${css.transformInput}" placeholder="  trans.Y"></input>
+            </div>
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  trans.Z"></input>
+            </div>
+        </div>
+
+        <div class="${css.transformRow}">
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  scaleX"></input>
+            </div>
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  scaleY"></input>
+            </div>
+        </div>
+
+        <div class="${css.separator}"></div>
+
+
+        <div class="${css.transformRow}">
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  rotateX"></input>
+            </div>
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  rotateY"></input>
+            </div>
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  rotateZ"></input>
+            </div>
+        </div>
+
+        <div class="${css.transformRow}">
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  skewX"></input>
+            </div>
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  skewY"></input>
             </div>
         </div>
     </panel>
@@ -43377,7 +43517,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-panel', {
     template: `
-    <panel title="typography" expanded>
+    <panel title="Typography" expanded>
         <div class="${css.fontRow}">
             <div class="${css.fontType}">
                 <input class="${css.fontMenuInput}" placeholder="font" list="font-data"></input>

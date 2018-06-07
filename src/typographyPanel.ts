@@ -84,7 +84,7 @@ const css = rinss.create({
 
 Vue.component('typography-panel',{
     template: `
-    <panel title="typography" expanded>
+    <panel title="Typography" expanded>
         <div class="${css.fontRow}">
             <div class="${css.fontType}">
                 <input class="${css.fontMenuInput}" placeholder="font" list="font-data"></input>

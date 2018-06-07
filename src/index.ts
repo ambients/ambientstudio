@@ -13,6 +13,7 @@ import "./dimensionsPanel";
 import "./typographyPanel";
 import "./toolbar";
 import "./transformPanel";
+import "./borderPanel";
 
 Vue.use(VueMaterial);
 rinss.config({ duration: 250 });
@@ -52,6 +53,7 @@ new Vue({
                 <panel title="Backgrounds"></panel>
                 <panel title="Effects"></panel>
                 <transform-panel></transform-panel>
+                <border-panel></border-panel>
             </panels>
             <toolbar></toolbar>
         </div>
