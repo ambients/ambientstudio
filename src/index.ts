@@ -5,14 +5,16 @@ import { rinss } from "rinss";
 import VueMaterial from "vue-material";
 import "vue-material/dist/vue-material.min.css";
 import 'vue-material/dist/theme/default.css';
-Vue.use(VueMaterial);
 
 import "./panels";
 import "./propertiesPanel";
-import "./alignmentPanel";
+import "./positionPanel";
+import "./dimensionsPanel";
+import "./typographyPanel";
 import "./toolbar";
-import "./dimensions";
-import "./typography";
+
+Vue.use(VueMaterial);
+rinss.config({ duration: 250 });
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -43,32 +45,13 @@ new Vue({
         <div class="${ css.stage }">
             <panels>
                 <properties-panel></properties-panel>
-                <alignment-panel></alignment-panel>
+                <position-panel></position-panel>
                 <dimensions-panel></dimensions-panel>
                 <typography-panel></typography-panel>
                 <panel title="Backgrounds"></panel>
                 <panel title="Effects"></panel>
             </panels>
-            <toolbar>
-                <toolbar-section>
-                    <toolbar-button name="cursor" selected></toolbar-button>
-                    <toolbar-button name="transform"></toolbar-button>
-                </toolbar-section>
-                <toolbar-section>
-                    <toolbar-button name="rectangle"></toolbar-button>
-                    <toolbar-button name="circle"></toolbar-button>
-                    <toolbar-button name="line"></toolbar-button>
-                    <toolbar-button name="textarea"></toolbar-button>
-                    <toolbar-button name="textfield"></toolbar-button>
-                    <toolbar-button name="type"></toolbar-button>
-                    <toolbar-button name="checkbox"></toolbar-button>
-                </toolbar-section>
-                <toolbar-section>
-                    <toolbar-button name="dropper"></toolbar-button>
-                    <toolbar-button name="magnet"></toolbar-button>
-                    <toolbar-button name="paint"></toolbar-button>
-                </toolbar-section>
-            </toolbar>
+            <toolbar></toolbar>
         </div>
     `
 }).$mount('#container');

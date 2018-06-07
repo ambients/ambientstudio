@@ -16,7 +16,8 @@ module.exports = {
           compilerOptions: { declaration: false, sourceMap: false }
         }
       },
-      { test: /\.css$/, use: [{ loader: 'style-loader' }, { loader: 'css-loader' }] }      
+      { test: /\.css$/, use: [{ loader: 'style-loader' }, { loader: 'css-loader' }] },
+      { test: /\.svg$/, loader: 'svg-inline-loader' }
     ]
   },
   devtool: 'source-map',

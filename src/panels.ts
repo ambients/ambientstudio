@@ -26,6 +26,7 @@ const css = rinss.create({
         color: '#c0c0c0',
         fontSize: 13,
         fontWeight: 'bold',
+        cursor: 'pointer'
     },
     container: {
         width: '100%'

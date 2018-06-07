@@ -74,7 +74,7 @@ Vue.component('dimensions-panel',{
         </div>
         <div class="${ css.dimensionRow }">
             <div class="${css.dimensionsRendered}">Rendered: {{widthRendered}}</div>
-            <div class="${css.dimensionsRendered}">Rendered: {{wheightRendered}}</div>
+            <div class="${css.dimensionsRendered}">Rendered: {{heightRendered}}</div>
         </div>
         <div class="${ css.separator }"></div>
         <div class="${ css.paddingRow }">
