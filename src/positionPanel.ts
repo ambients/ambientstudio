@@ -32,6 +32,9 @@ const css = rinss.create({
     }
 });
 
+const nameV = {value:''};
+const nameH = {value:''};
+
 Vue.component('position-button', {
     template: `
         <div class="${ css.positionButton }" :style="getStyle()" @click="toggleSelected()">
@@ -40,20 +43,25 @@ Vue.component('position-button', {
     `,
     props: {
         rotated: Boolean,
-        icon: String
+        icon: String,
+        name: String
     },
     data: function() { return {
-        selected: false
+        nameV: nameV,
+        nameH: nameH
     }},
     methods: {
         getStyle: function():string {
             return rinss.compile({
                 rotate: this.rotated ? -90 : 0,
-                color: this.selected ? theme.primary : theme.textPrimary
+                color: (this.name === (this.rotated ? this.nameH : this.nameV).value) ? theme.primary : theme.textPrimary
             });
         },
         toggleSelected: function():void {
-            this.selected = !this.selected;
+            if ((this.rotated ? this.nameH : this.nameV).value === this.name)
+                (this.rotated ? this.nameH : this.nameV).value = '';
+            else
+                (this.rotated ? this.nameH : this.nameV).value = this.name;
         }
     }
 });

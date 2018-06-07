@@ -12,6 +12,7 @@ import "./positionPanel";
 import "./dimensionsPanel";
 import "./typographyPanel";
 import "./toolbar";
+import "./transformPanel";
 
 Vue.use(VueMaterial);
 rinss.config({ duration: 250 });
@@ -50,6 +51,7 @@ new Vue({
                 <typography-panel></typography-panel>
                 <panel title="Backgrounds"></panel>
                 <panel title="Effects"></panel>
+                <transform-panel></transform-panel>
             </panels>
             <toolbar></toolbar>
         </div>

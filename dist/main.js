@@ -42476,6 +42476,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/placeholder.svg":
+/*!***********************************!*\
+  !*** ./src/icons/placeholder.svg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 8 8 L 8 56 L 56 56 L 56 8 Z M 12 12 L 52 12 L 52 52 L 47.875 52 C 47.1875 46.59375 43.765625 42.023438 39.0625 39.6875 C 42.046875 37.5 44 33.96875 44 30 C 44 23.398438 38.601563 18 32 18 C 25.398438 18 20 23.398438 20 30 C 20 33.96875 21.953125 37.5 24.9375 39.6875 C 20.234375 42.023438 16.8125 46.59375 16.125 52 L 12 52 Z M 32 22 C 36.445313 22 40 25.554688 40 30 C 40 34.445313 36.445313 38 32 38 C 27.554688 38 24 34.445313 24 30 C 24 25.554688 27.554688 22 32 22 Z M 32 42 C 37.96875 42 42.867188 46.304688 43.8125 52 L 20.1875 52 C 21.132813 46.304688 26.03125 42 32 42 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/rectangle-filled.svg":
 /*!****************************************!*\
   !*** ./src/icons/rectangle-filled.svg ***!
@@ -42611,6 +42622,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dimensionsPanel__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./dimensionsPanel */ "./src/dimensionsPanel.ts");
 /* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
 /* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
+/* harmony import */ var _transformPanel__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./transformPanel */ "./src/transformPanel.ts");
+
 
 
 
@@ -42656,6 +42669,7 @@ new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
                 <typography-panel></typography-panel>
                 <panel title="Backgrounds"></panel>
                 <panel title="Effects"></panel>
+                <transform-panel></transform-panel>
             </panels>
             <toolbar></toolbar>
         </div>
@@ -42850,6 +42864,8 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         }
     }
 });
+const nameV = { value: '' };
+const nameH = { value: '' };
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-button', {
     template: `
         <div class="${css.positionButton}" :style="getStyle()" @click="toggleSelected()">
@@ -42858,22 +42874,27 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-button', {
     `,
     props: {
         rotated: Boolean,
-        icon: String
+        icon: String,
+        name: String
     },
     data: function () {
         return {
-            selected: false
+            nameV: nameV,
+            nameH: nameH
         };
     },
     methods: {
         getStyle: function () {
             return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
                 rotate: this.rotated ? -90 : 0,
-                color: this.selected ? _theme__WEBPACK_IMPORTED_MODULE_4__["theme"].primary : _theme__WEBPACK_IMPORTED_MODULE_4__["theme"].textPrimary
+                color: (this.name === (this.rotated ? this.nameH : this.nameV).value) ? _theme__WEBPACK_IMPORTED_MODULE_4__["theme"].primary : _theme__WEBPACK_IMPORTED_MODULE_4__["theme"].textPrimary
             });
         },
         toggleSelected: function () {
-            this.selected = !this.selected;
+            if ((this.rotated ? this.nameH : this.nameV).value === this.name)
+                (this.rotated ? this.nameH : this.nameV).value = '';
+            else
+                (this.rotated ? this.nameH : this.nameV).value = this.name;
         }
     }
 });
@@ -43187,6 +43208,72 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
                 </toolbar-button>
             </toolbar-section>
         </div>
+    `
+});
+
+
+/***/ }),
+
+/***/ "./src/transformPanel.ts":
+/*!*******************************!*\
+  !*** ./src/transformPanel.ts ***!
+  \*******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
+
+
+
+const iconholder = __webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg");
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
+    transformIcon: {
+        width: 20,
+        height: 20
+    },
+    transformRow: {
+        display: 'flex',
+        width: '100%',
+        floatTop: 5,
+    },
+    transformInputs: {
+        flex: '1 1 auto',
+        display: 'flex',
+        width: '33%',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
+        border: 'none',
+    },
+    transformInput: {
+        flex: '1 1 auto',
+        width: '100%',
+        background: 'none',
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-icon', {
+    template: `
+        <div class="${css.transformIcon}"><slot></slot></div>
+    `
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-panel', {
+    template: `
+    <panel title="transform" expanded>
+        <div class="${css.transformRow}">
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  transformX"></input>
+            </div>
+            <div class="${css.transformInputs}">
+                <transform-icon>${iconholder}</transform-icon>
+                <input class="${css.transformInput}" placeholder="  transformX"></input>
+            </div>
+        </div>
+    </panel>
     `
 });
 

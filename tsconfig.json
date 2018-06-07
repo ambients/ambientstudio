@@ -6,7 +6,6 @@
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
         "allowUnusedLabels": true,
-        "noUnusedLocals": true,
         "removeComments": true,
         "sourceMap": true,
         "declaration": true,
