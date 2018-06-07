@@ -42180,46 +42180,130 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
-/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
 
 
 
 
-const borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_3__["processSvg"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
-const borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_3__["processSvg"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
+
+const borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["processSvg"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
+const borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["processSvg"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
+const colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icons/font-color.svg");
+const borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
+const borderLine = __webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg");
 const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     borderIcon: {
-        widith: 20,
-        height: 20,
+        width: 40,
+        height: 40,
         cursor: 'pointer',
+        margin: 5,
     },
-    borderIconTable: {
+    borderRow: {
         floatTop: 0,
-        width: '100%',
-        border: '1px solid black'
+        display: 'flex',
+        width: '100%'
     },
+    borderOptions: {
+        width: '100%',
+        flex: '1 1 auto',
+        marginLeft: 20
+    },
+    borderStyle: {
+        width: '100%',
+        display: 'flex',
+        floatTop: 0,
+    },
+    borderInputStyle: {
+        width: '100%',
+        flex: '1 1 auto',
+        display: 'flex',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
+    },
+    borderThickness: {
+        flex: '1 1 auto',
+        width: '100%',
+        display: 'flex'
+    },
+    inputIcons: {
+        width: 20,
+        height: 20,
+        marginLeft: 5
+    },
+    borderThicknessInput: {
+        flex: '1 1 auto',
+        width: '100%',
+        border: 'none',
+        background: 'none'
+    },
+    borderType: {
+        width: '100%',
+        floatTop: 0,
+        display: 'flex',
+    },
+    borderTypeTable: {},
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].background,
+        floatTop: 0,
+        marginBottom: 10
+    }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-icon', {
     template: `
         <div class="${css.borderIcon}"><slot></slot></div>
     `
 });
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('input-icon', {
+    template: `
+        <div class="${css.inputIcons}"><slot></slot></div>
+    `
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-card', {
+    template: `
+        <div class="${css.borderRow}">
+            <border-icon><slot></slot></border-icon>
+            <div class="${css.borderOptions}">
+                <div class="${css.borderStyle}">
+                    <div class="${css.borderInputStyle}">
+                        <div class="${css.borderThickness}">
+                            <input-icon>${borderThickness}</input-icon>
+                            <input class="${css.borderThicknessInput}" placeholder=" border thickness"></input>
+                        </div>
+                    </div>
+                    <input-icon>${colorPalette}</input-icon>
+                </div>
+                <div class="${css.borderType}">
+                    <table class="${css.borderTypeTable}">
+                        <tr>
+                            <td align="center">none</td>
+                            <td align="center"><input-icon>${borderLine}</input-icon></td>
+                            <td align="center"><input-icon>${borderLine}</input-icon></td>
+                            <td align="center"><input-icon>${borderLine}</input-icon></td>
+                            <td align="center"><input-icon>${borderLine}</input-icon></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    `
+});
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-panel', {
     template: `
     <panel title="Border" expanded>
-        <div>
-            <table class="${css.borderIconTable}">
-                <tr>
-                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
-                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
-                </tr>
-                <tr>
-                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
-                    <td align="center"><border-icon>${borderTopRight}</border-icon></td>
-                </tr>
-            </table>
-        </div>
+        <border-card>${borderTopRight}</border-card>
+        <border-card>${borderTopRight}</border-card>
+        <border-card>${borderTopRight}</border-card>
+        <border-card>${borderTopRight}</border-card>
+        
+        <div class="${css.separator}"></div>
 
+        <border-card>${borderTopRight}</border-card>
+        <border-card>${borderTopRight}</border-card>
+        <border-card>${borderTopRight}</border-card>
+        <border-card>${borderTopRight}</border-card>
+        
     </panel>
     `
 });
@@ -42491,6 +42575,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/font-color.svg":
+/*!**********************************!*\
+  !*** ./src/icons/font-color.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26.300781 0 C 15.550781 0 3 6.207031 3 23.699219 C 3 36.402344 12.804688 50 27.398438 50 C 27.40625 50 27.609375 50 27.617188 50 C 33.101563 49.898438 39 46.355469 39 38.800781 C 39 37.355469 38.464844 36.101563 37.988281 34.996094 C 37.863281 34.707031 37.742188 34.421875 37.628906 34.132813 C 36.550781 31.414063 37.742188 30.417969 40.539063 28.425781 C 43.714844 26.167969 48.058594 23.074219 48 14.898438 C 48 10.039063 42.695313 0 26.300781 0 Z M 26.5 6 C 28.433594 6 30 8.015625 30 10.5 C 30 12.984375 28.433594 15 26.5 15 C 24.566406 15 23 12.984375 23 10.5 C 23 8.015625 24.566406 6 26.5 6 Z M 14.5 33 C 12.566406 33 11 30.984375 11 28.5 C 11 26.015625 12.566406 24 14.5 24 C 16.433594 24 18 26.015625 18 28.5 C 18 30.984375 16.433594 33 14.5 33 Z M 15.5 20 C 13.566406 20 12 17.984375 12 15.5 C 12 13.015625 13.566406 11 15.5 11 C 17.433594 11 19 13.015625 19 15.5 C 19 17.984375 17.433594 20 15.5 20 Z M 27 43 C 24.757813 43 23 41.242188 23 39 C 23 36.757813 24.757813 35 27 35 C 29.242188 35 31 36.757813 31 39 C 31 41.242188 29.242188 43 27 43 Z M 37.5 20 C 35.566406 20 34 17.984375 34 15.5 C 34 13.015625 35.566406 11 37.5 11 C 39.433594 11 41 13.015625 41 15.5 C 41 17.984375 39.433594 20 37.5 20 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/line-filled.svg":
 /*!***********************************!*\
   !*** ./src/icons/line-filled.svg ***!
@@ -42631,6 +42726,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" fill=\"#000000\"><path style=\"text-indent:0;text-align:start;line-height:normal;text-transform:none;block-progression:tb;-inkscape-font-specification:Bitstream Vera Sans\" d=\"M 4.8125 7 A 1.0001 1.0001 0 0 0 4 8 L 4 22 L 3 22 A 1.0001 1.0001 0 0 0 2.90625 22 A 1.0001 1.0001 0 0 0 2 23 L 2 27 A 1.0001 1.0001 0 0 0 3 28 L 4 28 L 4 42 A 1.0001 1.0001 0 0 0 5 43 L 45 43 A 1.0001 1.0001 0 0 0 46 42 L 46 28 L 47 28 A 1.0001 1.0001 0 0 0 48 27 L 48 23 A 1.0001 1.0001 0 0 0 47 22 L 46 22 L 46 8 A 1.0001 1.0001 0 0 0 45 7 L 5 7 A 1.0001 1.0001 0 0 0 4.90625 7 A 1.0001 1.0001 0 0 0 4.8125 7 z M 6 9 L 44 9 L 44 22 L 43 22 A 1.0001 1.0001 0 0 0 42.90625 22 A 1.0001 1.0001 0 0 0 42 23 L 42 27 A 1.0001 1.0001 0 0 0 43 28 L 44 28 L 44 41 L 6 41 L 6 28 L 7 28 A 1.0001 1.0001 0 0 0 8 27 L 8 23 A 1.0001 1.0001 0 0 0 7 22 L 6 22 L 6 9 z M 14.8125 13 A 1.0001 1.0001 0 0 0 14 14 L 14 18 A 1.0001 1.0001 0 0 0 15 19 L 22 19 L 22 36 A 1.0001 1.0001 0 0 0 23 37 L 27 37 A 1.0001 1.0001 0 0 0 28 36 L 28 19 L 35 19 A 1.0001 1.0001 0 0 0 36 18 L 36 14 A 1.0001 1.0001 0 0 0 35 13 L 15 13 A 1.0001 1.0001 0 0 0 14.90625 13 A 1.0001 1.0001 0 0 0 14.8125 13 z M 16 15 L 34 15 L 34 17 L 27 17 A 1.0001 1.0001 0 0 0 26 18 L 26 35 L 24 35 L 24 18 A 1.0001 1.0001 0 0 0 23 17 L 16 17 L 16 15 z M 4 24 L 4.8125 24 L 5.21875 24 L 6 24 L 6 26 L 4 26 L 4 24 z M 44 24 L 46 24 L 46 26 L 45.1875 26 A 1.0001 1.0001 0 0 0 44.78125 26 L 44 26 L 44 24 z\" color=\"#000\" overflow=\"visible\" font-family=\"Bitstream Vera Sans\" fill=\"#000000\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/thickness.svg":
+/*!*********************************!*\
+  !*** ./src/icons/thickness.svg ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26 6 L 26 29.125 L 17.4375 20.5625 L 14.5625 23.4375 L 21.125 30 L 0 30 L 0 34 L 21.125 34 L 14.5625 40.5625 L 17.4375 43.4375 L 26 34.875 L 26 58 L 30 58 L 30 6 Z M 34 6 L 34 58 L 38 58 L 38 34.875 L 46.5625 43.4375 L 49.4375 40.5625 L 42.875 34 L 64 34 L 64 30 L 42.875 30 L 49.4375 23.4375 L 46.5625 20.5625 L 38 29.125 L 38 6 Z \"></path></g></svg>"
 
 /***/ }),
 
