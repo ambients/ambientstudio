@@ -32,7 +32,7 @@ const css = rinss.create({
     }
 });
 
-const PositionButton = Vue.extend({
+Vue.component('position-button', {
     template: `
         <div class="${ css.positionButton }" :style="getStyle()" @click="toggleSelected()">
             <slot></slot>
@@ -59,19 +59,16 @@ const PositionButton = Vue.extend({
 });
 
 Vue.component('position-panel', {
-    components: {
-        'position-button': PositionButton
-    },
     template: `
         <panel title="Position" expanded>
             <table class="${ css.positionButtonsTable }">
                 <tr>
-                    <td><position-button name="v0">${ topSVG }</position-button></td>
-                    <td><position-button name="v1">${ middleSVG }</position-button></td>
-                    <td><position-button name="v2">${ bottomSVG }</position-button></td>
-                    <td><position-button rotated name="h0">${ topSVG }</position-button></td>
-                    <td><position-button rotated name="h1">${ middleSVG }</position-button></td>
-                    <td><position-button rotated name="h2">${ bottomSVG }</position-button></td>
+                    <td align="center"><position-button name="v0">${ topSVG }</position-button></td>
+                    <td align="center"><position-button name="v1">${ middleSVG }</position-button></td>
+                    <td align="center"><position-button name="v2">${ bottomSVG }</position-button></td>
+                    <td align="center"><position-button rotated name="h0">${ topSVG }</position-button></td>
+                    <td align="center"><position-button rotated name="h1">${ middleSVG }</position-button></td>
+                    <td align="center"><position-button rotated name="h2">${ bottomSVG }</position-button></td>
                 </tr>
             </table>
             <div class="${ css.inputs }">

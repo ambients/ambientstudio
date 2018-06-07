@@ -31,6 +31,9 @@ const css = rinss.create({
         centerX: true,
         centerY: true,
         svg: {
+            ':first-child': {
+                color: theme.textPrimary
+            },
             ':last-child':  {
                 color: theme.primary
             }
@@ -54,7 +57,7 @@ const css = rinss.create({
 
 const nameSelected = { value: '' };
 
-Vue.component('toolbar-button', {
+const ToolbarButton = Vue.extend({
     template: `
         <div class="${ css.toolbarButton }" @click="select()">
             <div :class="getClass()"><slot></slot></div>
@@ -85,13 +88,17 @@ Vue.component('toolbar-button', {
     }
 });
 
-Vue.component('toolbar-section', {
+const ToolbarSection = Vue.extend({
     template: `
         <div class="${ css.toolbarSection }"><slot></slot></div>
     `
 });
 
 Vue.component('toolbar', {
+    components: {
+        'toolbar-button': ToolbarButton,
+        'toolbar-section': ToolbarSection
+    },
     template: `
         <div class="${ css.toolbar }">
             <toolbar-section>

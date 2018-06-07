@@ -42850,7 +42850,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         }
     }
 });
-const PositionButton = vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-button', {
     template: `
         <div class="${css.positionButton}" :style="getStyle()" @click="toggleSelected()">
             <slot></slot>
@@ -42878,19 +42878,16 @@ const PositionButton = vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-panel', {
-    components: {
-        'position-button': PositionButton
-    },
     template: `
         <panel title="Position" expanded>
             <table class="${css.positionButtonsTable}">
                 <tr>
-                    <td><position-button name="v0">${topSVG}</position-button></td>
-                    <td><position-button name="v1">${middleSVG}</position-button></td>
-                    <td><position-button name="v2">${bottomSVG}</position-button></td>
-                    <td><position-button rotated name="h0">${topSVG}</position-button></td>
-                    <td><position-button rotated name="h1">${middleSVG}</position-button></td>
-                    <td><position-button rotated name="h2">${bottomSVG}</position-button></td>
+                    <td align="center"><position-button name="v0">${topSVG}</position-button></td>
+                    <td align="center"><position-button name="v1">${middleSVG}</position-button></td>
+                    <td align="center"><position-button name="v2">${bottomSVG}</position-button></td>
+                    <td align="center"><position-button rotated name="h0">${topSVG}</position-button></td>
+                    <td align="center"><position-button rotated name="h1">${middleSVG}</position-button></td>
+                    <td align="center"><position-button rotated name="h2">${bottomSVG}</position-button></td>
                 </tr>
             </table>
             <div class="${css.inputs}">
@@ -43066,6 +43063,9 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
         centerX: true,
         centerY: true,
         svg: {
+            ':first-child': {
+                color: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].textPrimary
+            },
             ':last-child': {
                 color: _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].primary
             }
@@ -43087,7 +43087,7 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     }
 });
 const nameSelected = { value: '' };
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
+const ToolbarButton = vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
     template: `
         <div class="${css.toolbarButton}" @click="select()">
             <div :class="getClass()"><slot></slot></div>
@@ -43120,12 +43120,16 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
         }
     }
 });
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-section', {
+const ToolbarSection = vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
     template: `
         <div class="${css.toolbarSection}"><slot></slot></div>
     `
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
+    components: {
+        'toolbar-button': ToolbarButton,
+        'toolbar-section': ToolbarSection
+    },
     template: `
         <div class="${css.toolbar}">
             <toolbar-section>
