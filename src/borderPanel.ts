@@ -8,7 +8,7 @@ const borderTopRight = processSvg(require('./icons/border-top-right.svg'));
 const borderTop = processSvg(require('./icons/border-top.svg'));
 const colorPalette = require('./icons/font-color.svg');
 const borderThickness = require('./icons/thickness.svg');
-const borderLine = require('./icons/line.svg');
+const borderLine = processSvg(require('./icons/line.svg'));
 
 const css = rinss.create({
     borderIcon:{
@@ -46,7 +46,8 @@ const css = rinss.create({
     inputIcons:{
         width:20,
         height:20,
-        marginLeft:5
+        marginLeft:5,
+        cursor: 'pointer'
     },
     borderThicknessInput:{
         flex:'1 1 auto',
@@ -73,13 +74,48 @@ const css = rinss.create({
 
 Vue.component('border-icon',{
     template:`
-        <div class="${css.borderIcon}"><slot></slot></div>
-    `
+        <div class="${css.borderIcon}" :style="getStyle()" @click="toggleSelected()"><slot></slot></div>
+    `,
+    data: function() {return{
+        iconColor: false
+    }},
+    methods: {
+        toggleSelected: function() :void{
+            this.iconColor=!this.iconColor;
+        },
+        getStyle: function() :string {
+            return rinss.compile({
+                color: (this.iconColor) ? theme.primary : theme.textPrimary
+            });
+        }
+    }
 });
+
+const borderStyleName ={value: ''};
+
 Vue.component('input-icon',{
     template:`
-        <div class="${css.inputIcons}"><slot></slot></div>
-    `
+        <div class="${css.inputIcons}" :style="getType()" @click="toggleSelect()"><slot></slot></div>
+    `,
+    props: {
+        name: String,
+    },
+    data: function() {return{
+        borderStyleName: borderStyleName
+    }},
+    methods:{
+        toggleSelect: function() :void{
+            if (this.borderStyleName.value === this.name)
+                this.borderStyleName.value = '';
+            else
+                this.borderStyleName.value = this.name;
+            },
+        getType: function() :string {
+            return rinss.compile({
+                color: (this.borderStyleName.value === this.name) ? theme.primary : theme.textPrimary
+            });
+        }
+    }
 });
 Vue.component('border-card',{
     template:`
@@ -98,11 +134,10 @@ Vue.component('border-card',{
                 <div class="${css.borderType}">
                     <table class="${css.borderTypeTable}">
                         <tr>
-                            <td align="center">none</td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L1">${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L2">${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L3">${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L4">${borderLine}</input-icon></td>
                         </tr>
                     </table>
                 </div>

@@ -42191,7 +42191,7 @@ const borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["processS
 const borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["processSvg"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
 const colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icons/font-color.svg");
 const borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
-const borderLine = __webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg");
+const borderLine = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["processSvg"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"));
 const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     borderIcon: {
         width: 40,
@@ -42228,7 +42228,8 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
     inputIcons: {
         width: 20,
         height: 20,
-        marginLeft: 5
+        marginLeft: 5,
+        cursor: 'pointer'
     },
     borderThicknessInput: {
         flex: '1 1 auto',
@@ -42252,13 +42253,50 @@ const css = rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-icon', {
     template: `
-        <div class="${css.borderIcon}"><slot></slot></div>
-    `
+        <div class="${css.borderIcon}" :style="getStyle()" @click="toggleSelected()"><slot></slot></div>
+    `,
+    data: function () {
+        return {
+            iconColor: false
+        };
+    },
+    methods: {
+        toggleSelected: function () {
+            this.iconColor = !this.iconColor;
+        },
+        getStyle: function () {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
+                color: (this.iconColor) ? _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].textPrimary
+            });
+        }
+    }
 });
+const borderStyleName = { value: '' };
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('input-icon', {
     template: `
-        <div class="${css.inputIcons}"><slot></slot></div>
-    `
+        <div class="${css.inputIcons}" :style="getType()" @click="toggleSelect()"><slot></slot></div>
+    `,
+    props: {
+        name: String,
+    },
+    data: function () {
+        return {
+            borderStyleName: borderStyleName
+        };
+    },
+    methods: {
+        toggleSelect: function () {
+            if (this.borderStyleName.value === this.name)
+                this.borderStyleName.value = '';
+            else
+                this.borderStyleName.value = this.name;
+        },
+        getType: function () {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["rinss"].compile({
+                color: (this.borderStyleName.value === this.name) ? _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["theme"].textPrimary
+            });
+        }
+    }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-card', {
     template: `
@@ -42277,11 +42315,10 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-card', {
                 <div class="${css.borderType}">
                     <table class="${css.borderTypeTable}">
                         <tr>
-                            <td align="center">none</td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
-                            <td align="center"><input-icon>${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L1">${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L2">${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L3">${borderLine}</input-icon></td>
+                            <td align="center"><input-icon name="L4">${borderLine}</input-icon></td>
                         </tr>
                     </table>
                 </div>
