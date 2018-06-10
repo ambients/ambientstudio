@@ -14,7 +14,6 @@
     "style-loader": "*",
     "ts-loader": "^4.3.1",
     "svg-inline-loader": "*",
-    "vue-loader": "*",
     "typescript": "^2.9.1",
     "webpack": "^4.11.1",
     "webpack-cli": "^2.1.5"

@@ -35,7 +35,7 @@ const css = rinss.create({
 const nameV = {value:''};
 const nameH = {value:''};
 
-Vue.component('position-button', {
+const PositionButton = Vue.extend({
     template: `
         <div class="${ css.positionButton }" :style="getStyle()" @click="toggleSelected()">
             <slot></slot>
@@ -67,6 +67,9 @@ Vue.component('position-button', {
 });
 
 Vue.component('position-panel', {
+    components: {
+        'position-button': PositionButton
+    },
     template: `
         <panel title="Position" expanded>
             <table class="${ css.positionButtonsTable }">

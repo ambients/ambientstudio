@@ -7,7 +7,7 @@ const css = rinss.create({
     toolbar: {
         width: 50,
         height: '100%',
-        background: 'rgb(247, 247, 247)',
+        background: theme.white,
         absLeft: 0,
         absTop: 0,
         overflow: "hidden",

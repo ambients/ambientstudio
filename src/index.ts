@@ -14,6 +14,10 @@ import "./typographyPanel";
 import "./toolbar";
 import "./transformPanel";
 import "./borderPanel";
+import "./outline";
+
+import { Sketch } from "vue-color";
+import { forOwn } from "ambients-utils";
 
 Vue.use(VueMaterial);
 rinss.config({ duration: 250 });
@@ -43,6 +47,9 @@ const css = rinss.create({
 });
 
 new Vue({
+    components: {
+        'sketch-picker': Sketch
+    },
     template: `
         <div class="${ css.stage }">
             <panels>
@@ -56,6 +63,10 @@ new Vue({
                 <border-panel></border-panel>
             </panels>
             <toolbar></toolbar>
+            <outline></outline>
         </div>
-    `
+    `,
+    data: function(){ return {
+        color: '#3cfee7'
+    }}
 }).$mount('#container');

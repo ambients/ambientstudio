@@ -6,6 +6,10 @@ import { processSvg } from './processSvg';
 
 const borderTopRight = processSvg(require('./icons/border-top-right.svg'));
 const borderTop = processSvg(require('./icons/border-top.svg'));
+const borderLeft = processSvg(require('./icons/border-left.svg'));
+const borderRight = processSvg(require('./icons/border-right.svg'));
+const borderBottom = processSvg(require('./icons/border-bottom.svg'));
+
 const colorPalette = require('./icons/font-color.svg');
 const borderThickness = require('./icons/thickness.svg');
 const borderLine = processSvg(require('./icons/line.svg'));
@@ -69,6 +73,21 @@ const css = rinss.create({
         borderBottom: '1px solid ' + theme.background,
         floatTop: 0,
         marginBottom: 10
+    },
+    rotation:{
+        svg:{
+            rotate: -90,
+        }
+    },
+    rotation2:{
+        svg:{
+            rotate: -180,
+        }
+    },
+    rotation3:{
+        svg:{
+            rotate: -270,
+        }
     }
 });
 
@@ -117,16 +136,17 @@ Vue.component('input-icon',{
         }
     }
 });
+
 Vue.component('border-card',{
     template:`
         <div class="${css.borderRow}">
-            <border-icon><slot></slot></border-icon>
+            <border-icon rotation><slot></slot></border-icon>
             <div class="${css.borderOptions}">
                 <div class="${css.borderStyle}">
                     <div class="${css.borderInputStyle}">
                         <div class="${css.borderThickness}">
                             <input-icon>${borderThickness}</input-icon>
-                            <input class="${css.borderThicknessInput}" placeholder=" border thickness"></input>
+                            <input class="${css.borderThicknessInput}" :placeholder="name"></input>
                         </div>
                     </div>
                     <input-icon>${colorPalette}</input-icon>
@@ -143,23 +163,26 @@ Vue.component('border-card',{
                 </div>
             </div>
         </div>
-    `
+    `,
+    props: {
+        name: String,
+    },
 });
 
 Vue.component('border-panel',{
     template:`
     <panel title="Border" expanded>
-        <border-card>${borderTopRight}</border-card>
-        <border-card>${borderTopRight}</border-card>
-        <border-card>${borderTopRight}</border-card>
-        <border-card>${borderTopRight}</border-card>
+        <border-card name=" top thickness">${borderTop}</border-card>
+        <border-card name=" left thickness">${borderLeft}</border-card>
+        <border-card name=" right thickness">${borderRight}</border-card>
+        <border-card name=" bottom thickness">${borderBottom}</border-card>
         
         <div class="${ css.separator }"></div>
 
-        <border-card>${borderTopRight}</border-card>
-        <border-card>${borderTopRight}</border-card>
-        <border-card>${borderTopRight}</border-card>
-        <border-card>${borderTopRight}</border-card>
+        <border-card name=" top right radius">${borderTopRight}</border-card>
+        <border-card name=" top left radius" class="${css.rotation}">${borderTopRight}</border-card>
+        <border-card name=" bottom right radius" class="${css.rotation2}">${borderTopRight}</border-card>
+        <border-card name=" bottom left radius" class="${css.rotation3}">${borderTopRight}</border-card>
         
     </panel>
     `

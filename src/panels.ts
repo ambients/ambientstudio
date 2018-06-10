@@ -1,11 +1,12 @@
 import Vue from "vue";
 import { rinss } from "rinss";
+import {theme} from "./theme";
 
 const css = rinss.create({
     panels: {
         width: 300,
         height: '100%',
-        background: 'rgb(247, 247, 247)',
+        background: theme.white,
         absRight: 0,
         absTop: 0,
         overflowX: 'hidden',
