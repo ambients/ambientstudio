@@ -140,7 +140,7 @@ Vue.component('input-icon',{
 Vue.component('border-card',{
     template:`
         <div class="${css.borderRow}">
-            <border-icon rotation><slot></slot></border-icon>
+            <border-icon><slot></slot></border-icon>
             <div class="${css.borderOptions}">
                 <div class="${css.borderStyle}">
                     <div class="${css.borderInputStyle}">
@@ -169,6 +169,29 @@ Vue.component('border-card',{
     },
 });
 
+Vue.component('border-radius-card',{
+    template:`
+        <div class="${css.borderRow}">
+            <border-icon><slot></slot></border-icon>
+            <div class="${css.borderOptions}">
+                <div class="${css.borderStyle}">
+                    <div class="${css.borderInputStyle}">
+                        <div class="${css.borderThickness}">
+                            <input-icon>${borderThickness}</input-icon>
+                            <input class="${css.borderThicknessInput}" :placeholder="name"></input>
+                        </div>
+                    </div>
+                    <input-icon>${colorPalette}</input-icon>
+                </div>
+            </div>
+        </div>
+    `,
+    props: {
+        name: String,
+    },
+});
+
+
 Vue.component('border-panel',{
     template:`
     <panel title="Border" expanded>
@@ -179,10 +202,10 @@ Vue.component('border-panel',{
         
         <div class="${ css.separator }"></div>
 
-        <border-card name=" top right radius">${borderTopRight}</border-card>
-        <border-card name=" top left radius" class="${css.rotation}">${borderTopRight}</border-card>
-        <border-card name=" bottom right radius" class="${css.rotation2}">${borderTopRight}</border-card>
-        <border-card name=" bottom left radius" class="${css.rotation3}">${borderTopRight}</border-card>
+        <border-radius-card name=" top left radius">${borderTopRight}</border-radius-card>
+        <border-radius-card name=" bottom right radius">${borderTopRight}</border-radius-card>
+        <border-radius-card name=" bottom left radius">${borderTopRight}</border-radius-card>
+        <border-radius-card name=" top right radius">${borderTopRight}</border-radius-card>
         
     </panel>
     `
