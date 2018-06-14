@@ -2,7 +2,7 @@ import "normalize.css";
 import "babel-polyfill";
 
 import Vue from "vue";
-import rinss from "rinss";
+import rinss, { rss } from "rinss";
 import Modal from 'ambients-modal';
 import { Sketch } from 'vue-color';
 import { Obj } from "ambients-utils";
@@ -46,8 +46,6 @@ declare module 'vue/types/vue' {
         $onState: (name: string, cb: (value: any) => void)=>void
     }
 }
-
-import VuePerfectScrollbar from 'vue-perfect-scrollbar';
 
 import VueTouch from 'vue-touch';
 Vue.use(VueTouch)
@@ -117,13 +115,14 @@ new Vue({
     el: container,
     components: {
         'modal': Modal,
-        'sketch-picker': Sketch,
-        'perfect-scrollbar': VuePerfectScrollbar
+        'sketch-picker': Sketch
     },
     template: `
         <div class="${ css.stage }">
             <row stretch stretchy>
-                <cell shrink><toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/></cell>
+                <cell shrink>
+                    <toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/>
+                </cell>
                 <cell shrink><outline/></cell>
                 <cell><white-board/></cell>
                 <cell shrink><panels>
@@ -171,9 +170,6 @@ new Vue({
             this.textColorPicker.left = e.clientX;
             this.textColorPicker.top = e.clientY;
             this.textColorPicker.show = true;
-        },
-        onPan(e){
-            console.log(e);
         }
     }
 });

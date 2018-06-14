@@ -12,8 +12,8 @@ const css = rinss.create({
         height: '100%',
         background: theme.white,
         overflow: "hidden",
-        boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
-        userSelect: 'none'
+        userSelect: 'none',
+        borderRight: '3px solid ' + theme.background
     },
     toolbarSection: {
         width: '100%',

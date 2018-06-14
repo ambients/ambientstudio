@@ -15547,6 +15547,18 @@ var extension = {
     floatTop: function (val) {
         return { position: 'relative', float: 'left', clear: 'both', marginTop: val };
     },
+    relTop: function (val) {
+        return { top: val, position: 'relative' };
+    },
+    relLeft: function (val) {
+        return { left: val, position: 'relative' };
+    },
+    relRight: function (val) {
+        return { right: val, position: 'relative' };
+    },
+    relBottom: function (val) {
+        return { bottom: val, position: 'relative' };
+    },
     absTop: function (val) {
         return { top: val, position: 'absolute' };
     },
@@ -15570,7 +15582,16 @@ var extension = {
     },
     fixBottom: function (val) {
         return { bottom: val, position: 'fixed' };
-    }
+    },
+    relZIndex: function (val) {
+        return { zIndex: val, position: 'relative' };
+    },
+    absZIndex: function (val) {
+        return { zIndex: val, position: 'absolute' };
+    },
+    fixZIndex: function (val) {
+        return { zIndex: val, position: 'fixed' };
+    },
 };
 function applyExtensions(opts, keep) {
     if (keep === void 0) { keep = false; }
@@ -46653,18 +46674,6 @@ if(false) {}
 
 /***/ }),
 
-/***/ "./node_modules/vue-perfect-scrollbar/dist/index.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/vue-perfect-scrollbar/dist/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports=function(t){function e(o){if(r[o])return r[o].exports;var n=r[o]={i:o,l:!1,exports:{}};return t[o].call(n.exports,n,n.exports,e),n.l=!0,n.exports}var r={};return e.m=t,e.c=r,e.i=function(t){return t},e.d=function(t,r,o){e.o(t,r)||Object.defineProperty(t,r,{configurable:!1,enumerable:!0,get:o})},e.n=function(t){var r=t&&t.__esModule?function(){return t.default}:function(){return t};return e.d(r,"a",r),r},e.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},e.p="/dist/",e(e.s=6)}([function(t,e,r){"use strict";function o(t,e){function r(){t.classList.add("ps--focus")}function o(){t.classList.remove("ps--focus")}var n=this;n.settings=a();for(var i in e)n.settings[i]=e[i];n.containerWidth=null,n.containerHeight=null,n.contentWidth=null,n.contentHeight=null,n.isRtl="rtl"===c.css(t,"direction"),n.isNegativeScroll=function(){var e=t.scrollLeft,r=null;return t.scrollLeft=-1,r=t.scrollLeft<0,t.scrollLeft=e,r}(),n.negativeScrollAdjustment=n.isNegativeScroll?t.scrollWidth-t.clientWidth:0,n.event=new u,n.ownerDocument=t.ownerDocument||document,n.scrollbarXRail=c.appendTo(c.create("div","ps__scrollbar-x-rail"),t),n.scrollbarX=c.appendTo(c.create("div","ps__scrollbar-x"),n.scrollbarXRail),n.scrollbarX.setAttribute("tabindex",0),n.event.bind(n.scrollbarX,"focus",r),n.event.bind(n.scrollbarX,"blur",o),n.scrollbarXActive=null,n.scrollbarXWidth=null,n.scrollbarXLeft=null,n.scrollbarXBottom=s.toInt(c.css(n.scrollbarXRail,"bottom")),n.isScrollbarXUsingBottom=n.scrollbarXBottom===n.scrollbarXBottom,n.scrollbarXTop=n.isScrollbarXUsingBottom?null:s.toInt(c.css(n.scrollbarXRail,"top")),n.railBorderXWidth=s.toInt(c.css(n.scrollbarXRail,"borderLeftWidth"))+s.toInt(c.css(n.scrollbarXRail,"borderRightWidth")),c.css(n.scrollbarXRail,"display","block"),n.railXMarginWidth=s.toInt(c.css(n.scrollbarXRail,"marginLeft"))+s.toInt(c.css(n.scrollbarXRail,"marginRight")),c.css(n.scrollbarXRail,"display",""),n.railXWidth=null,n.railXRatio=null,n.scrollbarYRail=c.appendTo(c.create("div","ps__scrollbar-y-rail"),t),n.scrollbarY=c.appendTo(c.create("div","ps__scrollbar-y"),n.scrollbarYRail),n.scrollbarY.setAttribute("tabindex",0),n.event.bind(n.scrollbarY,"focus",r),n.event.bind(n.scrollbarY,"blur",o),n.scrollbarYActive=null,n.scrollbarYHeight=null,n.scrollbarYTop=null,n.scrollbarYRight=s.toInt(c.css(n.scrollbarYRail,"right")),n.isScrollbarYUsingRight=n.scrollbarYRight===n.scrollbarYRight,n.scrollbarYLeft=n.isScrollbarYUsingRight?null:s.toInt(c.css(n.scrollbarYRail,"left")),n.scrollbarYOuterWidth=n.isRtl?s.outerWidth(n.scrollbarY):null,n.railBorderYWidth=s.toInt(c.css(n.scrollbarYRail,"borderTopWidth"))+s.toInt(c.css(n.scrollbarYRail,"borderBottomWidth")),c.css(n.scrollbarYRail,"display","block"),n.railYMarginHeight=s.toInt(c.css(n.scrollbarYRail,"marginTop"))+s.toInt(c.css(n.scrollbarYRail,"marginBottom")),c.css(n.scrollbarYRail,"display",""),n.railYHeight=null,n.railYRatio=null}function n(t){return t.getAttribute("data-ps-id")}function i(t,e){t.setAttribute("data-ps-id",e)}function l(t){t.removeAttribute("data-ps-id")}var s=r(2),a=r(14),c=r(4),u=r(11),p=r(12),d={};e.add=function(t,e){var r=p();return i(t,r),d[r]=new o(t,e),d[r]},e.remove=function(t){delete d[n(t)],l(t)},e.get=function(t){return d[n(t)]}},function(t,e,r){"use strict";function o(t,e){return t.settings.minScrollbarLength&&(e=Math.max(e,t.settings.minScrollbarLength)),t.settings.maxScrollbarLength&&(e=Math.min(e,t.settings.maxScrollbarLength)),e}function n(t,e){var r={width:e.railXWidth};e.isRtl?r.left=e.negativeScrollAdjustment+t.scrollLeft+e.containerWidth-e.contentWidth:r.left=t.scrollLeft,e.isScrollbarXUsingBottom?r.bottom=e.scrollbarXBottom-t.scrollTop:r.top=e.scrollbarXTop+t.scrollTop,l.css(e.scrollbarXRail,r);var o={top:t.scrollTop,height:e.railYHeight};e.isScrollbarYUsingRight?e.isRtl?o.right=e.contentWidth-(e.negativeScrollAdjustment+t.scrollLeft)-e.scrollbarYRight-e.scrollbarYOuterWidth:o.right=e.scrollbarYRight-t.scrollLeft:e.isRtl?o.left=e.negativeScrollAdjustment+t.scrollLeft+2*e.containerWidth-e.contentWidth-e.scrollbarYLeft-e.scrollbarYOuterWidth:o.left=e.scrollbarYLeft+t.scrollLeft,l.css(e.scrollbarYRail,o),l.css(e.scrollbarX,{left:e.scrollbarXLeft,width:e.scrollbarXWidth-e.railBorderXWidth}),l.css(e.scrollbarY,{top:e.scrollbarYTop,height:e.scrollbarYHeight-e.railBorderYWidth})}var i=r(2),l=r(4),s=r(0),a=r(3);t.exports=function(t){var e=s.get(t);e.containerWidth=t.clientWidth,e.containerHeight=t.clientHeight,e.contentWidth=t.scrollWidth,e.contentHeight=t.scrollHeight;var r;t.contains(e.scrollbarXRail)||(r=l.queryChildren(t,".ps__scrollbar-x-rail"),r.length>0&&r.forEach(function(t){l.remove(t)}),l.appendTo(e.scrollbarXRail,t)),t.contains(e.scrollbarYRail)||(r=l.queryChildren(t,".ps__scrollbar-y-rail"),r.length>0&&r.forEach(function(t){l.remove(t)}),l.appendTo(e.scrollbarYRail,t)),!e.settings.suppressScrollX&&e.containerWidth+e.settings.scrollXMarginOffset<e.contentWidth?(e.scrollbarXActive=!0,e.railXWidth=e.containerWidth-e.railXMarginWidth,e.railXRatio=e.containerWidth/e.railXWidth,e.scrollbarXWidth=o(e,i.toInt(e.railXWidth*e.containerWidth/e.contentWidth)),e.scrollbarXLeft=i.toInt((e.negativeScrollAdjustment+t.scrollLeft)*(e.railXWidth-e.scrollbarXWidth)/(e.contentWidth-e.containerWidth))):e.scrollbarXActive=!1,!e.settings.suppressScrollY&&e.containerHeight+e.settings.scrollYMarginOffset<e.contentHeight?(e.scrollbarYActive=!0,e.railYHeight=e.containerHeight-e.railYMarginHeight,e.railYRatio=e.containerHeight/e.railYHeight,e.scrollbarYHeight=o(e,i.toInt(e.railYHeight*e.containerHeight/e.contentHeight)),e.scrollbarYTop=i.toInt(t.scrollTop*(e.railYHeight-e.scrollbarYHeight)/(e.contentHeight-e.containerHeight))):e.scrollbarYActive=!1,e.scrollbarXLeft>=e.railXWidth-e.scrollbarXWidth&&(e.scrollbarXLeft=e.railXWidth-e.scrollbarXWidth),e.scrollbarYTop>=e.railYHeight-e.scrollbarYHeight&&(e.scrollbarYTop=e.railYHeight-e.scrollbarYHeight),n(t,e),e.scrollbarXActive?t.classList.add("ps--active-x"):(t.classList.remove("ps--active-x"),e.scrollbarXWidth=0,e.scrollbarXLeft=0,a(t,"left",0)),e.scrollbarYActive?t.classList.add("ps--active-y"):(t.classList.remove("ps--active-y"),e.scrollbarYHeight=0,e.scrollbarYTop=0,a(t,"top",0))}},function(t,e,r){"use strict";function o(t){var e,r=["ps--in-scrolling"];return e=void 0===t?["ps--x","ps--y"]:["ps--"+t],r.concat(e)}var n=r(4),i=e.toInt=function(t){return parseInt(t,10)||0};e.isEditable=function(t){return n.matches(t,"input,[contenteditable]")||n.matches(t,"select,[contenteditable]")||n.matches(t,"textarea,[contenteditable]")||n.matches(t,"button,[contenteditable]")},e.removePsClasses=function(t){for(var e=0;e<t.classList.length;e++){var r=t.classList[e];0===r.indexOf("ps-")&&t.classList.remove(r)}},e.outerWidth=function(t){return i(n.css(t,"width"))+i(n.css(t,"paddingLeft"))+i(n.css(t,"paddingRight"))+i(n.css(t,"borderLeftWidth"))+i(n.css(t,"borderRightWidth"))},e.startScrolling=function(t,e){for(var r=o(e),n=0;n<r.length;n++)t.classList.add(r[n])},e.stopScrolling=function(t,e){for(var r=o(e),n=0;n<r.length;n++)t.classList.remove(r[n])},e.env={isWebKit:"undefined"!=typeof document&&"WebkitAppearance"in document.documentElement.style,supportsTouch:"undefined"!=typeof window&&("ontouchstart"in window||window.DocumentTouch&&document instanceof window.DocumentTouch),supportsIePointer:"undefined"!=typeof window&&null!==window.navigator.msMaxTouchPoints}},function(t,e,r){"use strict";var o=r(0),n=function(t){var e=document.createEvent("Event");return e.initEvent(t,!0,!0),e};t.exports=function(t,e,r){if(void 0===t)throw"You must provide an element to the update-scroll function";if(void 0===e)throw"You must provide an axis to the update-scroll function";if(void 0===r)throw"You must provide a value to the update-scroll function";"top"===e&&r<=0&&(t.scrollTop=r=0,t.dispatchEvent(n("ps-y-reach-start"))),"left"===e&&r<=0&&(t.scrollLeft=r=0,t.dispatchEvent(n("ps-x-reach-start")));var i=o.get(t);"top"===e&&r>=i.contentHeight-i.containerHeight&&(r=i.contentHeight-i.containerHeight,r-t.scrollTop<=2?r=t.scrollTop:t.scrollTop=r,t.dispatchEvent(n("ps-y-reach-end"))),"left"===e&&r>=i.contentWidth-i.containerWidth&&(r=i.contentWidth-i.containerWidth,r-t.scrollLeft<=2?r=t.scrollLeft:t.scrollLeft=r,t.dispatchEvent(n("ps-x-reach-end"))),void 0===i.lastTop&&(i.lastTop=t.scrollTop),void 0===i.lastLeft&&(i.lastLeft=t.scrollLeft),"top"===e&&r<i.lastTop&&t.dispatchEvent(n("ps-scroll-up")),"top"===e&&r>i.lastTop&&t.dispatchEvent(n("ps-scroll-down")),"left"===e&&r<i.lastLeft&&t.dispatchEvent(n("ps-scroll-left")),"left"===e&&r>i.lastLeft&&t.dispatchEvent(n("ps-scroll-right")),"top"===e&&r!==i.lastTop&&(t.scrollTop=i.lastTop=r,t.dispatchEvent(n("ps-scroll-y"))),"left"===e&&r!==i.lastLeft&&(t.scrollLeft=i.lastLeft=r,t.dispatchEvent(n("ps-scroll-x")))}},function(t,e,r){"use strict";function o(t,e){return window.getComputedStyle(t)[e]}function n(t,e,r){return"number"==typeof r&&(r=r.toString()+"px"),t.style[e]=r,t}function i(t,e){for(var r in e){var o=e[r];"number"==typeof o&&(o=o.toString()+"px"),t.style[r]=o}return t}var l={};l.create=function(t,e){var r=document.createElement(t);return r.className=e,r},l.appendTo=function(t,e){return e.appendChild(t),t},l.css=function(t,e,r){return"object"==typeof e?i(t,e):void 0===r?o(t,e):n(t,e,r)},l.matches=function(t,e){return void 0!==t.matches?t.matches(e):t.msMatchesSelector(e)},l.remove=function(t){void 0!==t.remove?t.remove():t.parentNode&&t.parentNode.removeChild(t)},l.queryChildren=function(t,e){return Array.prototype.filter.call(t.childNodes,function(t){return l.matches(t,e)})},t.exports=l},function(t,e,r){r(28);var o=r(25)(r(7),r(26),null,null);t.exports=o.exports},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var o=r(5),n=r.n(o);e.default=n.a},function(t,e,r){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var o=r(10),n=r.n(o);e.default={name:"vue-perfect-scrollbar",props:{settings:{default:void 0},swicher:{type:Boolean,default:!0},tagname:{type:String,default:"section"}},methods:{scrollHanle:function(t){this.$emit(t.type,t)},update:function(){n.a.update(this.$el)},__init:function(){this.swicher&&(this._ps_inited?this.update(this.$el):(this._ps_inited=!0,n.a.initialize(this.$el,this.settings)))},__uninit:function(){n.a.destroy(this.$el),this._ps_inited=!1}},watch:{swicher:function(t){t&&!this._ps_inited&&this.__init(),!t&&this._ps_inited&&this.__uninit()},$route:function(){this.update()}},mounted:function(){this.__init()},updated:function(){this.$nextTick(this.update)},activated:function(){this.__init()},deactivated:function(){this.__uninit()},beforeDestroy:function(){this.__uninit()}}},function(t,e,r){e=t.exports=r(9)(),e.push([t.i,".ps{-ms-touch-action:auto;touch-action:auto;overflow:hidden!important;-ms-overflow-style:none}@supports (-ms-overflow-style:none){.ps{overflow:auto!important}}@media (-ms-high-contrast:none),screen and (-ms-high-contrast:active){.ps{overflow:auto!important}}.ps.ps--active-x>.ps__scrollbar-x-rail,.ps.ps--active-y>.ps__scrollbar-y-rail{display:block;background-color:transparent}.ps.ps--in-scrolling.ps--x>.ps__scrollbar-x-rail{background-color:#eee;opacity:.9}.ps.ps--in-scrolling.ps--x>.ps__scrollbar-x-rail>.ps__scrollbar-x{background-color:#999;height:11px}.ps.ps--in-scrolling.ps--y>.ps__scrollbar-y-rail{background-color:#eee;opacity:.9}.ps.ps--in-scrolling.ps--y>.ps__scrollbar-y-rail>.ps__scrollbar-y{background-color:#999;width:11px}.ps>.ps__scrollbar-x-rail{display:none;position:absolute;opacity:0;transition:background-color .2s linear,opacity .2s linear;bottom:0;height:15px}.ps>.ps__scrollbar-x-rail>.ps__scrollbar-x{position:absolute;background-color:#aaa;border-radius:6px;transition:background-color .2s linear,height .2s linear,width .2s ease-in-out,border-radius .2s ease-in-out;bottom:2px;height:6px}.ps>.ps__scrollbar-x-rail:active>.ps__scrollbar-x,.ps>.ps__scrollbar-x-rail:hover>.ps__scrollbar-x{height:11px}.ps>.ps__scrollbar-y-rail{display:none;position:absolute;opacity:0;transition:background-color .2s linear,opacity .2s linear;right:0;width:15px}.ps>.ps__scrollbar-y-rail>.ps__scrollbar-y{position:absolute;background-color:#aaa;border-radius:6px;transition:background-color .2s linear,height .2s linear,width .2s ease-in-out,border-radius .2s ease-in-out;right:2px;width:6px}.ps>.ps__scrollbar-y-rail:active>.ps__scrollbar-y,.ps>.ps__scrollbar-y-rail:hover>.ps__scrollbar-y{width:11px}.ps:hover.ps--in-scrolling.ps--x>.ps__scrollbar-x-rail{background-color:#eee;opacity:.9}.ps:hover.ps--in-scrolling.ps--x>.ps__scrollbar-x-rail>.ps__scrollbar-x{background-color:#999;height:11px}.ps:hover.ps--in-scrolling.ps--y>.ps__scrollbar-y-rail{background-color:#eee;opacity:.9}.ps:hover.ps--in-scrolling.ps--y>.ps__scrollbar-y-rail>.ps__scrollbar-y{background-color:#999;width:11px}.ps:hover>.ps__scrollbar-x-rail,.ps:hover>.ps__scrollbar-y-rail{opacity:.6}.ps:hover>.ps__scrollbar-x-rail:hover{background-color:#eee;opacity:.9}.ps:hover>.ps__scrollbar-x-rail:hover>.ps__scrollbar-x{background-color:#999}.ps:hover>.ps__scrollbar-y-rail:hover{background-color:#eee;opacity:.9}.ps:hover>.ps__scrollbar-y-rail:hover>.ps__scrollbar-y{background-color:#999}.ps-container{position:relative}",""])},function(t,e){t.exports=function(){var t=[];return t.toString=function(){for(var t=[],e=0;e<this.length;e++){var r=this[e];r[2]?t.push("@media "+r[2]+"{"+r[1]+"}"):t.push(r[1])}return t.join("")},t.i=function(e,r){"string"==typeof e&&(e=[[null,e,""]]);for(var o={},n=0;n<this.length;n++){var i=this[n][0];"number"==typeof i&&(o[i]=!0)}for(n=0;n<e.length;n++){var l=e[n];"number"==typeof l[0]&&o[l[0]]||(r&&!l[2]?l[2]=r:r&&(l[2]="("+l[2]+") and ("+r+")"),t.push(l))}},t}},function(t,e,r){"use strict";t.exports=r(13)},function(t,e,r){"use strict";var o=function(t){this.element=t,this.events={}};o.prototype.bind=function(t,e){void 0===this.events[t]&&(this.events[t]=[]),this.events[t].push(e),this.element.addEventListener(t,e,!1)},o.prototype.unbind=function(t,e){var r=void 0!==e;this.events[t]=this.events[t].filter(function(o){return!(!r||o===e)||(this.element.removeEventListener(t,o,!1),!1)},this)},o.prototype.unbindAll=function(){for(var t in this.events)this.unbind(t)};var n=function(){this.eventElements=[]};n.prototype.eventElement=function(t){var e=this.eventElements.filter(function(e){return e.element===t})[0];return void 0===e&&(e=new o(t),this.eventElements.push(e)),e},n.prototype.bind=function(t,e,r){this.eventElement(t).bind(e,r)},n.prototype.unbind=function(t,e,r){this.eventElement(t).unbind(e,r)},n.prototype.unbindAll=function(){for(var t=0;t<this.eventElements.length;t++)this.eventElements[t].unbindAll()},n.prototype.once=function(t,e,r){var o=this.eventElement(t),n=function(t){o.unbind(e,n),r(t)};o.bind(e,n)},t.exports=n},function(t,e,r){"use strict";t.exports=function(){function t(){return Math.floor(65536*(1+Math.random())).toString(16).substring(1)}return function(){return t()+t()+"-"+t()+"-"+t()+"-"+t()+"-"+t()+t()+t()}}()},function(t,e,r){"use strict";var o=r(15),n=r(23),i=r(24);t.exports={initialize:n,update:i,destroy:o}},function(t,e,r){"use strict";t.exports=function(){return{handlers:["click-rail","drag-scrollbar","keyboard","wheel","touch"],maxScrollbarLength:null,minScrollbarLength:null,scrollXMarginOffset:0,scrollYMarginOffset:0,suppressScrollX:!1,suppressScrollY:!1,swipePropagation:!0,swipeEasing:!0,useBothWheelAxes:!1,wheelPropagation:!1,wheelSpeed:1,theme:"default"}}},function(t,e,r){"use strict";var o=r(2),n=r(4),i=r(0);t.exports=function(t){var e=i.get(t);e&&(e.event.unbindAll(),n.remove(e.scrollbarX),n.remove(e.scrollbarY),n.remove(e.scrollbarXRail),n.remove(e.scrollbarYRail),o.removePsClasses(t),i.remove(t))}},function(t,e,r){"use strict";function o(t,e){function r(t){return t.getBoundingClientRect()}var o=function(t){t.stopPropagation()};e.event.bind(e.scrollbarY,"click",o),e.event.bind(e.scrollbarYRail,"click",function(o){var n=o.pageY-window.pageYOffset-r(e.scrollbarYRail).top,s=n>e.scrollbarYTop?1:-1;l(t,"top",t.scrollTop+s*e.containerHeight),i(t),o.stopPropagation()}),e.event.bind(e.scrollbarX,"click",o),e.event.bind(e.scrollbarXRail,"click",function(o){var n=o.pageX-window.pageXOffset-r(e.scrollbarXRail).left,s=n>e.scrollbarXLeft?1:-1;l(t,"left",t.scrollLeft+s*e.containerWidth),i(t),o.stopPropagation()})}var n=r(0),i=r(1),l=r(3);t.exports=function(t){o(t,n.get(t))}},function(t,e,r){"use strict";function o(t,e){function r(r){var n=o+r*e.railXRatio,l=Math.max(0,e.scrollbarXRail.getBoundingClientRect().left)+e.railXRatio*(e.railXWidth-e.scrollbarXWidth);e.scrollbarXLeft=n<0?0:n>l?l:n;var s=i.toInt(e.scrollbarXLeft*(e.contentWidth-e.containerWidth)/(e.containerWidth-e.railXRatio*e.scrollbarXWidth))-e.negativeScrollAdjustment;c(t,"left",s)}var o=null,n=null,s=function(e){r(e.pageX-n),a(t),e.stopPropagation(),e.preventDefault()},u=function(){i.stopScrolling(t,"x"),e.event.unbind(e.ownerDocument,"mousemove",s)};e.event.bind(e.scrollbarX,"mousedown",function(r){n=r.pageX,o=i.toInt(l.css(e.scrollbarX,"left"))*e.railXRatio,i.startScrolling(t,"x"),e.event.bind(e.ownerDocument,"mousemove",s),e.event.once(e.ownerDocument,"mouseup",u),r.stopPropagation(),r.preventDefault()})}function n(t,e){function r(r){var n=o+r*e.railYRatio,l=Math.max(0,e.scrollbarYRail.getBoundingClientRect().top)+e.railYRatio*(e.railYHeight-e.scrollbarYHeight);e.scrollbarYTop=n<0?0:n>l?l:n;var s=i.toInt(e.scrollbarYTop*(e.contentHeight-e.containerHeight)/(e.containerHeight-e.railYRatio*e.scrollbarYHeight));c(t,"top",s)}var o=null,n=null,s=function(e){r(e.pageY-n),a(t),e.stopPropagation(),e.preventDefault()},u=function(){i.stopScrolling(t,"y"),e.event.unbind(e.ownerDocument,"mousemove",s)};e.event.bind(e.scrollbarY,"mousedown",function(r){n=r.pageY,o=i.toInt(l.css(e.scrollbarY,"top"))*e.railYRatio,i.startScrolling(t,"y"),e.event.bind(e.ownerDocument,"mousemove",s),e.event.once(e.ownerDocument,"mouseup",u),r.stopPropagation(),r.preventDefault()})}var i=r(2),l=r(4),s=r(0),a=r(1),c=r(3);t.exports=function(t){var e=s.get(t);o(t,e),n(t,e)}},function(t,e,r){"use strict";function o(t,e){function r(r,o){var n=t.scrollTop;if(0===r){if(!e.scrollbarYActive)return!1;if(0===n&&o>0||n>=e.contentHeight-e.containerHeight&&o<0)return!e.settings.wheelPropagation}var i=t.scrollLeft;if(0===o){if(!e.scrollbarXActive)return!1;if(0===i&&r<0||i>=e.contentWidth-e.containerWidth&&r>0)return!e.settings.wheelPropagation}return!0}var o=!1;e.event.bind(t,"mouseenter",function(){o=!0}),e.event.bind(t,"mouseleave",function(){o=!1});var l=!1;e.event.bind(e.ownerDocument,"keydown",function(c){if(!(c.isDefaultPrevented&&c.isDefaultPrevented()||c.defaultPrevented)){var u=i.matches(e.scrollbarX,":focus")||i.matches(e.scrollbarY,":focus");if(o||u){var p=document.activeElement?document.activeElement:e.ownerDocument.activeElement;if(p){if("IFRAME"===p.tagName)p=p.contentDocument.activeElement;else for(;p.shadowRoot;)p=p.shadowRoot.activeElement;if(n.isEditable(p))return}var d=0,f=0;switch(c.which){case 37:d=c.metaKey?-e.contentWidth:c.altKey?-e.containerWidth:-30;break;case 38:f=c.metaKey?e.contentHeight:c.altKey?e.containerHeight:30;break;case 39:d=c.metaKey?e.contentWidth:c.altKey?e.containerWidth:30;break;case 40:f=c.metaKey?-e.contentHeight:c.altKey?-e.containerHeight:-30;break;case 33:f=90;break;case 32:f=c.shiftKey?90:-90;break;case 34:f=-90;break;case 35:f=c.ctrlKey?-e.contentHeight:-e.containerHeight;break;case 36:f=c.ctrlKey?t.scrollTop:e.containerHeight;break;default:return}a(t,"top",t.scrollTop-f),a(t,"left",t.scrollLeft+d),s(t),l=r(d,f),l&&c.preventDefault()}}})}var n=r(2),i=r(4),l=r(0),s=r(1),a=r(3);t.exports=function(t){o(t,l.get(t))}},function(t,e,r){"use strict";function o(t,e){function r(r,o){var n=t.scrollTop;if(0===r){if(!e.scrollbarYActive)return!1;if(0===n&&o>0||n>=e.contentHeight-e.containerHeight&&o<0)return!e.settings.wheelPropagation}var i=t.scrollLeft;if(0===o){if(!e.scrollbarXActive)return!1;if(0===i&&r<0||i>=e.contentWidth-e.containerWidth&&r>0)return!e.settings.wheelPropagation}return!0}function o(t){var e=t.deltaX,r=-1*t.deltaY;return void 0!==e&&void 0!==r||(e=-1*t.wheelDeltaX/6,r=t.wheelDeltaY/6),t.deltaMode&&1===t.deltaMode&&(e*=10,r*=10),e!==e&&r!==r&&(e=0,r=t.wheelDelta),t.shiftKey?[-r,-e]:[e,r]}function n(e,r){var o=t.querySelector("textarea:hover, select[multiple]:hover, .ps-child:hover");if(o){var n=window.getComputedStyle(o);if(![n.overflow,n.overflowX,n.overflowY].join("").match(/(scroll|auto)/))return!1;var i=o.scrollHeight-o.clientHeight;if(i>0&&!(0===o.scrollTop&&r>0||o.scrollTop===i&&r<0))return!0;var l=o.scrollLeft-o.clientWidth;if(l>0&&!(0===o.scrollLeft&&e<0||o.scrollLeft===l&&e>0))return!0}return!1}function s(s){var c=o(s),u=c[0],p=c[1];n(u,p)||(a=!1,e.settings.useBothWheelAxes?e.scrollbarYActive&&!e.scrollbarXActive?(p?l(t,"top",t.scrollTop-p*e.settings.wheelSpeed):l(t,"top",t.scrollTop+u*e.settings.wheelSpeed),a=!0):e.scrollbarXActive&&!e.scrollbarYActive&&(u?l(t,"left",t.scrollLeft+u*e.settings.wheelSpeed):l(t,"left",t.scrollLeft-p*e.settings.wheelSpeed),a=!0):(l(t,"top",t.scrollTop-p*e.settings.wheelSpeed),l(t,"left",t.scrollLeft+u*e.settings.wheelSpeed)),i(t),(a=a||r(u,p))&&(s.stopPropagation(),s.preventDefault()))}var a=!1;void 0!==window.onwheel?e.event.bind(t,"wheel",s):void 0!==window.onmousewheel&&e.event.bind(t,"mousewheel",s)}var n=r(0),i=r(1),l=r(3);t.exports=function(t){o(t,n.get(t))}},function(t,e,r){"use strict";function o(t,e){e.event.bind(t,"scroll",function(){i(t)})}var n=r(0),i=r(1);t.exports=function(t){o(t,n.get(t))}},function(t,e,r){"use strict";function o(t,e){function r(){var t=window.getSelection?window.getSelection():document.getSelection?document.getSelection():"";return 0===t.toString().length?null:t.getRangeAt(0).commonAncestorContainer}function o(){c||(c=setInterval(function(){if(!i.get(t))return void clearInterval(c);s(t,"top",t.scrollTop+u.top),s(t,"left",t.scrollLeft+u.left),l(t)},50))}function a(){c&&(clearInterval(c),c=null),n.stopScrolling(t)}var c=null,u={top:0,left:0},p=!1;e.event.bind(e.ownerDocument,"selectionchange",function(){t.contains(r())?p=!0:(p=!1,a())}),e.event.bind(window,"mouseup",function(){p&&(p=!1,a())}),e.event.bind(window,"keyup",function(){p&&(p=!1,a())}),e.event.bind(window,"mousemove",function(e){if(p){var r={x:e.pageX,y:e.pageY},i={left:t.offsetLeft,right:t.offsetLeft+t.offsetWidth,top:t.offsetTop,bottom:t.offsetTop+t.offsetHeight};r.x<i.left+3?(u.left=-5,n.startScrolling(t,"x")):r.x>i.right-3?(u.left=5,n.startScrolling(t,"x")):u.left=0,r.y<i.top+3?(u.top=i.top+3-r.y<5?-5:-20,n.startScrolling(t,"y")):r.y>i.bottom-3?(u.top=r.y-i.bottom+3<5?5:20,n.startScrolling(t,"y")):u.top=0,0===u.top&&0===u.left?a():o()}})}var n=r(2),i=r(0),l=r(1),s=r(3);t.exports=function(t){o(t,i.get(t))}},function(t,e,r){"use strict";function o(t,e,r,o){function n(r,o){var n=t.scrollTop,i=t.scrollLeft,l=Math.abs(r),s=Math.abs(o);if(s>l){if(o<0&&n===e.contentHeight-e.containerHeight||o>0&&0===n)return!e.settings.swipePropagation}else if(l>s&&(r<0&&i===e.contentWidth-e.containerWidth||r>0&&0===i))return!e.settings.swipePropagation;return!0}function a(e,r){s(t,"top",t.scrollTop-r),s(t,"left",t.scrollLeft-e),l(t)}function c(){w=!0}function u(){w=!1}function p(t){return t.targetTouches?t.targetTouches[0]:t}function d(t){return(!t.pointerType||"pen"!==t.pointerType||0!==t.buttons)&&(!(!t.targetTouches||1!==t.targetTouches.length)||!(!t.pointerType||"mouse"===t.pointerType||t.pointerType===t.MSPOINTER_TYPE_MOUSE))}function f(t){if(d(t)){_=!0;var e=p(t);b.pageX=e.pageX,b.pageY=e.pageY,g=(new Date).getTime(),null!==y&&clearInterval(y),t.stopPropagation()}}function h(t){if(!_&&e.settings.swipePropagation&&f(t),!w&&_&&d(t)){var r=p(t),o={pageX:r.pageX,pageY:r.pageY},i=o.pageX-b.pageX,l=o.pageY-b.pageY;a(i,l),b=o;var s=(new Date).getTime(),c=s-g;c>0&&(m.x=i/c,m.y=l/c,g=s),n(i,l)&&(t.stopPropagation(),t.preventDefault())}}function v(){!w&&_&&(_=!1,e.settings.swipeEasing&&(clearInterval(y),y=setInterval(function(){return i.get(t)&&(m.x||m.y)?Math.abs(m.x)<.01&&Math.abs(m.y)<.01?void clearInterval(y):(a(30*m.x,30*m.y),m.x*=.8,void(m.y*=.8)):void clearInterval(y)},10)))}var b={},g=0,m={},y=null,w=!1,_=!1;r?(e.event.bind(window,"touchstart",c),e.event.bind(window,"touchend",u),e.event.bind(t,"touchstart",f),e.event.bind(t,"touchmove",h),e.event.bind(t,"touchend",v)):o&&(window.PointerEvent?(e.event.bind(window,"pointerdown",c),e.event.bind(window,"pointerup",u),e.event.bind(t,"pointerdown",f),e.event.bind(t,"pointermove",h),e.event.bind(t,"pointerup",v)):window.MSPointerEvent&&(e.event.bind(window,"MSPointerDown",c),e.event.bind(window,"MSPointerUp",u),e.event.bind(t,"MSPointerDown",f),e.event.bind(t,"MSPointerMove",h),e.event.bind(t,"MSPointerUp",v)))}var n=r(2),i=r(0),l=r(1),s=r(3);t.exports=function(t){if(n.env.supportsTouch||n.env.supportsIePointer){o(t,i.get(t),n.env.supportsTouch,n.env.supportsIePointer)}}},function(t,e,r){"use strict";var o=r(0),n=r(1),i={"click-rail":r(16),"drag-scrollbar":r(17),keyboard:r(18),wheel:r(19),touch:r(22),selection:r(21)},l=r(20);t.exports=function(t,e){t.classList.add("ps");var r=o.add(t,"object"==typeof e?e:{});t.classList.add("ps--theme_"+r.settings.theme),r.settings.handlers.forEach(function(e){i[e](t)}),l(t),n(t)}},function(t,e,r){"use strict";var o=r(2),n=r(4),i=r(0),l=r(1),s=r(3);t.exports=function(t){var e=i.get(t);e&&(e.negativeScrollAdjustment=e.isNegativeScroll?t.scrollWidth-t.clientWidth:0,n.css(e.scrollbarXRail,"display","block"),n.css(e.scrollbarYRail,"display","block"),e.railXMarginWidth=o.toInt(n.css(e.scrollbarXRail,"marginLeft"))+o.toInt(n.css(e.scrollbarXRail,"marginRight")),e.railYMarginHeight=o.toInt(n.css(e.scrollbarYRail,"marginTop"))+o.toInt(n.css(e.scrollbarYRail,"marginBottom")),n.css(e.scrollbarXRail,"display","none"),n.css(e.scrollbarYRail,"display","none"),l(t),s(t,"top",t.scrollTop),s(t,"left",t.scrollLeft),n.css(e.scrollbarXRail,"display",""),n.css(e.scrollbarYRail,"display",""))}},function(t,e){t.exports=function(t,e,r,o){var n,i=t=t||{},l=typeof t.default;"object"!==l&&"function"!==l||(n=t,i=t.default);var s="function"==typeof i?i.options:i;if(e&&(s.render=e.render,s.staticRenderFns=e.staticRenderFns),r&&(s._scopeId=r),o){var a=s.computed||(s.computed={});Object.keys(o).forEach(function(t){var e=o[t];a[t]=function(){return e}})}return{esModule:n,exports:i,options:s}}},function(t,e){t.exports={render:function(){var t=this,e=t.$createElement;return(t._self._c||e)(t.$props.tagname,{tag:"section",staticClass:"ps-container",on:{"~mouseover":function(e){t.update(e)},"ps-scroll-y":t.scrollHanle,"ps-scroll-x":t.scrollHanle,"ps-scroll-up":t.scrollHanle,"ps-scroll-down":t.scrollHanle,"ps-scroll-left":t.scrollHanle,"ps-scroll-right":t.scrollHanle,"ps-y-reach-start":t.scrollHanle,"ps-y-reach-end":t.scrollHanle,"ps-x-reach-start":t.scrollHanle,"ps-x-reach-end":t.scrollHanle}},[t._t("default")],2)},staticRenderFns:[]}},function(t,e){function r(t,e){for(var r=0;r<t.length;r++){var o=t[r],n=u[o.id];if(n){n.refs++;for(var i=0;i<n.parts.length;i++)n.parts[i](o.parts[i]);for(;i<o.parts.length;i++)n.parts.push(s(o.parts[i],e))}else{for(var l=[],i=0;i<o.parts.length;i++)l.push(s(o.parts[i],e));u[o.id]={id:o.id,refs:1,parts:l}}}}function o(t){for(var e=[],r={},o=0;o<t.length;o++){var n=t[o],i=n[0],l=n[1],s=n[2],a=n[3],c={css:l,media:s,sourceMap:a};r[i]?r[i].parts.push(c):e.push(r[i]={id:i,parts:[c]})}return e}function n(t,e){var r=f(),o=b[b.length-1];if("top"===t.insertAt)o?o.nextSibling?r.insertBefore(e,o.nextSibling):r.appendChild(e):r.insertBefore(e,r.firstChild),b.push(e);else{if("bottom"!==t.insertAt)throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");r.appendChild(e)}}function i(t){t.parentNode.removeChild(t);var e=b.indexOf(t);e>=0&&b.splice(e,1)}function l(t){var e=document.createElement("style");return e.type="text/css",n(t,e),e}function s(t,e){var r,o,n;if(e.singleton){var s=v++;r=h||(h=l(e)),o=a.bind(null,r,s,!1),n=a.bind(null,r,s,!0)}else r=l(e),o=c.bind(null,r),n=function(){i(r)};return o(t),function(e){if(e){if(e.css===t.css&&e.media===t.media&&e.sourceMap===t.sourceMap)return;o(t=e)}else n()}}function a(t,e,r,o){var n=r?"":o.css;if(t.styleSheet)t.styleSheet.cssText=g(e,n);else{var i=document.createTextNode(n),l=t.childNodes;l[e]&&t.removeChild(l[e]),l.length?t.insertBefore(i,l[e]):t.appendChild(i)}}function c(t,e){var r=e.css,o=e.media,n=e.sourceMap;if(o&&t.setAttribute("media",o),n&&(r+="\n/*# sourceURL="+n.sources[0]+" */",r+="\n/*# sourceMappingURL=data:application/json;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(n))))+" */"),t.styleSheet)t.styleSheet.cssText=r;else{for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(document.createTextNode(r))}}var u={},p=function(t){var e;return function(){return void 0===e&&(e=t.apply(this,arguments)),e}},d=p(function(){return/msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase())}),f=p(function(){return document.head||document.getElementsByTagName("head")[0]}),h=null,v=0,b=[];t.exports=function(t,e){if("undefined"!=typeof DEBUG&&DEBUG&&"object"!=typeof document)throw new Error("The style-loader cannot be used in a non-browser environment");e=e||{},void 0===e.singleton&&(e.singleton=d()),void 0===e.insertAt&&(e.insertAt="bottom");var n=o(t);return r(n,e),function(t){for(var i=[],l=0;l<n.length;l++){var s=n[l],a=u[s.id];a.refs--,i.push(a)}if(t){r(o(t),e)}for(var l=0;l<i.length;l++){var a=i[l];if(0===a.refs){for(var c=0;c<a.parts.length;c++)a.parts[c]();delete u[a.id]}}}};var g=function(){var t=[];return function(e,r){return t[e]=r,t.filter(Boolean).join("\n")}}()},function(t,e,r){var o=r(8);"string"==typeof o&&(o=[[t.i,o,""]]);r(27)(o,{});o.locals&&(t.exports=o.locals)}]);
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
 /***/ "./node_modules/vue-resize/dist/vue-resize.esm.js":
 /*!********************************************************!*\
   !*** ./node_modules/vue-resize/dist/vue-resize.esm.js ***!
@@ -58058,6 +58067,169 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/borderPanel.ts":
+/*!****************************!*\
+  !*** ./src/borderPanel.ts ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+
+
+
+
+
+var borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
+var borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
+var borderLeft = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-left.svg */ "./src/icons/border-left.svg"));
+var borderRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-right.svg */ "./src/icons/border-right.svg"));
+var borderBottom = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-bottom.svg */ "./src/icons/border-bottom.svg"));
+var colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icons/font-color.svg");
+var borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
+var borderLine = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"));
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    borderIcon: {
+        width: 40,
+        height: 40,
+        cursor: 'pointer',
+        margin: 5,
+    },
+    borderRow: {
+        floatTop: 0,
+        display: 'flex',
+        width: '100%'
+    },
+    borderOptions: {
+        width: '100%',
+        flex: '1 1 auto',
+        marginLeft: 20
+    },
+    borderStyle: {
+        width: '100%',
+        display: 'flex',
+        floatTop: 0,
+    },
+    borderInputStyle: {
+        width: '100%',
+        flex: '1 1 auto',
+        display: 'flex',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+    },
+    borderThickness: {
+        flex: '1 1 auto',
+        width: '100%',
+        display: 'flex'
+    },
+    inputIcons: {
+        width: 20,
+        height: 20,
+        marginLeft: 5,
+        cursor: 'pointer'
+    },
+    borderThicknessInput: {
+        flex: '1 1 auto',
+        width: '100%',
+        border: 'none',
+        background: 'none'
+    },
+    borderType: {
+        width: '100%',
+        floatTop: 0,
+        display: 'flex',
+    },
+    borderTypeTable: {},
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginBottom: 10
+    },
+    rotation: {
+        svg: {
+            rotate: -90,
+        }
+    },
+    rotation2: {
+        svg: {
+            rotate: -180,
+        }
+    },
+    rotation3: {
+        svg: {
+            rotate: -270,
+        }
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-icon', {
+    template: "\n        <div class=\"" + css.borderIcon + "\" :style=\"getStyle()\" @click=\"toggleSelected()\"><slot></slot></div>\n    ",
+    data: function () {
+        return {
+            iconColor: false
+        };
+    },
+    methods: {
+        toggleSelected: function () {
+            this.iconColor = !this.iconColor;
+        },
+        getStyle: function () {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
+                color: (this.iconColor) ? _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["default"].textPrimary
+            });
+        }
+    }
+});
+var borderStyleName = { value: '' };
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('input-icon', {
+    template: "\n        <div class=\"" + css.inputIcons + "\" :style=\"getType()\" @click=\"toggleSelect()\"><slot></slot></div>\n    ",
+    props: {
+        name: String,
+    },
+    data: function () {
+        return {
+            borderStyleName: borderStyleName
+        };
+    },
+    methods: {
+        toggleSelect: function () {
+            if (this.borderStyleName.value === this.name)
+                this.borderStyleName.value = '';
+            else
+                this.borderStyleName.value = this.name;
+        },
+        getType: function () {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
+                color: (this.borderStyleName.value === this.name) ? _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["default"].textPrimary
+            });
+        }
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-card', {
+    template: "\n        <div class=\"" + css.borderRow + "\">\n            <border-icon><slot></slot></border-icon>\n            <div class=\"" + css.borderOptions + "\">\n                <div class=\"" + css.borderStyle + "\">\n                    <div class=\"" + css.borderInputStyle + "\">\n                        <div class=\"" + css.borderThickness + "\">\n                            <input-icon>" + borderThickness + "</input-icon>\n                            <input class=\"" + css.borderThicknessInput + "\" :placeholder=\"name\"></input>\n                        </div>\n                    </div>\n                    <input-icon>" + colorPalette + "</input-icon>\n                </div>\n                <div class=\"" + css.borderType + "\">\n                    <table class=\"" + css.borderTypeTable + "\">\n                        <tr>\n                            <td align=\"center\"><input-icon name=\"L1\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L2\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L3\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L4\">" + borderLine + "</input-icon></td>\n                        </tr>\n                    </table>\n                </div>\n            </div>\n        </div>\n    ",
+    props: {
+        name: String,
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-radius-card', {
+    template: "\n        <div class=\"" + css.borderRow + "\">\n            <border-icon><slot></slot></border-icon>\n            <div class=\"" + css.borderOptions + "\">\n                <div class=\"" + css.borderStyle + "\">\n                    <div class=\"" + css.borderInputStyle + "\">\n                        <div class=\"" + css.borderThickness + "\">\n                            <input-icon>" + borderThickness + "</input-icon>\n                            <input class=\"" + css.borderThicknessInput + "\" :placeholder=\"name\"></input>\n                        </div>\n                    </div>\n                    <input-icon>" + colorPalette + "</input-icon>\n                </div>\n            </div>\n        </div>\n    ",
+    props: {
+        name: String,
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-panel', {
+    template: "\n    <panel title=\"Border\" expanded>\n        <border-card name=\" top thickness\">" + borderTop + "</border-card>\n        <border-card name=\" left thickness\">" + borderLeft + "</border-card>\n        <border-card name=\" right thickness\">" + borderRight + "</border-card>\n        <border-card name=\" bottom thickness\">" + borderBottom + "</border-card>\n        \n        <div class=\"" + css.separator + "\"></div>\n\n        <border-radius-card name=\" top left radius\">" + borderTopRight + "</border-radius-card>\n        <border-radius-card name=\" bottom right radius\">" + borderTopRight + "</border-radius-card>\n        <border-radius-card name=\" bottom left radius\">" + borderTopRight + "</border-radius-card>\n        <border-radius-card name=\" top right radius\">" + borderTopRight + "</border-radius-card>\n        \n    </panel>\n    "
+});
+
+
+/***/ }),
+
 /***/ "./src/colorPicker.ts":
 /*!****************************!*\
   !*** ./src/colorPicker.ts ***!
@@ -58332,6 +58504,61 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/border-bottom.svg":
+/*!*************************************!*\
+  !*** ./src/icons/border-bottom.svg ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M9 11H7v2h2v-2zm4 4h-2v2h2v-2zM9 3H7v2h2V3zm4 8h-2v2h2v-2zM5 3H3v2h2V3zm8 4h-2v2h2V7zm4 4h-2v2h2v-2zm-4-8h-2v2h2V3zm4 0h-2v2h2V3zm2 10h2v-2h-2v2zm0 4h2v-2h-2v2zM5 7H3v2h2V7zm14-4v2h2V3h-2zm0 6h2V7h-2v2zM5 11H3v2h2v-2zM3 21h18v-2H3v2zm2-6H3v2h2v-2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-left.svg":
+/*!***********************************!*\
+  !*** ./src/icons/border-left.svg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M11 21h2v-2h-2v2zm0-4h2v-2h-2v2zm0-12h2V3h-2v2zm0 4h2V7h-2v2zm0 4h2v-2h-2v2zm-4 8h2v-2H7v2zM7 5h2V3H7v2zm0 8h2v-2H7v2zm-4 8h2V3H3v18zM19 9h2V7h-2v2zm-4 12h2v-2h-2v2zm4-4h2v-2h-2v2zm0-14v2h2V3h-2zm0 10h2v-2h-2v2zm0 8h2v-2h-2v2zm-4-8h2v-2h-2v2zm0-8h2V3h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-right.svg":
+/*!************************************!*\
+  !*** ./src/icons/border-right.svg ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 21h2v-2H7v2zM3 5h2V3H3v2zm4 0h2V3H7v2zm0 8h2v-2H7v2zm-4 8h2v-2H3v2zm8 0h2v-2h-2v2zm-8-8h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm8 8h2v-2h-2v2zm4-4h2v-2h-2v2zm4-10v18h2V3h-2zm-4 18h2v-2h-2v2zm0-16h2V3h-2v2zm-4 8h2v-2h-2v2zm0-8h2V3h-2v2zm0 4h2V7h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-top-right.svg":
+/*!****************************************!*\
+  !*** ./src/icons/border-top-right.svg ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 7.8125 3.125 C 6.949219 3.125 6.25 3.824219 6.25 4.6875 C 6.25 5.550781 6.949219 6.25 7.8125 6.25 C 8.675781 6.25 9.375 5.550781 9.375 4.6875 C 9.375 3.824219 8.675781 3.125 7.8125 3.125 Z M 14.0625 3.125 C 13.199219 3.125 12.5 3.824219 12.5 4.6875 C 12.5 5.550781 13.199219 6.25 14.0625 6.25 C 14.925781 6.25 15.625 5.550781 15.625 4.6875 C 15.625 3.824219 14.925781 3.125 14.0625 3.125 Z M 20.3125 3.125 C 19.449219 3.125 18.75 3.824219 18.75 4.6875 C 18.75 5.550781 19.449219 6.25 20.3125 6.25 C 21.175781 6.25 21.875 5.550781 21.875 4.6875 C 21.875 3.824219 21.175781 3.125 20.3125 3.125 Z M 25 3.125 L 25 6.25 C 33.648438 6.25 40.625 13.226563 40.625 21.875 L 43.75 21.875 C 43.75 11.535156 35.339844 3.125 25 3.125 Z M 4.6875 6.25 C 3.824219 6.25 3.125 6.949219 3.125 7.8125 C 3.125 8.675781 3.824219 9.375 4.6875 9.375 C 5.550781 9.375 6.25 8.675781 6.25 7.8125 C 6.25 6.949219 5.550781 6.25 4.6875 6.25 Z M 4.6875 12.5 C 3.824219 12.5 3.125 13.199219 3.125 14.0625 C 3.125 14.925781 3.824219 15.625 4.6875 15.625 C 5.550781 15.625 6.25 14.925781 6.25 14.0625 C 6.25 13.199219 5.550781 12.5 4.6875 12.5 Z M 4.6875 18.75 C 3.824219 18.75 3.125 19.449219 3.125 20.3125 C 3.125 21.175781 3.824219 21.875 4.6875 21.875 C 5.550781 21.875 6.25 21.175781 6.25 20.3125 C 6.25 19.449219 5.550781 18.75 4.6875 18.75 Z M 4.6875 25 C 3.824219 25 3.125 25.699219 3.125 26.5625 C 3.125 27.425781 3.824219 28.125 4.6875 28.125 C 5.550781 28.125 6.25 27.425781 6.25 26.5625 C 6.25 25.699219 5.550781 25 4.6875 25 Z M 42.1875 25 C 41.324219 25 40.625 25.699219 40.625 26.5625 C 40.625 27.425781 41.324219 28.125 42.1875 28.125 C 43.050781 28.125 43.75 27.425781 43.75 26.5625 C 43.75 25.699219 43.050781 25 42.1875 25 Z M 4.6875 31.25 C 3.824219 31.25 3.125 31.949219 3.125 32.8125 C 3.125 33.675781 3.824219 34.375 4.6875 34.375 C 5.550781 34.375 6.25 33.675781 6.25 32.8125 C 6.25 31.949219 5.550781 31.25 4.6875 31.25 Z M 42.1875 31.25 C 41.324219 31.25 40.625 31.949219 40.625 32.8125 C 40.625 33.675781 41.324219 34.375 42.1875 34.375 C 43.050781 34.375 43.75 33.675781 43.75 32.8125 C 43.75 31.949219 43.050781 31.25 42.1875 31.25 Z M 4.6875 37.5 C 3.824219 37.5 3.125 38.199219 3.125 39.0625 C 3.125 39.925781 3.824219 40.625 4.6875 40.625 C 5.550781 40.625 6.25 39.925781 6.25 39.0625 C 6.25 38.199219 5.550781 37.5 4.6875 37.5 Z M 42.1875 37.5 C 41.324219 37.5 40.625 38.199219 40.625 39.0625 C 40.625 39.925781 41.324219 40.625 42.1875 40.625 C 43.050781 40.625 43.75 39.925781 43.75 39.0625 C 43.75 38.199219 43.050781 37.5 42.1875 37.5 Z M 7.8125 40.625 C 6.949219 40.625 6.25 41.324219 6.25 42.1875 C 6.25 43.050781 6.949219 43.75 7.8125 43.75 C 8.675781 43.75 9.375 43.050781 9.375 42.1875 C 9.375 41.324219 8.675781 40.625 7.8125 40.625 Z M 14.0625 40.625 C 13.199219 40.625 12.5 41.324219 12.5 42.1875 C 12.5 43.050781 13.199219 43.75 14.0625 43.75 C 14.925781 43.75 15.625 43.050781 15.625 42.1875 C 15.625 41.324219 14.925781 40.625 14.0625 40.625 Z M 20.3125 40.625 C 19.449219 40.625 18.75 41.324219 18.75 42.1875 C 18.75 43.050781 19.449219 43.75 20.3125 43.75 C 21.175781 43.75 21.875 43.050781 21.875 42.1875 C 21.875 41.324219 21.175781 40.625 20.3125 40.625 Z M 26.5625 40.625 C 25.699219 40.625 25 41.324219 25 42.1875 C 25 43.050781 25.699219 43.75 26.5625 43.75 C 27.425781 43.75 28.125 43.050781 28.125 42.1875 C 28.125 41.324219 27.425781 40.625 26.5625 40.625 Z M 32.8125 40.625 C 31.949219 40.625 31.25 41.324219 31.25 42.1875 C 31.25 43.050781 31.949219 43.75 32.8125 43.75 C 33.675781 43.75 34.375 43.050781 34.375 42.1875 C 34.375 41.324219 33.675781 40.625 32.8125 40.625 Z M 39.0625 40.625 C 38.199219 40.625 37.5 41.324219 37.5 42.1875 C 37.5 43.050781 38.199219 43.75 39.0625 43.75 C 39.925781 43.75 40.625 43.050781 40.625 42.1875 C 40.625 41.324219 39.925781 40.625 39.0625 40.625 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-top.svg":
+/*!**********************************!*\
+  !*** ./src/icons/border-top.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 21h2v-2H7v2zm0-8h2v-2H7v2zm4 0h2v-2h-2v2zm0 8h2v-2h-2v2zm-8-4h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2v-2H3v2zm0-4h2V7H3v2zm8 8h2v-2h-2v2zm8-8h2V7h-2v2zm0 4h2v-2h-2v2zM3 3v2h18V3H3zm16 14h2v-2h-2v2zm-4 4h2v-2h-2v2zM11 9h2V7h-2v2zm8 12h2v-2h-2v2zm-4-8h2v-2h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/checkbox-filled.svg":
 /*!***************************************!*\
   !*** ./src/icons/checkbox-filled.svg ***!
@@ -58420,6 +58647,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/font-color.svg":
+/*!**********************************!*\
+  !*** ./src/icons/font-color.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26.300781 0 C 15.550781 0 3 6.207031 3 23.699219 C 3 36.402344 12.804688 50 27.398438 50 C 27.40625 50 27.609375 50 27.617188 50 C 33.101563 49.898438 39 46.355469 39 38.800781 C 39 37.355469 38.464844 36.101563 37.988281 34.996094 C 37.863281 34.707031 37.742188 34.421875 37.628906 34.132813 C 36.550781 31.414063 37.742188 30.417969 40.539063 28.425781 C 43.714844 26.167969 48.058594 23.074219 48 14.898438 C 48 10.039063 42.695313 0 26.300781 0 Z M 26.5 6 C 28.433594 6 30 8.015625 30 10.5 C 30 12.984375 28.433594 15 26.5 15 C 24.566406 15 23 12.984375 23 10.5 C 23 8.015625 24.566406 6 26.5 6 Z M 14.5 33 C 12.566406 33 11 30.984375 11 28.5 C 11 26.015625 12.566406 24 14.5 24 C 16.433594 24 18 26.015625 18 28.5 C 18 30.984375 16.433594 33 14.5 33 Z M 15.5 20 C 13.566406 20 12 17.984375 12 15.5 C 12 13.015625 13.566406 11 15.5 11 C 17.433594 11 19 13.015625 19 15.5 C 19 17.984375 17.433594 20 15.5 20 Z M 27 43 C 24.757813 43 23 41.242188 23 39 C 23 36.757813 24.757813 35 27 35 C 29.242188 35 31 36.757813 31 39 C 31 41.242188 29.242188 43 27 43 Z M 37.5 20 C 35.566406 20 34 17.984375 34 15.5 C 34 13.015625 35.566406 11 37.5 11 C 39.433594 11 41 13.015625 41 15.5 C 41 17.984375 39.433594 20 37.5 20 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/italic-filled.svg":
 /*!*************************************!*\
   !*** ./src/icons/italic-filled.svg ***!
@@ -58461,6 +58699,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" fill=\"#000000\"><path style=\"text-indent:0;text-align:start;line-height:normal;text-transform:none;block-progression:tb;-inkscape-font-specification:Bitstream Vera Sans\" d=\"M 42.875 6 A 0.98559853 0.98559853 0 0 0 42.3125 6.3125 L 6.3125 42.3125 A 0.98559853 0.98559853 0 1 0 7.6875 43.6875 L 43.6875 7.6875 A 0.98559853 0.98559853 0 0 0 42.875 6 z\" color=\"#000\" overflow=\"visible\" enable-background=\"accumulate\" font-family=\"Bitstream Vera Sans\" fill=\"#000000\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/lock.svg":
+/*!****************************!*\
+  !*** ./src/icons/lock.svg ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 52 52\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 32 0 C 27.578125 0 23.757813 1.835938 21.375 4.8125 C 18.992188 7.789063 18 11.648438 18 15.8125 L 18 18 L 24 18 L 24 15.8125 C 24 12.65625 24.78125 10.171875 26.0625 8.5625 C 27.34375 6.953125 29.085938 6 32 6 C 34.921875 6 36.65625 6.898438 37.9375 8.5 C 39.21875 10.101563 40 12.617188 40 15.8125 L 40 18 L 46 18 L 46 15.8125 C 46 11.625 44.945313 7.726563 42.5625 4.75 C 40.179688 1.773438 36.414063 0 32 0 Z M 18 20 C 14.6875 20 12 22.6875 12 26 L 12 46 C 12 49.3125 14.6875 52 18 52 L 46 52 C 49.3125 52 52 49.3125 52 46 L 52 26 C 52 22.6875 49.3125 20 46 20 Z M 32 30 C 34.210938 30 36 31.789063 36 34 C 36 35.476563 35.195313 36.742188 34 37.4375 L 34 42 C 34 43.101563 33.101563 44 32 44 C 30.898438 44 30 43.101563 30 42 L 30 37.4375 C 28.804688 36.742188 28 35.476563 28 34 C 28 31.789063 29.789063 30 32 30 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -58549,6 +58798,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 25.980469 3.9375 C 25.917969 3.941406 25.855469 3.953125 25.792969 3.96875 C 25.421875 4.035156 25.125 4.304688 25.019531 4.664063 C 24.914063 5.03125 25.023438 5.417969 25.296875 5.671875 L 26.011719 6.386719 C 21.492188 11.445313 20.261719 18.382813 20.121094 19.222656 L 13.113281 22.351563 L 12.988281 22.226563 C 12.785156 22.007813 12.484375 21.894531 12.183594 21.917969 C 11.796875 21.957031 11.46875 22.214844 11.34375 22.582031 C 11.214844 22.949219 11.316406 23.355469 11.59375 23.625 L 25.980469 38.007813 C 26.21875 38.304688 26.605469 38.4375 26.976563 38.351563 C 27.34375 38.269531 27.632813 37.976563 27.71875 37.609375 C 27.804688 37.238281 27.667969 36.855469 27.375 36.613281 L 27.035156 36.273438 L 30.132813 29.421875 C 30.417969 29.382813 30.734375 29.324219 31.15625 29.234375 C 32.101563 29.039063 33.371094 28.710938 34.816406 28.210938 C 37.449219 27.300781 40.632813 25.84375 43.214844 23.59375 L 43.929688 24.304688 C 44.3125 24.699219 44.945313 24.703125 45.339844 24.320313 C 45.734375 23.9375 45.738281 23.304688 45.355469 22.910156 L 44.085938 21.671875 C 44.050781 21.617188 44.007813 21.5625 43.960938 21.515625 L 28.085938 5.640625 C 28.042969 5.597656 27.988281 5.554688 27.933594 5.519531 L 26.691406 4.246094 C 26.507813 4.050781 26.25 3.941406 25.980469 3.9375 Z M 27.5 7.875 L 41.730469 22.105469 C 39.449219 24.050781 36.605469 25.511719 34.164063 26.351563 C 32.804688 26.820313 31.613281 27.128906 30.753906 27.3125 C 30.324219 27.402344 29.976563 27.441406 29.761719 27.46875 C 29.707031 27.476563 29.703125 27.496094 29.667969 27.5 C 29.636719 27.503906 29.578125 27.5 29.574219 27.5 C 29.148438 27.445313 28.738281 27.667969 28.554688 28.058594 L 25.578125 34.691406 L 14.726563 23.839844 L 21.328125 20.832031 C 21.640625 20.703125 21.859375 20.421875 21.917969 20.089844 C 21.917969 20.089844 23.320313 12.679688 27.5 7.875 Z M 17.359375 30.847656 L 4.246094 43.929688 L 5.671875 45.355469 L 18.757813 32.242188 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/placeholder.svg":
+/*!***********************************!*\
+  !*** ./src/icons/placeholder.svg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 8 8 L 8 56 L 56 56 L 56 8 Z M 12 12 L 52 12 L 52 52 L 47.875 52 C 47.1875 46.59375 43.765625 42.023438 39.0625 39.6875 C 42.046875 37.5 44 33.96875 44 30 C 44 23.398438 38.601563 18 32 18 C 25.398438 18 20 23.398438 20 30 C 20 33.96875 21.953125 37.5 24.9375 39.6875 C 20.234375 42.023438 16.8125 46.59375 16.125 52 L 12 52 Z M 32 22 C 36.445313 22 40 25.554688 40 30 C 40 34.445313 36.445313 38 32 38 C 27.554688 38 24 34.445313 24 30 C 24 25.554688 27.554688 22 32 22 Z M 32 42 C 37.96875 42 42.867188 46.304688 43.8125 52 L 20.1875 52 C 21.132813 46.304688 26.03125 42 32 42 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -58662,6 +58922,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/thickness.svg":
+/*!*********************************!*\
+  !*** ./src/icons/thickness.svg ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26 6 L 26 29.125 L 17.4375 20.5625 L 14.5625 23.4375 L 21.125 30 L 0 30 L 0 34 L 21.125 34 L 14.5625 40.5625 L 17.4375 43.4375 L 26 34.875 L 26 58 L 30 58 L 30 6 Z M 34 6 L 34 58 L 38 58 L 38 34.875 L 46.5625 43.4375 L 49.4375 40.5625 L 42.875 34 L 64 34 L 64 30 L 42.875 30 L 49.4375 23.4375 L 46.5625 20.5625 L 38 29.125 L 38 6 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/transform-filled.svg":
 /*!****************************************!*\
   !*** ./src/icons/transform-filled.svg ***!
@@ -58728,6 +58999,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/visibility.svg":
+/*!**********************************!*\
+  !*** ./src/icons/visibility.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 48 48\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 24 10 C 12 10 2.773438 22.210938 2.375 22.8125 C 1.773438 23.609375 1.773438 24.390625 2.375 25.1875 C 2.773438 25.789063 12 38 24 38 C 36 38 45.226563 25.789063 45.625 25.1875 C 46.226563 24.390625 46.226563 23.609375 45.625 22.8125 C 45.226563 22.210938 36 10 24 10 Z M 24 14 C 29.601563 14 34 18.398438 34 24 C 34 29.601563 29.601563 34 24 34 C 18.398438 34 14 29.601563 14 24 C 14 18.398438 18.398438 14 24 14 Z M 24 19 C 21.242188 19 19 21.242188 19 24 C 19 26.757813 21.242188 29 24 29 C 26.757813 29 29 26.757813 29 24 C 29 21.242188 26.757813 19 24 19 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/waves-filled.svg":
 /*!************************************!*\
   !*** ./src/icons/waves-filled.svg ***!
@@ -58777,17 +59059,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var vue_async_computed__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-async-computed */ "./node_modules/vue-async-computed/dist/vue-async-computed.js");
 /* harmony import */ var vue_async_computed__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(vue_async_computed__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-perfect-scrollbar */ "./node_modules/vue-perfect-scrollbar/dist/index.js");
-/* harmony import */ var vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! vue-touch */ "./node_modules/vue-touch/dist/vue-touch.js");
-/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(vue_touch__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
-/* harmony import */ var _propertiesPanel__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./propertiesPanel */ "./src/propertiesPanel.ts");
-/* harmony import */ var _positionPanel__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./positionPanel */ "./src/positionPanel.ts");
-/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
-/* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
-/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./row */ "./src/row.ts");
-/* harmony import */ var _whiteBoard__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./whiteBoard */ "./src/whiteBoard.ts");
+/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-touch */ "./node_modules/vue-touch/dist/vue-touch.js");
+/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(vue_touch__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _propertiesPanel__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./propertiesPanel */ "./src/propertiesPanel.ts");
+/* harmony import */ var _positionPanel__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./positionPanel */ "./src/positionPanel.ts");
+/* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
+/* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
+/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./row */ "./src/row.ts");
+/* harmony import */ var _whiteBoard__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./whiteBoard */ "./src/whiteBoard.ts");
+/* harmony import */ var _transformPanel__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./transformPanel */ "./src/transformPanel.ts");
+/* harmony import */ var _borderPanel__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./borderPanel */ "./src/borderPanel.ts");
+/* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
 
 
 
@@ -58817,8 +59100,10 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].mixin({
     }
 });
 
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_touch__WEBPACK_IMPORTED_MODULE_11___default.a);
 
-vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_touch__WEBPACK_IMPORTED_MODULE_12___default.a);
+
+
 
 
 
@@ -58874,10 +59159,9 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
     el: container,
     components: {
         'modal': ambients_modal__WEBPACK_IMPORTED_MODULE_4__["default"],
-        'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_5__["Sketch"],
-        'perfect-scrollbar': vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_11___default.a
+        'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_5__["Sketch"]
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink><toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell><white-board/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><white-board/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
     data: function () {
         return {
             colorPicker: colorPicker,
@@ -58894,9 +59178,6 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
             this.textColorPicker.left = e.clientX;
             this.textColorPicker.top = e.clientY;
             this.textColorPicker.show = true;
-        },
-        onPan: function (e) {
-            console.log(e);
         }
     }
 });
@@ -59006,6 +59287,70 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-select', {
 
 /***/ }),
 
+/***/ "./src/outline.ts":
+/*!************************!*\
+  !*** ./src/outline.ts ***!
+  \************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
+
+
+
+var visibility = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility.svg */ "./src/icons/visibility.svg"));
+var lock = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock.svg */ "./src/icons/lock.svg"));
+var placeholder = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    outline: {
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].white,
+        width: 200,
+        height: '100%',
+        paddingLeft: 5,
+        borderRight: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background
+    },
+    outlineRow: {
+        floatTop: 0,
+        height: 20,
+        width: '100%',
+        marginTop: 10,
+    },
+    tabs: {
+        width: 20,
+        height: 20,
+        floatLeft: 0,
+        margin: 1
+    },
+    elementName: {
+        floatLeft: 0,
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginTop: 10,
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-header', {
+    template: "\n        <div class=\"" + css.outlineRow + "\">\n            <div class=\"" + css.tabs + "\">" + visibility + "</div>\n            <div class=\"" + css.tabs + "\">" + lock + "</div>\n        </div>\n    "
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-row', {
+    template: "\n        <div class=\"" + css.outlineRow + "\">\n            <div class=\"" + css.tabs + "\">" + visibility + "</div>\n            <div class=\"" + css.tabs + "\">" + lock + "</div>\n            <div class=\"" + css.tabs + "\">" + placeholder + "</div>\n            <div class=\"" + css.elementName + "\"><slot></slot></div>\n        </div>\n    "
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline', {
+    template: "\n        <div class=\"" + css.outline + "\">\n            <outline-header></outline-header>\n            <div class=\"" + css.separator + "\"></div>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n        </div>\n    "
+});
+
+
+/***/ }),
+
 /***/ "./src/panels.ts":
 /*!***********************!*\
   !*** ./src/panels.ts ***!
@@ -59017,22 +59362,24 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-select', {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     panels: {
         width: 300,
         height: '100%',
-        background: 'rgb(247, 247, 247)',
+        background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].white,
         overflowX: 'hidden',
         overflowY: 'scroll',
         userSelect: 'none',
-        boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)'
+        borderLeft: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background
     },
     panel: {
         width: '100%',
         floatTop: 0,
-        borderBottom: '1px solid rgb(228, 228, 228)',
+        borderBottom: '3px solid rgb(228, 228, 228)',
         padding: 20,
         overflow: 'hidden'
     },
@@ -59042,7 +59389,8 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         color: '#c0c0c0',
         fontSize: 13,
         fontWeight: 'bold',
-        cursor: 'pointer'
+        cursor: 'pointer',
+        textAlign: 'left'
     },
     container: {
         width: '100%',
@@ -59310,16 +59658,19 @@ __webpack_require__.r(__webpack_exports__);
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     shrink: {
         whiteSpace: 'nowrap',
-        width: 1
+        width: 1,
+        padding: 0
     },
     grow: {
         whiteSpace: 'nowrap',
+        padding: 0,
         '>*': {
             width: '100%',
         }
     },
     auto: {
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        padding: 0
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('cell', {
@@ -59351,7 +59702,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('gap', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('row', {
-    template: "\n        <table :style=\"tableStyle\"><tr><slot/></tr></table>\n    ",
+    template: "\n        <table :style=\"computedStyle\"><tr><slot/></tr></table>\n    ",
     props: {
         stretch: Boolean,
         stretchy: Boolean
@@ -59362,7 +59713,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('row', {
         };
     },
     computed: {
-        tableStyle: function () {
+        computedStyle: function () {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 width: this.stretch ? '100%' : 'auto',
                 height: this.stretchy ? '100%' : 'auto',
@@ -59388,8 +59739,7 @@ __webpack_require__.r(__webpack_exports__);
     primary: '#448aff',
     background: 'rgb(228,228,228)',
     textPrimary: '#666666',
-    border: '#999999',
-    white: '#ffffff'
+    white: 'rgb(245,245,245)',
 });
 
 
@@ -59410,6 +59760,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon */ "./src/icon.ts");
 /* harmony import */ var _radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./radio */ "./src/radio.ts");
 /* harmony import */ var _colorPicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./colorPicker */ "./src/colorPicker.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 
@@ -59420,10 +59772,10 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     toolbar: {
         width: 50,
         height: '100%',
-        background: 'rgb(247, 247, 247)',
+        background: _theme__WEBPACK_IMPORTED_MODULE_6__["default"].white,
         overflow: "hidden",
-        boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
-        userSelect: 'none'
+        userSelect: 'none',
+        borderRight: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_6__["default"].background
     },
     toolbarSection: {
         width: '100%',
@@ -59459,6 +59811,69 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
             default: 'blue'
         }
     }
+});
+
+
+/***/ }),
+
+/***/ "./src/transformPanel.ts":
+/*!*******************************!*\
+  !*** ./src/transformPanel.ts ***!
+  \*******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
+
+
+
+var iconholder = __webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg");
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    transformIcon: {
+        width: 20,
+        height: 20
+    },
+    transformRow: {
+        display: 'flex',
+        width: '100%',
+        floatTop: 0,
+        marginBottom: 5
+    },
+    transformInputs: {
+        flex: '1 1 auto',
+        display: 'flex',
+        width: '33%',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        ':not(:first-child)': {
+            marginLeft: 5
+        }
+    },
+    transformInput: {
+        flex: '1 1 auto',
+        width: '100%',
+        background: 'none',
+        border: 'none',
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginBottom: 10,
+        marginTop: 5
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-icon', {
+    template: "\n        <div class=\"" + css.transformIcon + "\"><slot></slot></div>\n    "
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-panel', {
+    template: "\n    <panel title=\"Transform\" expanded>\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.X\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.Y\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.Z\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  scaleX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  scaleY\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.separator + "\"></div>\n\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateY\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateZ\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  skewX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  skewY\"></input>\n            </div>\n        </div>\n    </panel>\n    "
 });
 
 
@@ -59516,6 +59931,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var ambients_math__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ambients-math */ "./node_modules/ambients-math/index.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 
@@ -59523,7 +59940,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     canvasContainer: {
         width: '100%',
         height: '100%',
-        background: '#cccccc',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
         position: 'relative',
         overflow: 'hidden'
     },

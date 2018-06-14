@@ -1,12 +1,13 @@
 import Vue from "vue";
 import rinss, { rss } from "rinss";
 import { quadrant } from 'ambients-math';
+import theme from "./theme";
 
 const css=rinss.create({
     canvasContainer: {
         width: '100%',
         height: '100%',
-        background: '#cccccc',
+        background: theme.background,
         position: 'relative',
         overflow: 'hidden'
     },

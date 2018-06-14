@@ -4,16 +4,19 @@ import rinss, { rss } from 'rinss';
 const css = rinss.create({
     shrink: {
         whiteSpace: 'nowrap',
-        width: 1
+        width: 1,
+        padding: 0
     },
     grow: {
         whiteSpace: 'nowrap',
+        padding: 0,
         '>*': {
             width: '100%',
         }
     },
     auto: {
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        padding: 0
     }
 });
 
@@ -53,7 +56,7 @@ Vue.component('gap', {
 
 Vue.component('row', {
     template: `
-        <table :style="tableStyle"><tr><slot/></tr></table>
+        <table :style="computedStyle"><tr><slot/></tr></table>
     `,
     props: {
         stretch: Boolean,
@@ -65,7 +68,7 @@ Vue.component('row', {
         };
     },
     computed: {
-        tableStyle() {
+        computedStyle() {
             return rss({
                 width: this.stretch ? '100%' : 'auto',
                 height: this.stretchy ? '100%' : 'auto',
