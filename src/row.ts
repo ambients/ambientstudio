@@ -56,7 +56,8 @@ Vue.component('row', {
         <table :style="tableStyle"><tr><slot/></tr></table>
     `,
     props: {
-        stretch: Boolean
+        stretch: Boolean,
+        stretchy: Boolean
     },
     provide() {
         return {
@@ -67,6 +68,7 @@ Vue.component('row', {
         tableStyle() {
             return rss({
                 width: this.stretch ? '100%' : 'auto',
+                height: this.stretchy ? '100%' : 'auto',
                 borderCollapse: 'collapse'
             });
         }

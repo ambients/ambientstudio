@@ -10,8 +10,6 @@ const css = rinss.create({
         width: 50,
         height: '100%',
         background: 'rgb(247, 247, 247)',
-        absLeft: 0,
-        absTop: 0,
         overflow: "hidden",
         boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
         userSelect: 'none'

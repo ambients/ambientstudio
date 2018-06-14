@@ -9,7 +9,9 @@
     "vue-async-computed": "*",
     "vue-color": "*",
     "vue-material": "beta",
-    "vue-resize": "*"
+    "vue-resize": "*",
+    "vue-perfect-scrollbar": "*",
+    "vue-touch": "next"
   },
   "devDependencies": {
     "@types/node": "^10.3.3",

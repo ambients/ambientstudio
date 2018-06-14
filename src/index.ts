@@ -47,11 +47,19 @@ declare module 'vue/types/vue' {
     }
 }
 
+import VuePerfectScrollbar from 'vue-perfect-scrollbar';
+
+import VueTouch from 'vue-touch';
+Vue.use(VueTouch)
+
+
 import './panels';
 import './propertiesPanel';
 import './positionPanel';
 import './toolbar';
 import './typographyPanel';
+import './row';
+import './whiteBoard';
 
 rinss.config({ duration: 250 });
 
@@ -62,7 +70,6 @@ rinss.inline(document.body, {
     overflow: 'hidden',
     fontFamily: '"Arial", "sans-serif"'
 });
-
 const css = rinss.create({
     stage: {
         width: '100vw',
@@ -107,21 +114,25 @@ new Vue({
     el: container,
     components: {
         'modal': Modal,
-        'sketch-picker': Sketch
+        'sketch-picker': Sketch,
+        'perfect-scrollbar': VuePerfectScrollbar
     },
     template: `
         <div class="${ css.stage }">
-            <panels>
-                <properties-panel expanded/>
-                <position-panel expanded/>
-                <typography-panel
-                 @showColorPicker="showTextColorPicker"
-                 :colorPicked="textColorPicker.color.hex"
-                 expanded/>
-                <panel title="Backgrounds"/>
-                <panel title="Effects"/>
-            </panels>
-            <toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/>
+            <row stretch stretchy>
+                <cell shrink><toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/></cell>
+                <cell><white-board/></cell>
+                <cell shrink><panels>
+                    <properties-panel expanded/>
+                    <position-panel expanded/>
+                    <typography-panel
+                    @showColorPicker="showTextColorPicker"
+                    :colorPicked="textColorPicker.color.hex"
+                    expanded/>
+                    <panel title="Backgrounds"/>
+                    <panel title="Effects"/>
+                </panels></cell>
+            </row>
             <modal class="${ css.colorPickerModal }"
              v-if="colorPicker.show"
              :left="colorPicker.left"
@@ -154,6 +165,9 @@ new Vue({
             this.textColorPicker.left = e.clientX;
             this.textColorPicker.top = e.clientY;
             this.textColorPicker.show = true;
+        },
+        onPan(e){
+            console.log(e);
         }
     }
 });

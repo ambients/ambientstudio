@@ -6,8 +6,6 @@ const css = rinss.create({
         width: 300,
         height: '100%',
         background: 'rgb(247, 247, 247)',
-        absRight: 0,
-        absTop: 0,
         overflowX: 'hidden',
         overflowY: 'scroll',
         userSelect: 'none',
