@@ -1,5 +1,6 @@
 import Vue from "vue";
 import rinss, { rss } from "rinss";
+import { quadrant } from 'ambients-math';
 
 const css=rinss.create({
     canvasContainer: {
@@ -7,7 +8,7 @@ const css=rinss.create({
         height: '100%',
         background: '#cccccc',
         position: 'relative',
-        overflow: 'scroll'
+        overflow: 'hidden'
     },
     canvas: {
         width: 800,
@@ -20,7 +21,13 @@ const css=rinss.create({
 
 Vue.component('white-board', {
     template:`
-        <v-touch ref="canvasContainer" class="${ css.canvasContainer }" @pan="onPan" @panstart="panStart" @panend="panEnd">
+        <v-touch
+         ref="canvasContainer"
+         class="${ css.canvasContainer }"
+         :pan-options="{ direction: 'all', threshold: 0 }"
+         @pan="onPan"
+         @panstart="panStart"
+         @panend="panEnd">
             <div ref="canvas" class="${css.canvas}">
                 <div v-if="showSelectionBox" :style="computedStyle"></div>
             </div>
@@ -28,11 +35,19 @@ Vue.component('white-board', {
     `,
     data(){
         return{
+            startX: 0,
+            startY: 0,
+            x: 0,
+            y: 0,
+            deltaX: 0,
+            deltaY: 0,
             showSelectionBox: false,
-            selectionBoxX:0,
-            selectionBoxY:0,
-            selectionBoxWidth:0,
-            selectionBoxHeight:0,
+            selectionBoxX: 0,
+            selectionBoxXStart: 0,
+            selectionBoxY: 0,
+            selectionBoxYStart: 0,
+            selectionBoxWidth: 0,
+            selectionBoxHeight: 0,
         }
     },
     computed :{
@@ -49,28 +64,40 @@ Vue.component('white-board', {
     },
     methods : {
         onPan(e){
-            this.selectionBoxWidth=Math.abs(e.deltaX);
-            this.selectionBoxHeight=Math.abs(e.deltaY);
+            this.deltaX = e.center.x - this.startX;
+            this.deltaY = e.center.y - this.startY;
 
-            let quadrant=1;
-            if (e.center.x < this.selectionBoxX && e.center.y < this.selectionBoxY) quadrant = 1;
-            else if (e.center.x > this.selectionBoxX && e.center.y < this.selectionBoxY) quadrant = 2;
-            else if (e.center.x < this.selectionBoxX && e.center.y > this.selectionBoxY) quadrant = 3;
-            else if (e.center.x > this.selectionBoxX && e.center.y > this.selectionBoxY) quadrant = 4;
+            this.selectionBoxWidth = Math.abs(this.deltaX);
+            this.selectionBoxHeight = Math.abs(this.deltaY);
 
-            console.log(quadrant);
+            const q = quadrant(this.deltaX, this.deltaY, 0, 0);
+
+            if (q === 1) {
+                this.selectionBoxX = this.selectionBoxXStart;
+                this.selectionBoxY = this.selectionBoxYStart - this.selectionBoxHeight;
+            }
+            else if (q === 2) {
+                this.selectionBoxX = this.selectionBoxXStart - this.selectionBoxWidth;
+                this.selectionBoxY = this.selectionBoxYStart - this.selectionBoxHeight;
+            }
+            else if (q === 3) {
+                this.selectionBoxX = this.selectionBoxXStart - this.selectionBoxWidth;
+                this.selectionBoxY = this.selectionBoxYStart;
+            }
+            else if (q === 4) {
+                this.selectionBoxX = this.selectionBoxXStart;
+                this.selectionBoxY = this.selectionBoxYStart;
+            }
         },
         panStart(e){
-            this.showSelectionBox=true;
+            this.showSelectionBox = true;
+            
+            this.startX = e.center.x;
+            this.startY = e.center.y;
 
-            const parentBounds = (this.$refs.canvasContainer as any).$el.getBoundingClientRect();
-            const childBounds = (this.$refs.canvas as any).getBoundingClientRect();
-
-            const xDiff = childBounds.x - parentBounds.x + 50;
-            const yDiff = childBounds.y - parentBounds.y;
-
-            this.selectionBoxX=e.center.x - xDiff;
-            this.selectionBoxY=e.center.y - yDiff;
+            const canvasBounds = (this.$refs.canvas as any).getBoundingClientRect();
+            this.selectionBoxXStart = e.center.x - canvasBounds.x;
+            this.selectionBoxYStart = e.center.y - canvasBounds.y;
         },
         panEnd(e){
             this.showSelectionBox=false;

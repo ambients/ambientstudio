@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ambients-math": "^1.0.1",
     "ambients-modal": "^1.0.7",
     "ambients-utils": "^1.3.0",
     "babel-polyfill": "*",
@@ -9,8 +10,8 @@
     "vue-async-computed": "*",
     "vue-color": "*",
     "vue-material": "beta",
-    "vue-resize": "*",
     "vue-perfect-scrollbar": "*",
+    "vue-resize": "*",
     "vue-touch": "next"
   },
   "devDependencies": {
