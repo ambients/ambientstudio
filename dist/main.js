@@ -56495,6 +56495,163 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/borderPanel.ts":
+/*!****************************!*\
+  !*** ./src/borderPanel.ts ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+
+
+
+
+
+var borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
+var borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
+var borderLeft = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-left.svg */ "./src/icons/border-left.svg"));
+var borderRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-right.svg */ "./src/icons/border-right.svg"));
+var borderBottom = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-bottom.svg */ "./src/icons/border-bottom.svg"));
+var colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icons/font-color.svg");
+var borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
+var borderLine = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"));
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    borderIcon: {
+        width: 40,
+        height: 40,
+        cursor: 'pointer',
+        margin: 5,
+    },
+    borderRow: {
+        floatTop: 0,
+        display: 'flex',
+        width: '100%'
+    },
+    borderOptions: {
+        width: '100%',
+        flex: '1 1 auto',
+        marginLeft: 20
+    },
+    borderStyle: {
+        width: '100%',
+        display: 'flex',
+        floatTop: 0,
+    },
+    borderInputStyle: {
+        width: '100%',
+        flex: '1 1 auto',
+        display: 'flex',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+    },
+    borderThickness: {
+        flex: '1 1 auto',
+        width: '100%',
+        display: 'flex'
+    },
+    inputIcons: {
+        width: 20,
+        height: 20,
+        marginLeft: 5,
+        cursor: 'pointer'
+    },
+    borderThicknessInput: {
+        flex: '1 1 auto',
+        width: '100%',
+        border: 'none',
+        background: 'none'
+    },
+    borderType: {
+        width: '100%',
+        floatTop: 0,
+        display: 'flex',
+    },
+    borderTypeTable: {},
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginBottom: 10
+    },
+    rotation: {
+        svg: {
+            rotate: -90,
+        }
+    },
+    rotation2: {
+        svg: {
+            rotate: -180,
+        }
+    },
+    rotation3: {
+        svg: {
+            rotate: -270,
+        }
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-icon', {
+    template: "\n        <div class=\"" + css.borderIcon + "\" :style=\"getStyle()\" @click=\"toggleSelected()\"><slot></slot></div>\n    ",
+    data: function () {
+        return {
+            iconColor: false
+        };
+    },
+    methods: {
+        toggleSelected: function () {
+            this.iconColor = !this.iconColor;
+        },
+        getStyle: function () {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
+                color: (this.iconColor) ? _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["default"].textPrimary
+            });
+        }
+    }
+});
+var borderStyleName = { value: '' };
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('input-icon', {
+    template: "\n        <div class=\"" + css.inputIcons + "\" :style=\"getType()\" @click=\"toggleSelect()\"><slot></slot></div>\n    ",
+    props: {
+        name: String,
+    },
+    data: function () {
+        return {
+            borderStyleName: borderStyleName
+        };
+    },
+    methods: {
+        toggleSelect: function () {
+            if (this.borderStyleName.value === this.name)
+                this.borderStyleName.value = '';
+            else
+                this.borderStyleName.value = this.name;
+        },
+        getType: function () {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
+                color: (this.borderStyleName.value === this.name) ? _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["default"].textPrimary
+            });
+        }
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-card', {
+    template: "\n        <div class=\"" + css.borderRow + "\">\n            <border-icon rotation><slot></slot></border-icon>\n            <div class=\"" + css.borderOptions + "\">\n                <div class=\"" + css.borderStyle + "\">\n                    <div class=\"" + css.borderInputStyle + "\">\n                        <div class=\"" + css.borderThickness + "\">\n                            <input-icon>" + borderThickness + "</input-icon>\n                            <input class=\"" + css.borderThicknessInput + "\" :placeholder=\"name\"></input>\n                        </div>\n                    </div>\n                    <input-icon>" + colorPalette + "</input-icon>\n                </div>\n                <div class=\"" + css.borderType + "\">\n                    <table class=\"" + css.borderTypeTable + "\">\n                        <tr>\n                            <td align=\"center\"><input-icon name=\"L1\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L2\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L3\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L4\">" + borderLine + "</input-icon></td>\n                        </tr>\n                    </table>\n                </div>\n            </div>\n        </div>\n    ",
+    props: {
+        name: String,
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-panel', {
+    template: "\n    <panel title=\"Border\" expanded>\n        <border-card name=\" top thickness\">" + borderTop + "</border-card>\n        <border-card name=\" left thickness\">" + borderLeft + "</border-card>\n        <border-card name=\" right thickness\">" + borderRight + "</border-card>\n        <border-card name=\" bottom thickness\">" + borderBottom + "</border-card>\n        \n        <div class=\"" + css.separator + "\"></div>\n\n        <border-card name=\" top right radius\">" + borderTopRight + "</border-card>\n        <border-card name=\" top left radius\" class=\"" + css.rotation + "\">" + borderTopRight + "</border-card>\n        <border-card name=\" bottom right radius\" class=\"" + css.rotation2 + "\">" + borderTopRight + "</border-card>\n        <border-card name=\" bottom left radius\" class=\"" + css.rotation3 + "\">" + borderTopRight + "</border-card>\n        \n    </panel>\n    "
+});
+
+
+/***/ }),
+
 /***/ "./src/colorPicker.ts":
 /*!****************************!*\
   !*** ./src/colorPicker.ts ***!
@@ -56769,6 +56926,61 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/border-bottom.svg":
+/*!*************************************!*\
+  !*** ./src/icons/border-bottom.svg ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M9 11H7v2h2v-2zm4 4h-2v2h2v-2zM9 3H7v2h2V3zm4 8h-2v2h2v-2zM5 3H3v2h2V3zm8 4h-2v2h2V7zm4 4h-2v2h2v-2zm-4-8h-2v2h2V3zm4 0h-2v2h2V3zm2 10h2v-2h-2v2zm0 4h2v-2h-2v2zM5 7H3v2h2V7zm14-4v2h2V3h-2zm0 6h2V7h-2v2zM5 11H3v2h2v-2zM3 21h18v-2H3v2zm2-6H3v2h2v-2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-left.svg":
+/*!***********************************!*\
+  !*** ./src/icons/border-left.svg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M11 21h2v-2h-2v2zm0-4h2v-2h-2v2zm0-12h2V3h-2v2zm0 4h2V7h-2v2zm0 4h2v-2h-2v2zm-4 8h2v-2H7v2zM7 5h2V3H7v2zm0 8h2v-2H7v2zm-4 8h2V3H3v18zM19 9h2V7h-2v2zm-4 12h2v-2h-2v2zm4-4h2v-2h-2v2zm0-14v2h2V3h-2zm0 10h2v-2h-2v2zm0 8h2v-2h-2v2zm-4-8h2v-2h-2v2zm0-8h2V3h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-right.svg":
+/*!************************************!*\
+  !*** ./src/icons/border-right.svg ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 21h2v-2H7v2zM3 5h2V3H3v2zm4 0h2V3H7v2zm0 8h2v-2H7v2zm-4 8h2v-2H3v2zm8 0h2v-2h-2v2zm-8-8h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm8 8h2v-2h-2v2zm4-4h2v-2h-2v2zm4-10v18h2V3h-2zm-4 18h2v-2h-2v2zm0-16h2V3h-2v2zm-4 8h2v-2h-2v2zm0-8h2V3h-2v2zm0 4h2V7h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-top-right.svg":
+/*!****************************************!*\
+  !*** ./src/icons/border-top-right.svg ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 7.8125 3.125 C 6.949219 3.125 6.25 3.824219 6.25 4.6875 C 6.25 5.550781 6.949219 6.25 7.8125 6.25 C 8.675781 6.25 9.375 5.550781 9.375 4.6875 C 9.375 3.824219 8.675781 3.125 7.8125 3.125 Z M 14.0625 3.125 C 13.199219 3.125 12.5 3.824219 12.5 4.6875 C 12.5 5.550781 13.199219 6.25 14.0625 6.25 C 14.925781 6.25 15.625 5.550781 15.625 4.6875 C 15.625 3.824219 14.925781 3.125 14.0625 3.125 Z M 20.3125 3.125 C 19.449219 3.125 18.75 3.824219 18.75 4.6875 C 18.75 5.550781 19.449219 6.25 20.3125 6.25 C 21.175781 6.25 21.875 5.550781 21.875 4.6875 C 21.875 3.824219 21.175781 3.125 20.3125 3.125 Z M 25 3.125 L 25 6.25 C 33.648438 6.25 40.625 13.226563 40.625 21.875 L 43.75 21.875 C 43.75 11.535156 35.339844 3.125 25 3.125 Z M 4.6875 6.25 C 3.824219 6.25 3.125 6.949219 3.125 7.8125 C 3.125 8.675781 3.824219 9.375 4.6875 9.375 C 5.550781 9.375 6.25 8.675781 6.25 7.8125 C 6.25 6.949219 5.550781 6.25 4.6875 6.25 Z M 4.6875 12.5 C 3.824219 12.5 3.125 13.199219 3.125 14.0625 C 3.125 14.925781 3.824219 15.625 4.6875 15.625 C 5.550781 15.625 6.25 14.925781 6.25 14.0625 C 6.25 13.199219 5.550781 12.5 4.6875 12.5 Z M 4.6875 18.75 C 3.824219 18.75 3.125 19.449219 3.125 20.3125 C 3.125 21.175781 3.824219 21.875 4.6875 21.875 C 5.550781 21.875 6.25 21.175781 6.25 20.3125 C 6.25 19.449219 5.550781 18.75 4.6875 18.75 Z M 4.6875 25 C 3.824219 25 3.125 25.699219 3.125 26.5625 C 3.125 27.425781 3.824219 28.125 4.6875 28.125 C 5.550781 28.125 6.25 27.425781 6.25 26.5625 C 6.25 25.699219 5.550781 25 4.6875 25 Z M 42.1875 25 C 41.324219 25 40.625 25.699219 40.625 26.5625 C 40.625 27.425781 41.324219 28.125 42.1875 28.125 C 43.050781 28.125 43.75 27.425781 43.75 26.5625 C 43.75 25.699219 43.050781 25 42.1875 25 Z M 4.6875 31.25 C 3.824219 31.25 3.125 31.949219 3.125 32.8125 C 3.125 33.675781 3.824219 34.375 4.6875 34.375 C 5.550781 34.375 6.25 33.675781 6.25 32.8125 C 6.25 31.949219 5.550781 31.25 4.6875 31.25 Z M 42.1875 31.25 C 41.324219 31.25 40.625 31.949219 40.625 32.8125 C 40.625 33.675781 41.324219 34.375 42.1875 34.375 C 43.050781 34.375 43.75 33.675781 43.75 32.8125 C 43.75 31.949219 43.050781 31.25 42.1875 31.25 Z M 4.6875 37.5 C 3.824219 37.5 3.125 38.199219 3.125 39.0625 C 3.125 39.925781 3.824219 40.625 4.6875 40.625 C 5.550781 40.625 6.25 39.925781 6.25 39.0625 C 6.25 38.199219 5.550781 37.5 4.6875 37.5 Z M 42.1875 37.5 C 41.324219 37.5 40.625 38.199219 40.625 39.0625 C 40.625 39.925781 41.324219 40.625 42.1875 40.625 C 43.050781 40.625 43.75 39.925781 43.75 39.0625 C 43.75 38.199219 43.050781 37.5 42.1875 37.5 Z M 7.8125 40.625 C 6.949219 40.625 6.25 41.324219 6.25 42.1875 C 6.25 43.050781 6.949219 43.75 7.8125 43.75 C 8.675781 43.75 9.375 43.050781 9.375 42.1875 C 9.375 41.324219 8.675781 40.625 7.8125 40.625 Z M 14.0625 40.625 C 13.199219 40.625 12.5 41.324219 12.5 42.1875 C 12.5 43.050781 13.199219 43.75 14.0625 43.75 C 14.925781 43.75 15.625 43.050781 15.625 42.1875 C 15.625 41.324219 14.925781 40.625 14.0625 40.625 Z M 20.3125 40.625 C 19.449219 40.625 18.75 41.324219 18.75 42.1875 C 18.75 43.050781 19.449219 43.75 20.3125 43.75 C 21.175781 43.75 21.875 43.050781 21.875 42.1875 C 21.875 41.324219 21.175781 40.625 20.3125 40.625 Z M 26.5625 40.625 C 25.699219 40.625 25 41.324219 25 42.1875 C 25 43.050781 25.699219 43.75 26.5625 43.75 C 27.425781 43.75 28.125 43.050781 28.125 42.1875 C 28.125 41.324219 27.425781 40.625 26.5625 40.625 Z M 32.8125 40.625 C 31.949219 40.625 31.25 41.324219 31.25 42.1875 C 31.25 43.050781 31.949219 43.75 32.8125 43.75 C 33.675781 43.75 34.375 43.050781 34.375 42.1875 C 34.375 41.324219 33.675781 40.625 32.8125 40.625 Z M 39.0625 40.625 C 38.199219 40.625 37.5 41.324219 37.5 42.1875 C 37.5 43.050781 38.199219 43.75 39.0625 43.75 C 39.925781 43.75 40.625 43.050781 40.625 42.1875 C 40.625 41.324219 39.925781 40.625 39.0625 40.625 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/border-top.svg":
+/*!**********************************!*\
+  !*** ./src/icons/border-top.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M7 21h2v-2H7v2zm0-8h2v-2H7v2zm4 0h2v-2h-2v2zm0 8h2v-2h-2v2zm-8-4h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2v-2H3v2zm0-4h2V7H3v2zm8 8h2v-2h-2v2zm8-8h2V7h-2v2zm0 4h2v-2h-2v2zM3 3v2h18V3H3zm16 14h2v-2h-2v2zm-4 4h2v-2h-2v2zM11 9h2V7h-2v2zm8 12h2v-2h-2v2zm-4-8h2v-2h-2v2z\"></path><path d=\"M0 0h24v24H0z\" fill=\"none\"></path></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/checkbox-filled.svg":
 /*!***************************************!*\
   !*** ./src/icons/checkbox-filled.svg ***!
@@ -56857,6 +57069,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/font-color.svg":
+/*!**********************************!*\
+  !*** ./src/icons/font-color.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26.300781 0 C 15.550781 0 3 6.207031 3 23.699219 C 3 36.402344 12.804688 50 27.398438 50 C 27.40625 50 27.609375 50 27.617188 50 C 33.101563 49.898438 39 46.355469 39 38.800781 C 39 37.355469 38.464844 36.101563 37.988281 34.996094 C 37.863281 34.707031 37.742188 34.421875 37.628906 34.132813 C 36.550781 31.414063 37.742188 30.417969 40.539063 28.425781 C 43.714844 26.167969 48.058594 23.074219 48 14.898438 C 48 10.039063 42.695313 0 26.300781 0 Z M 26.5 6 C 28.433594 6 30 8.015625 30 10.5 C 30 12.984375 28.433594 15 26.5 15 C 24.566406 15 23 12.984375 23 10.5 C 23 8.015625 24.566406 6 26.5 6 Z M 14.5 33 C 12.566406 33 11 30.984375 11 28.5 C 11 26.015625 12.566406 24 14.5 24 C 16.433594 24 18 26.015625 18 28.5 C 18 30.984375 16.433594 33 14.5 33 Z M 15.5 20 C 13.566406 20 12 17.984375 12 15.5 C 12 13.015625 13.566406 11 15.5 11 C 17.433594 11 19 13.015625 19 15.5 C 19 17.984375 17.433594 20 15.5 20 Z M 27 43 C 24.757813 43 23 41.242188 23 39 C 23 36.757813 24.757813 35 27 35 C 29.242188 35 31 36.757813 31 39 C 31 41.242188 29.242188 43 27 43 Z M 37.5 20 C 35.566406 20 34 17.984375 34 15.5 C 34 13.015625 35.566406 11 37.5 11 C 39.433594 11 41 13.015625 41 15.5 C 41 17.984375 39.433594 20 37.5 20 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/italic-filled.svg":
 /*!*************************************!*\
   !*** ./src/icons/italic-filled.svg ***!
@@ -56898,6 +57121,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" fill=\"#000000\"><path style=\"text-indent:0;text-align:start;line-height:normal;text-transform:none;block-progression:tb;-inkscape-font-specification:Bitstream Vera Sans\" d=\"M 42.875 6 A 0.98559853 0.98559853 0 0 0 42.3125 6.3125 L 6.3125 42.3125 A 0.98559853 0.98559853 0 1 0 7.6875 43.6875 L 43.6875 7.6875 A 0.98559853 0.98559853 0 0 0 42.875 6 z\" color=\"#000\" overflow=\"visible\" enable-background=\"accumulate\" font-family=\"Bitstream Vera Sans\" fill=\"#000000\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/lock.svg":
+/*!****************************!*\
+  !*** ./src/icons/lock.svg ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 52 52\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 32 0 C 27.578125 0 23.757813 1.835938 21.375 4.8125 C 18.992188 7.789063 18 11.648438 18 15.8125 L 18 18 L 24 18 L 24 15.8125 C 24 12.65625 24.78125 10.171875 26.0625 8.5625 C 27.34375 6.953125 29.085938 6 32 6 C 34.921875 6 36.65625 6.898438 37.9375 8.5 C 39.21875 10.101563 40 12.617188 40 15.8125 L 40 18 L 46 18 L 46 15.8125 C 46 11.625 44.945313 7.726563 42.5625 4.75 C 40.179688 1.773438 36.414063 0 32 0 Z M 18 20 C 14.6875 20 12 22.6875 12 26 L 12 46 C 12 49.3125 14.6875 52 18 52 L 46 52 C 49.3125 52 52 49.3125 52 46 L 52 26 C 52 22.6875 49.3125 20 46 20 Z M 32 30 C 34.210938 30 36 31.789063 36 34 C 36 35.476563 35.195313 36.742188 34 37.4375 L 34 42 C 34 43.101563 33.101563 44 32 44 C 30.898438 44 30 43.101563 30 42 L 30 37.4375 C 28.804688 36.742188 28 35.476563 28 34 C 28 31.789063 29.789063 30 32 30 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -56986,6 +57220,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 25.980469 3.9375 C 25.917969 3.941406 25.855469 3.953125 25.792969 3.96875 C 25.421875 4.035156 25.125 4.304688 25.019531 4.664063 C 24.914063 5.03125 25.023438 5.417969 25.296875 5.671875 L 26.011719 6.386719 C 21.492188 11.445313 20.261719 18.382813 20.121094 19.222656 L 13.113281 22.351563 L 12.988281 22.226563 C 12.785156 22.007813 12.484375 21.894531 12.183594 21.917969 C 11.796875 21.957031 11.46875 22.214844 11.34375 22.582031 C 11.214844 22.949219 11.316406 23.355469 11.59375 23.625 L 25.980469 38.007813 C 26.21875 38.304688 26.605469 38.4375 26.976563 38.351563 C 27.34375 38.269531 27.632813 37.976563 27.71875 37.609375 C 27.804688 37.238281 27.667969 36.855469 27.375 36.613281 L 27.035156 36.273438 L 30.132813 29.421875 C 30.417969 29.382813 30.734375 29.324219 31.15625 29.234375 C 32.101563 29.039063 33.371094 28.710938 34.816406 28.210938 C 37.449219 27.300781 40.632813 25.84375 43.214844 23.59375 L 43.929688 24.304688 C 44.3125 24.699219 44.945313 24.703125 45.339844 24.320313 C 45.734375 23.9375 45.738281 23.304688 45.355469 22.910156 L 44.085938 21.671875 C 44.050781 21.617188 44.007813 21.5625 43.960938 21.515625 L 28.085938 5.640625 C 28.042969 5.597656 27.988281 5.554688 27.933594 5.519531 L 26.691406 4.246094 C 26.507813 4.050781 26.25 3.941406 25.980469 3.9375 Z M 27.5 7.875 L 41.730469 22.105469 C 39.449219 24.050781 36.605469 25.511719 34.164063 26.351563 C 32.804688 26.820313 31.613281 27.128906 30.753906 27.3125 C 30.324219 27.402344 29.976563 27.441406 29.761719 27.46875 C 29.707031 27.476563 29.703125 27.496094 29.667969 27.5 C 29.636719 27.503906 29.578125 27.5 29.574219 27.5 C 29.148438 27.445313 28.738281 27.667969 28.554688 28.058594 L 25.578125 34.691406 L 14.726563 23.839844 L 21.328125 20.832031 C 21.640625 20.703125 21.859375 20.421875 21.917969 20.089844 C 21.917969 20.089844 23.320313 12.679688 27.5 7.875 Z M 17.359375 30.847656 L 4.246094 43.929688 L 5.671875 45.355469 L 18.757813 32.242188 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/placeholder.svg":
+/*!***********************************!*\
+  !*** ./src/icons/placeholder.svg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 8 8 L 8 56 L 56 56 L 56 8 Z M 12 12 L 52 12 L 52 52 L 47.875 52 C 47.1875 46.59375 43.765625 42.023438 39.0625 39.6875 C 42.046875 37.5 44 33.96875 44 30 C 44 23.398438 38.601563 18 32 18 C 25.398438 18 20 23.398438 20 30 C 20 33.96875 21.953125 37.5 24.9375 39.6875 C 20.234375 42.023438 16.8125 46.59375 16.125 52 L 12 52 Z M 32 22 C 36.445313 22 40 25.554688 40 30 C 40 34.445313 36.445313 38 32 38 C 27.554688 38 24 34.445313 24 30 C 24 25.554688 27.554688 22 32 22 Z M 32 42 C 37.96875 42 42.867188 46.304688 43.8125 52 L 20.1875 52 C 21.132813 46.304688 26.03125 42 32 42 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -57099,6 +57344,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/thickness.svg":
+/*!*********************************!*\
+  !*** ./src/icons/thickness.svg ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26 6 L 26 29.125 L 17.4375 20.5625 L 14.5625 23.4375 L 21.125 30 L 0 30 L 0 34 L 21.125 34 L 14.5625 40.5625 L 17.4375 43.4375 L 26 34.875 L 26 58 L 30 58 L 30 6 Z M 34 6 L 34 58 L 38 58 L 38 34.875 L 46.5625 43.4375 L 49.4375 40.5625 L 42.875 34 L 64 34 L 64 30 L 42.875 30 L 49.4375 23.4375 L 46.5625 20.5625 L 38 29.125 L 38 6 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/transform-filled.svg":
 /*!****************************************!*\
   !*** ./src/icons/transform-filled.svg ***!
@@ -57165,6 +57421,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/visibility.svg":
+/*!**********************************!*\
+  !*** ./src/icons/visibility.svg ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 48 48\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 24 10 C 12 10 2.773438 22.210938 2.375 22.8125 C 1.773438 23.609375 1.773438 24.390625 2.375 25.1875 C 2.773438 25.789063 12 38 24 38 C 36 38 45.226563 25.789063 45.625 25.1875 C 46.226563 24.390625 46.226563 23.609375 45.625 22.8125 C 45.226563 22.210938 36 10 24 10 Z M 24 14 C 29.601563 14 34 18.398438 34 24 C 34 29.601563 29.601563 34 24 34 C 18.398438 34 14 29.601563 14 24 C 14 18.398438 18.398438 14 24 14 Z M 24 19 C 21.242188 19 19 21.242188 19 24 C 19 26.757813 21.242188 29 24 29 C 26.757813 29 29 26.757813 29 24 C 29 21.242188 26.757813 19 24 19 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/waves-filled.svg":
 /*!************************************!*\
   !*** ./src/icons/waves-filled.svg ***!
@@ -57225,6 +57492,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
 /* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./row */ "./src/row.ts");
 /* harmony import */ var _whiteBoard__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./whiteBoard */ "./src/whiteBoard.ts");
+/* harmony import */ var _transformPanel__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./transformPanel */ "./src/transformPanel.ts");
+/* harmony import */ var _borderPanel__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./borderPanel */ "./src/borderPanel.ts");
+/* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
 
 
 
@@ -57256,6 +57526,9 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].mixin({
 
 
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_touch__WEBPACK_IMPORTED_MODULE_12___default.a);
+
+
+
 
 
 
@@ -57314,7 +57587,7 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
         'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_5__["Sketch"],
         'perfect-scrollbar': vue_perfect_scrollbar__WEBPACK_IMPORTED_MODULE_11___default.a
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink><toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell><white-board/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink><toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><outline/></cell>\n                <cell><white-board/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
     data: function () {
         return {
             colorPicker: colorPicker,
@@ -57438,6 +57711,71 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-select', {
             selected: ''
         };
     }
+});
+
+
+/***/ }),
+
+/***/ "./src/outline.ts":
+/*!************************!*\
+  !*** ./src/outline.ts ***!
+  \************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
+
+
+
+var visibility = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility.svg */ "./src/icons/visibility.svg"));
+var lock = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock.svg */ "./src/icons/lock.svg"));
+var placeholder = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    outline: {
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].white,
+        width: 200,
+        height: '100%',
+        overflowY: 'scroll',
+        boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
+        paddingLeft: 5
+    },
+    outlineRow: {
+        floatTop: 0,
+        height: 20,
+        width: '100%',
+        marginTop: 10,
+    },
+    tabs: {
+        width: 20,
+        height: 20,
+        floatLeft: 0,
+        margin: 1
+    },
+    elementName: {
+        floatLeft: 0,
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginTop: 10,
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-header', {
+    template: "\n        <div class=\"" + css.outlineRow + "\">\n            <div class=\"" + css.tabs + "\">" + visibility + "</div>\n            <div class=\"" + css.tabs + "\">" + lock + "</div>\n        </div>\n    "
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-row', {
+    template: "\n        <div class=\"" + css.outlineRow + "\">\n            <div class=\"" + css.tabs + "\">" + visibility + "</div>\n            <div class=\"" + css.tabs + "\">" + lock + "</div>\n            <div class=\"" + css.tabs + "\">" + placeholder + "</div>\n            <div class=\"" + css.elementName + "\"><slot></slot></div>\n        </div>\n    "
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline', {
+    template: "\n        <div class=\"" + css.outline + "\">\n            <outline-header></outline-header>\n            <div class=\"" + css.separator + "\"></div>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n        </div>\n    "
 });
 
 
@@ -57826,7 +58164,7 @@ __webpack_require__.r(__webpack_exports__);
     background: 'rgb(228,228,228)',
     textPrimary: '#666666',
     border: '#999999',
-    white: '#ffffff'
+    white: 'rgb(247,247,247)',
 });
 
 
@@ -57847,6 +58185,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./icon */ "./src/icon.ts");
 /* harmony import */ var _radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./radio */ "./src/radio.ts");
 /* harmony import */ var _colorPicker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./colorPicker */ "./src/colorPicker.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
 
 
 
@@ -57857,7 +58197,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     toolbar: {
         width: 50,
         height: '100%',
-        background: 'rgb(247, 247, 247)',
+        background: _theme__WEBPACK_IMPORTED_MODULE_6__["default"].white,
         overflow: "hidden",
         boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
         userSelect: 'none'
@@ -57896,6 +58236,69 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
             default: 'blue'
         }
     }
+});
+
+
+/***/ }),
+
+/***/ "./src/transformPanel.ts":
+/*!*******************************!*\
+  !*** ./src/transformPanel.ts ***!
+  \*******************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+
+
+
+
+var iconholder = __webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg");
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    transformIcon: {
+        width: 20,
+        height: 20
+    },
+    transformRow: {
+        display: 'flex',
+        width: '100%',
+        floatTop: 0,
+        marginBottom: 5
+    },
+    transformInputs: {
+        flex: '1 1 auto',
+        display: 'flex',
+        width: '33%',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        ':not(:first-child)': {
+            marginLeft: 5
+        }
+    },
+    transformInput: {
+        flex: '1 1 auto',
+        width: '100%',
+        background: 'none',
+        border: 'none',
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginBottom: 10,
+        marginTop: 5
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-icon', {
+    template: "\n        <div class=\"" + css.transformIcon + "\"><slot></slot></div>\n    "
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-panel', {
+    template: "\n    <panel title=\"Transform\" expanded>\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.X\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.Y\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.Z\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  scaleX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  scaleY\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.separator + "\"></div>\n\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateY\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateZ\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  skewX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  skewY\"></input>\n            </div>\n        </div>\n    </panel>\n    "
 });
 
 
