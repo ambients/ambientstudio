@@ -1,12 +1,11 @@
 import Vue from "vue";
-import { rinss } from "rinss";
-import {theme} from "./theme";
+import rinss from "rinss";
 
 const css = rinss.create({
     panels: {
         width: 300,
         height: '100%',
-        background: theme.white,
+        background: 'rgb(247, 247, 247)',
         absRight: 0,
         absTop: 0,
         overflowX: 'hidden',
@@ -30,60 +29,48 @@ const css = rinss.create({
         cursor: 'pointer'
     },
     container: {
-        width: '100%'
+        width: '100%',
+        height: 0,
+        floatTop: 0,
+        opacity: 0
     }
 });
 
 Vue.component('panels', {
     template: `
-        <div class="${ css.panels }"><slot></slot></div>
+        <div class="${ css.panels }"><slot/></div>
     `
 });
 
 Vue.component('panel', {
     template: `
         <div class=${ css.panel }>
-            <div class=${ css.title } @click="toggleCollapse()">{{title}}</div>
-            <div class=${ css.container }><slot></slot></div>
+            <div class=${ css.title } @click="collapsed=!collapsed">{{title}}</div>
+            <div ref="container" class=${ css.container }><slot/></div>
         </div>
     `,
     props: {
         title: String,
         expanded: Boolean
     },
-    data: function(){
+    data() {
         return {
-            isCollapsed: !this.expanded,
-            container: undefined
-        }
+            collapsed: true,
+        };
     },
-    mounted: function() {
-        this.container = this.$el.querySelector('.' + css.container);
-
-        if (this.isCollapsed) rinss.inline(this.container, {
-            height: 0,
-            floatTop: 0,
-            opacity: 0
-        });
-        else rinss.inline(this.container, {
-            height: 'auto',
-            floatTop: 10,
-            opacity: 1
-        });
+    mounted() {
+        if (this.expanded) this.collapsed = false;
     },
-    methods: {
-        toggleCollapse: function() {
-            this.isCollapsed = !this.isCollapsed;
-
-            if (this.isCollapsed) rinss.inline(this.container, {
-                height: { from: 'auto', to: 0 },
-                floatTop: { to: 0 },
-                opacity: { to: 0 }
-            });
-            else rinss.inline(this.container, {
-                height: { from: 0, to: 'auto' },
-                floatTop: { to: 10 },
-                opacity: { to: 1 }
+    watch: {
+        collapsed(collapsed) {
+            rinss.inline(this.$refs.container as Element, {
+                height: { to: collapsed ? 0 : 'auto' },
+                floatTop: { to: collapsed ? 0 : 10 },
+                opacity: { to: collapsed ? 0 : 1, then: ()=>{
+                    rinss.inline(this.$refs.container as Element, {
+                        pointerEvents: collapsed ? 'none' : 'auto'
+                    });
+                }}
             });
         }
     }

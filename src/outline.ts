@@ -1,7 +1,7 @@
 import Vue from "vue";
-import { rinss } from "rinss";
-import { processSvg } from "./processSvg";
-import { theme } from "./theme";
+import rinss from "rinss";
+import processSvg from "./processSvg";
+import theme from "./theme";
 
 const visibility= processSvg(require('./icons/visibility.svg'));
 const lock= processSvg(require('./icons/lock.svg'));

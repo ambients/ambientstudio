@@ -1,21 +1,22 @@
 {
     "compilerOptions": {
-        "target": "es2017",
+        "target": "es5",
         "module": "esnext",
         "moduleResolution": "node",
+        "strict": true,
+        "strictFunctionTypes": false,
+        "strictNullChecks": false,
+        "noImplicitAny": false,
+        "noImplicitReturns": true,
+        "noUnusedLocals": false,
         "noFallthroughCasesInSwitch": true,
         "forceConsistentCasingInFileNames": true,
-        "allowUnusedLabels": true,
         "removeComments": true,
         "sourceMap": true,
         "declaration": true,
-        "outDir": "dist-esm",
-        "watch": false
+        "outDir": "dist-esm"
     },
     "include": [
         "src"
-    ],
-    "exclude": [
-        "src/test.ts"
     ]
 }

@@ -4,7 +4,7 @@ function isDelimiter(str: string): boolean {
     return str === ';' || str === ':' || isQuote(str);
 }
 
-export function processSvg(html: string): string {
+export default function(html: string): string {
     const colors: Array<string> = [];
     for (const index of indexesOf(html, '#')) {
         if (isDelimiter(html[index - 1])) {

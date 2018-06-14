@@ -1,95 +1,123 @@
 import Vue from "vue";
-import { rinss } from "rinss";
+import rinss, { rss } from "rinss";
 import "./panels";
 import "./materialInput";
-import { theme } from './theme';
-import { processSvg } from './processSvg';
+import theme from './theme';
+import processSvg from './processSvg';
+import "./row";
+import "./icon";
+import './iconSlot';
+import Radio from './radio';
 
 const topSVG = processSvg(require("./icons/align-top.svg"));
 const middleSVG = processSvg(require("./icons/align-middle.svg"));
 const bottomSVG = processSvg(require("./icons/align-bottom.svg"));
+const minSVG = processSvg(require("./icons/min.svg"));
+const maxSVG = processSvg(require("./icons/max.svg"));
 
 const css = rinss.create({
-    positionButtonsTable: {
-        width: '100%',
-        floatTop: 0
+    minMaxInput: {
+        background: 'transparent',
+        border: 'none',
+        fontSize: 13
+    }
+});
+
+Vue.component('alignment-button', {
+    template: `
+        <icon :style="computedStyle"><slot/></icon>
+    `,
+    props: {
+        rotated: Boolean
     },
-    positionButton: {
-        width: 20,
-        height: 20,
-        cursor: 'pointer'
-    },
-    inputs: {
-        display: 'flex',
-        floatTop: 0,
-        width: '100%'
-    },
-    input: {
-        flex: '1 1 auto',
-        ':not(:first-child)': {
-            marginLeft: 10
+    computed: {
+        computedStyle():string {
+            return rss({
+                rotate: this.rotated ? -90 : 0,
+                cursor: 'pointer'
+            });
         }
     }
 });
 
-const nameV = {value:''};
-const nameH = {value:''};
-
-const PositionButton = Vue.extend({
+Vue.component('position-button', {
+    mixins: [Radio],
     template: `
-        <div class="${ css.positionButton }" :style="getStyle()" @click="toggleSelected()">
-            <slot></slot>
-        </div>
+        <icon-slot @click.native="check" :style="computedStyle">
+            <icon slot="icon" :active="isChecked"><slot/></icon>
+            {{text}}
+        </icon-slot>
     `,
     props: {
-        rotated: Boolean,
-        icon: String,
-        name: String
+        text: String
     },
-    data: function() { return {
-        nameV: nameV,
-        nameH: nameH
-    }},
-    methods: {
-        getStyle: function():string {
-            return rinss.compile({
-                rotate: this.rotated ? -90 : 0,
-                color: (this.name === (this.rotated ? this.nameH : this.nameV).value) ? theme.primary : theme.textPrimary
+    computed: {
+        computedStyle() {
+            return rss({
+                color: (this as any).isChecked ? theme.primary : theme.textPrimary,
+                cursor: 'pointer'
             });
-        },
-        toggleSelected: function():void {
-            if ((this.rotated ? this.nameH : this.nameV).value === this.name)
-                (this.rotated ? this.nameH : this.nameV).value = '';
-            else
-                (this.rotated ? this.nameH : this.nameV).value = this.name;
         }
     }
 });
 
 Vue.component('position-panel', {
-    components: {
-        'position-button': PositionButton
-    },
     template: `
-        <panel title="Position" expanded>
-            <table class="${ css.positionButtonsTable }">
-                <tr>
-                    <td align="center"><position-button name="v0">${ topSVG }</position-button></td>
-                    <td align="center"><position-button name="v1">${ middleSVG }</position-button></td>
-                    <td align="center"><position-button name="v2">${ bottomSVG }</position-button></td>
-                    <td align="center"><position-button rotated name="h0">${ topSVG }</position-button></td>
-                    <td align="center"><position-button rotated name="h1">${ middleSVG }</position-button></td>
-                    <td align="center"><position-button rotated name="h2">${ bottomSVG }</position-button></td>
-                </tr>
-            </table>
-            <div class="${ css.inputs }">
-                <material-input class="${ css.input }">Left</material-input>
-                <material-input class="${ css.input }">Right</material-input>
-            </div>
-            <div class="${ css.inputs}">
-                <material-input class="${ css.input}">Top</material-input>
-                <material-input class="${ css.input }">Bottom</material-input>
-            </div>
+        <panel title="Position" :expanded="expanded">
+            <row stretch style="${ rss({ floatTop: 10 }) }">
+                <cell><alignment-button>${ topSVG}</alignment-button></cell>
+                <cell><alignment-button>${ middleSVG}</alignment-button></cell>
+                <cell><alignment-button>${ bottomSVG}</alignment-button></cell>
+                <cell><alignment-button rotated>${ topSVG}</alignment-button></cell>
+                <cell><alignment-button rotated>${ middleSVG}</alignment-button></cell>
+                <cell><alignment-button rotated>${ bottomSVG }</alignment-button></cell>
+            </row>
+            <row stretch style="${ rss({ fontSize: 10, floatTop: 25 }) }">
+                <cell><position-button name="position" text="Relative">
+                    ${ processSvg(require("./icons/waves.svg")) }
+                    ${ processSvg(require("./icons/waves-filled.svg")) }
+                </position-button></cell>
+                <cell><position-button name="position" text="Absolute">
+                    ${ processSvg(require("./icons/target.svg"))}
+                    ${ processSvg(require("./icons/target-filled.svg")) }
+                </position-button></cell>
+                <cell><position-button name="position" text="Fixed">
+                    ${ processSvg(require("./icons/pin.svg"))}
+                    ${ processSvg(require("./icons/pin-filled.svg")) }
+                </position-button></cell>
+            </row>
+            <row stretch style="${ rss({ floatTop: 15 }) }">
+                <cell><material-input placeholder="Left"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Top"/></cell>
+            </row>
+            <row stretch>
+                <cell><material-input placeholder="Width"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Height"/></cell>
+            </row>
+            <row stretch>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${minSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="min"/></cell>
+                </row></cell>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${maxSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="max"/></cell>
+                </row></cell>
+                <gap/>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${minSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="min"/></cell>
+                </row></cell>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${maxSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="max"/></cell>
+                </row></cell>
+            </row>
         </panel>
-    `
+    `,
+    props: {
+        expanded: Boolean
+    }
 });

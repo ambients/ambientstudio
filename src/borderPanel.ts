@@ -1,8 +1,8 @@
 import Vue from "vue";
-import { rinss } from "rinss";
+import rinss from "rinss";
 import "./panels";
-import {theme} from "./theme";
-import { processSvg } from './processSvg';
+import theme from "./theme";
+import processSvg from './processSvg';
 
 const borderTopRight = processSvg(require('./icons/border-top-right.svg'));
 const borderTop = processSvg(require('./icons/border-top.svg'));

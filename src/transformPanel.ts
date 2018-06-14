@@ -1,7 +1,7 @@
 import Vue from "vue";
-import { rinss } from "rinss";
+import rinss from "rinss";
 import "./panels";
-import {theme} from "./theme";
+import theme from "./theme";
 
 const iconholder = require("./icons/placeholder.svg");
 const css = rinss.create({
