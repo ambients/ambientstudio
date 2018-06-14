@@ -3,5 +3,5 @@ export default {
     background: 'rgb(228,228,228)',
     textPrimary: '#666666',
     border: '#999999',
-    white: '#ffffff'
+    white: 'rgb(247,247,247)',
 }

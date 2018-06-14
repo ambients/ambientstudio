@@ -12,7 +12,6 @@ const css=rinss.create({
         background: theme.white,
         width: 200,
         height:'100%',
-        absLeft: 50,
         overflowY: 'scroll',
         boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
         paddingLeft:5

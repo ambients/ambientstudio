@@ -60,6 +60,9 @@ import './toolbar';
 import './typographyPanel';
 import './row';
 import './whiteBoard';
+import './transformPanel';
+import './borderPanel';
+import './outline';
 
 rinss.config({ duration: 250 });
 
@@ -121,6 +124,7 @@ new Vue({
         <div class="${ css.stage }">
             <row stretch stretchy>
                 <cell shrink><toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/></cell>
+                <cell shrink><outline/></cell>
                 <cell><white-board/></cell>
                 <cell shrink><panels>
                     <properties-panel expanded/>
@@ -131,6 +135,8 @@ new Vue({
                     expanded/>
                     <panel title="Backgrounds"/>
                     <panel title="Effects"/>
+                    <transform-panel/>
+                    <border-panel/>
                 </panels></cell>
             </row>
             <modal class="${ css.colorPickerModal }"

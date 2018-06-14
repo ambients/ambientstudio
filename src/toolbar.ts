@@ -4,12 +4,13 @@ import processSvg from "./processSvg";
 import './icon';
 import Radio from './radio';
 import './colorPicker';
+import theme from './theme';
 
 const css = rinss.create({
     toolbar: {
         width: 50,
         height: '100%',
-        background: 'rgb(247, 247, 247)',
+        background: theme.white,
         overflow: "hidden",
         boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)',
         userSelect: 'none'
