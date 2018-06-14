@@ -59067,7 +59067,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
 /* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
 /* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./row */ "./src/row.ts");
-/* harmony import */ var _whiteBoard__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./whiteBoard */ "./src/whiteBoard.ts");
+/* harmony import */ var _whiteboard__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./whiteboard */ "./src/whiteboard.ts");
 /* harmony import */ var _transformPanel__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./transformPanel */ "./src/transformPanel.ts");
 /* harmony import */ var _borderPanel__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./borderPanel */ "./src/borderPanel.ts");
 /* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
@@ -59161,7 +59161,7 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
         'modal': ambients_modal__WEBPACK_IMPORTED_MODULE_4__["default"],
         'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_5__["Sketch"]
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><white-board/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><whiteboard/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
     data: function () {
         return {
             colorPicker: colorPicker,
@@ -59369,9 +59369,8 @@ __webpack_require__.r(__webpack_exports__);
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     panels: {
         width: 300,
-        height: '100%',
+        height: '100vh',
         background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].white,
-        overflowX: 'hidden',
         overflowY: 'scroll',
         userSelect: 'none',
         borderLeft: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background
@@ -59674,9 +59673,10 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('cell', {
-    template: "\n        <td align=\"center\" :class=\"computedClass\"><slot/></td>\n    ",
+    template: "\n        <td align=\"center\" :class=\"computedClass\" :style=\"computedStyle\"><slot/></td>\n    ",
     inject: {
-        stretch: { default: false }
+        stretch: { default: false },
+        stretchy: { default: false }
     },
     props: {
         shrink: Boolean
@@ -59684,6 +59684,11 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('cell', {
     computed: {
         computedClass: function () {
             return this.shrink ? css.shrink : (this.stretch ? css.grow : css.auto);
+        },
+        computedStyle: function () {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+                height: this.stretchy ? '100%' : 'auto'
+            });
         }
     }
 });
@@ -59709,7 +59714,8 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('row', {
     },
     provide: function () {
         return {
-            stretch: this.stretch
+            stretch: this.stretch,
+            stretchy: this.stretchy
         };
     },
     computed: {
@@ -59919,9 +59925,9 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-panel', {
 
 /***/ }),
 
-/***/ "./src/whiteBoard.ts":
+/***/ "./src/whiteboard.ts":
 /*!***************************!*\
-  !*** ./src/whiteBoard.ts ***!
+  !*** ./src/whiteboard.ts ***!
   \***************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -59952,72 +59958,96 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         centerY: true
     },
 });
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('white-board', {
-    template: "\n        <v-touch\n         ref=\"canvasContainer\"\n         class=\"" + css.canvasContainer + "\"\n         :pan-options=\"{ direction: 'all', threshold: 0 }\"\n         @pan=\"onPan\"\n         @panstart=\"panStart\"\n         @panend=\"panEnd\">\n            <div ref=\"canvas\" class=\"" + css.canvas + "\">\n                <div v-if=\"showSelectionBox\" :style=\"computedStyle\"></div>\n            </div>\n        </v-touch>\n    ",
-    data: function () {
-        return {
-            startX: 0,
-            startY: 0,
-            x: 0,
-            y: 0,
-            deltaX: 0,
-            deltaY: 0,
-            showSelectionBox: false,
-            selectionBoxX: 0,
-            selectionBoxXStart: 0,
-            selectionBoxY: 0,
-            selectionBoxYStart: 0,
-            selectionBoxWidth: 0,
-            selectionBoxHeight: 0,
-        };
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
+    template: "\n        <div v-if=\"pointer.down\" :style=\"computedStyle\"></div>\n    ",
+    props: {
+        pointer: Object
     },
     computed: {
         computedStyle: function () {
+            var width = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.pointer.deltaX), height = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.pointer.deltaY);
+            var x, y;
+            switch (this.pointer.quadrant) {
+                case 1:
+                    x = this.pointer.startX;
+                    y = this.pointer.startY - height;
+                    break;
+                case 2:
+                    x = this.pointer.startX - width;
+                    y = this.pointer.startY - height;
+                    break;
+                case 3:
+                    x = this.pointer.startX - width;
+                    y = this.pointer.startY;
+                    break;
+                case 4:
+                    x = this.pointer.startX;
+                    y = this.pointer.startY;
+                    break;
+            }
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
-                width: this.selectionBoxWidth,
-                height: this.selectionBoxHeight,
-                background: 'blue',
-                opacity: 0.5,
-                absLeft: this.selectionBoxX,
-                absTop: this.selectionBoxY
+                background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
+                opacity: 0.3,
+                border: '1px solid blue',
+                width: width,
+                height: height,
+                absLeft: x,
+                absTop: y
             });
         },
     },
+});
+var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
+function vertices(el) {
+    var b = el.getBoundingClientRect();
+    return [
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
+    ];
+}
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('whiteboard', {
+    template: "\n        <v-touch\n         class=\"" + css.canvasContainer + "\"\n         :pan-options=\"{ direction: 'all', threshold: 0 }\"\n         @pan=\"onPan\"\n         @panstart=\"panStart\"\n         @panend=\"panEnd\">\n            <div ref=\"canvas\" class=\"" + css.canvas + "\">\n                <editor-box :pointer=\"pointer\"/>\n            </div>\n        </v-touch>\n    ",
+    data: function () {
+        return {
+            pointer: {
+                parent: undefined,
+                startX: 0,
+                startY: 0,
+                x: 0,
+                y: 0,
+                deltaX: 0,
+                deltaY: 0,
+                quadrant: 0,
+                down: false
+            }
+        };
+    },
+    mounted: function () {
+        this.pointer.parent = this.$refs.canvas;
+    },
+    watch: {
+        'pointer.parent': function (p) {
+            pTrans.setDestination(0, 0, p.clientWidth, 0, p.clientWidth, p.clientHeight, 0, p.clientHeight);
+        }
+    },
     methods: {
         onPan: function (e) {
-            this.deltaX = e.center.x - this.startX;
-            this.deltaY = e.center.y - this.startY;
-            this.selectionBoxWidth = Math.abs(this.deltaX);
-            this.selectionBoxHeight = Math.abs(this.deltaY);
-            var q = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["quadrant"])(this.deltaX, this.deltaY, 0, 0);
-            if (q === 1) {
-                this.selectionBoxX = this.selectionBoxXStart;
-                this.selectionBoxY = this.selectionBoxYStart - this.selectionBoxHeight;
-            }
-            else if (q === 2) {
-                this.selectionBoxX = this.selectionBoxXStart - this.selectionBoxWidth;
-                this.selectionBoxY = this.selectionBoxYStart - this.selectionBoxHeight;
-            }
-            else if (q === 3) {
-                this.selectionBoxX = this.selectionBoxXStart - this.selectionBoxWidth;
-                this.selectionBoxY = this.selectionBoxYStart;
-            }
-            else if (q === 4) {
-                this.selectionBoxX = this.selectionBoxXStart;
-                this.selectionBoxY = this.selectionBoxYStart;
-            }
+            var pt = pTrans.solve(e.center.x, e.center.y);
+            this.pointer.deltaX = pt.x - this.pointer.startX;
+            this.pointer.deltaY = pt.y - this.pointer.startY;
+            this.pointer.quadrant = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["quadrant"])(this.pointer.deltaX, this.pointer.deltaY, 0, 0);
         },
         panStart: function (e) {
-            this.showSelectionBox = true;
-            this.startX = e.center.x;
-            this.startY = e.center.y;
-            var canvasBounds = this.$refs.canvas.getBoundingClientRect();
-            this.selectionBoxXStart = e.center.x - canvasBounds.x;
-            this.selectionBoxYStart = e.center.y - canvasBounds.y;
+            this.pointer.down = true;
+            var v = vertices(this.pointer.parent);
+            pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+            var pt = pTrans.solve(e.center.x, e.center.y);
+            this.pointer.startX = pt.x;
+            this.pointer.startY = pt.y;
         },
         panEnd: function (e) {
-            this.showSelectionBox = false;
-        },
+            this.pointer.down = false;
+        }
     }
 });
 

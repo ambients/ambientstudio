@@ -5,9 +5,8 @@ import theme from "./theme";
 const css = rinss.create({
     panels: {
         width: 300,
-        height: '100%',
+        height: '100vh',
         background: theme.white,
-        overflowX: 'hidden',
         overflowY: 'scroll',
         userSelect: 'none',
         borderLeft: '3px solid ' + theme.background

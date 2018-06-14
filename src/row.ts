@@ -22,10 +22,11 @@ const css = rinss.create({
 
 Vue.component('cell', {
     template: `
-        <td align="center" :class="computedClass"><slot/></td>
+        <td align="center" :class="computedClass" :style="computedStyle"><slot/></td>
     `,
     inject: {
-        stretch: { default: false }
+        stretch: { default: false },
+        stretchy: { default: false }
     },
     props: {
         shrink: Boolean
@@ -33,6 +34,11 @@ Vue.component('cell', {
     computed: {
         computedClass():string {
             return this.shrink ? css.shrink : ((this as any).stretch ? css.grow : css.auto);
+        },
+        computedStyle():string {
+            return rss({
+                height: (this as any).stretchy ? '100%' : 'auto'
+            });
         }
     }
 });
@@ -64,7 +70,8 @@ Vue.component('row', {
     },
     provide() {
         return {
-            stretch: this.stretch
+            stretch: this.stretch,
+            stretchy: this.stretchy
         };
     },
     computed: {

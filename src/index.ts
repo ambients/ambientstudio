@@ -57,7 +57,7 @@ import './positionPanel';
 import './toolbar';
 import './typographyPanel';
 import './row';
-import './whiteBoard';
+import './whiteboard';
 import './transformPanel';
 import './borderPanel';
 import './outline';
@@ -124,7 +124,7 @@ new Vue({
                     <toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/>
                 </cell>
                 <cell shrink><outline/></cell>
-                <cell><white-board/></cell>
+                <cell><whiteboard/></cell>
                 <cell shrink><panels>
                     <properties-panel expanded/>
                     <position-panel expanded/>
