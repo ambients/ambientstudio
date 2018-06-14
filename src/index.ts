@@ -10,6 +10,9 @@ import { Obj } from "ambients-utils";
 import VueResize from 'vue-resize';
 Vue.use(VueResize);
 
+import VueTouch from 'vue-touch';
+Vue.use(VueTouch)
+
 import VueMaterial from "vue-material";
 import "vue-material/dist/vue-material.min.css";
 import 'vue-material/dist/theme/default.css';
@@ -47,17 +50,13 @@ declare module 'vue/types/vue' {
     }
 }
 
-import VueTouch from 'vue-touch';
-Vue.use(VueTouch)
-
-
 import './panels';
 import './propertiesPanel';
 import './positionPanel';
 import './toolbar';
 import './typographyPanel';
 import './row';
-import './whiteboard';
+import './editor';
 import './transformPanel';
 import './borderPanel';
 import './outline';
@@ -77,12 +76,6 @@ const css = rinss.create({
         height: '100vh',
         top: 0,
         left: 0
-    },
-    test: {
-        width: 100,
-        height: 100,
-        background: 'red',
-        floatTop: 10
     },
     colorPickerModal: {
         zIndex: 9999,
@@ -121,10 +114,13 @@ new Vue({
         <div class="${ css.stage }">
             <row stretch stretchy>
                 <cell shrink>
-                    <toolbar @showColorPicker="showColorPicker" :colorPicked="colorPicker.color.hex"/>
+                    <toolbar
+                     v-model="tool"
+                     @showColorPicker="showColorPicker"
+                     :colorPicked="colorPicker.color.hex"/>
                 </cell>
                 <cell shrink><outline/></cell>
-                <cell><whiteboard/></cell>
+                <cell><editor :tool="tool" :colorPicked="colorPicker.color.hex"/></cell>
                 <cell shrink><panels>
                     <properties-panel expanded/>
                     <position-panel expanded/>
@@ -157,7 +153,8 @@ new Vue({
     data() {
         return {
             colorPicker,
-            textColorPicker
+            textColorPicker,
+            tool: 'cursor'
         }
     },
     methods: {

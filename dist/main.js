@@ -58282,6 +58282,194 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('color-picker', {
 
 /***/ }),
 
+/***/ "./src/editor.ts":
+/*!***********************!*\
+  !*** ./src/editor.ts ***!
+  \***********************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var ambients_math__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ambients-math */ "./node_modules/ambients-math/index.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+var __rest = (undefined && undefined.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
+
+
+
+
+var EditorNode = (function () {
+    function EditorNode(o) {
+        this.children = [];
+        this.el = o.el;
+        if (o.children != undefined)
+            this.children = o.children;
+        this.width = o.width;
+        this.height = o.height;
+        this.left = o.left;
+        this.top = o.top;
+        this.background = o.background;
+        this.position = o.position;
+    }
+    return EditorNode;
+}());
+function getStyle(child) {
+    var el = child.el, children = child.children, style = __rest(child, ["el", "children"]);
+    return style;
+}
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    canvasContainer: {
+        width: '100%',
+        height: '100%',
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        position: 'relative',
+        overflow: 'hidden'
+    },
+    selectionBox: {
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
+        opacity: 0.3,
+        border: '1px solid blue'
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
+    template: "\n        <div :style=\"computedStyle\"></div>\n    ",
+    props: {
+        pointer: Object,
+        color: String
+    },
+    computed: {
+        computedStyle: function () {
+            var width = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.pointer.deltaX), height = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.pointer.deltaY);
+            var x, y;
+            switch (this.pointer.quadrant) {
+                case 1:
+                    x = this.pointer.startX;
+                    y = this.pointer.startY - height;
+                    break;
+                case 2:
+                    x = this.pointer.startX - width;
+                    y = this.pointer.startY - height;
+                    break;
+                case 3:
+                    x = this.pointer.startX - width;
+                    y = this.pointer.startY;
+                    break;
+                case 4:
+                    x = this.pointer.startX;
+                    y = this.pointer.startY;
+                    break;
+            }
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+                background: this.color,
+                width: width,
+                height: height,
+                absLeft: x,
+                absTop: y
+            });
+        },
+    },
+    beforeDestroy: function () {
+        this.$emit('input', new EditorNode({
+            width: this.$el.style.width,
+            height: this.$el.style.height,
+            left: this.$el.style.left,
+            top: this.$el.style.top,
+            background: this.$el.style.background,
+            position: this.$el.style.position
+        }));
+    }
+});
+var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
+function vertices(el) {
+    var b = el.getBoundingClientRect();
+    return [
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
+    ];
+}
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
+    template: "\n        <v-touch\n         class=\"" + css.canvasContainer + "\"\n         :pan-options=\"{ direction: 'all', threshold: 0 }\"\n         @pan=\"onPan\"\n         @panstart=\"panStart\"\n         @panend=\"panEnd\">\n            <div ref=\"canvas\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+        width: 800,
+        height: 600,
+        background: 'white',
+        centerX: true,
+        centerY: true
+    }) + "\">\n                <div v-for=\"child of parent.children\" :style=\"getComputedStyle(child)\"/>\n                <editor-box\n                 :pointer=\"pointer\"\n                 :color=\"colorPicked\"\n                 @input=\"parent.children.push($event)\"\n                 v-if=\"tool === 'rectangle' && pointer.down\"/>\n                <editor-box\n                 class=\"" + css.selectionBox + "\"\n                 :pointer=\"pointer\"\n                 v-if=\"(tool === 'cursor' || tool === 'transform') && pointer.down\"/>\n            </div>\n        </v-touch>\n    ",
+    props: {
+        colorPicked: String,
+        tool: String
+    },
+    data: function () {
+        return {
+            sceneGraph: undefined,
+            parent: new EditorNode({ width: 0, height: 0, left: 0, top: 0, background: '', position: '' }),
+            pointer: {
+                startX: 0,
+                startY: 0,
+                x: 0,
+                y: 0,
+                deltaX: 0,
+                deltaY: 0,
+                quadrant: 0,
+                down: false
+            }
+        };
+    },
+    mounted: function () {
+        var el = this.$refs.canvas;
+        this.parent = new EditorNode({
+            el: el,
+            width: el.style.width,
+            height: el.style.height,
+            left: el.style.left,
+            top: el.style.top,
+            background: el.style.background,
+            position: el.style.position
+        });
+        this.sceneGraph = this.parent;
+    },
+    watch: {
+        parent: function (p) {
+            pTrans.setDestination(0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight);
+        }
+    },
+    methods: {
+        onPan: function (e) {
+            var pt = pTrans.solve(e.center.x, e.center.y);
+            this.pointer.deltaX = pt.x - this.pointer.startX;
+            this.pointer.deltaY = pt.y - this.pointer.startY;
+            this.pointer.quadrant = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["quadrant"])(this.pointer.deltaX, this.pointer.deltaY, 0, 0);
+        },
+        panStart: function (e) {
+            this.pointer.down = true;
+            var v = vertices(this.parent.el);
+            pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+            var pt = pTrans.solve(e.center.x, e.center.y);
+            this.pointer.startX = pt.x;
+            this.pointer.startY = pt.y;
+        },
+        panEnd: function (e) {
+            this.pointer.down = false;
+        },
+        getComputedStyle: function (child) {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])(getStyle(child));
+        }
+    }
+});
+
+
+/***/ }),
+
 /***/ "./src/icon.ts":
 /*!*********************!*\
   !*** ./src/icon.ts ***!
@@ -59051,23 +59239,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_color__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-color */ "./node_modules/vue-color/dist/vue-color.min.js");
 /* harmony import */ var vue_color__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vue_color__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var vue_resize__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-resize */ "./node_modules/vue-resize/dist/vue-resize.esm.js");
-/* harmony import */ var vue_material__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue-material */ "./node_modules/vue-material/dist/vue-material.js");
-/* harmony import */ var vue_material__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(vue_material__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var vue_material_dist_vue_material_min_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue-material/dist/vue-material.min.css */ "./node_modules/vue-material/dist/vue-material.min.css");
-/* harmony import */ var vue_material_dist_vue_material_min_css__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(vue_material_dist_vue_material_min_css__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-material/dist/theme/default.css */ "./node_modules/vue-material/dist/theme/default.css");
-/* harmony import */ var vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var vue_async_computed__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-async-computed */ "./node_modules/vue-async-computed/dist/vue-async-computed.js");
-/* harmony import */ var vue_async_computed__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(vue_async_computed__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-touch */ "./node_modules/vue-touch/dist/vue-touch.js");
-/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(vue_touch__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vue-touch */ "./node_modules/vue-touch/dist/vue-touch.js");
+/* harmony import */ var vue_touch__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(vue_touch__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var vue_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! vue-material */ "./node_modules/vue-material/dist/vue-material.js");
+/* harmony import */ var vue_material__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(vue_material__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var vue_material_dist_vue_material_min_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! vue-material/dist/vue-material.min.css */ "./node_modules/vue-material/dist/vue-material.min.css");
+/* harmony import */ var vue_material_dist_vue_material_min_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(vue_material_dist_vue_material_min_css__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-material/dist/theme/default.css */ "./node_modules/vue-material/dist/theme/default.css");
+/* harmony import */ var vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(vue_material_dist_theme_default_css__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var vue_async_computed__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-async-computed */ "./node_modules/vue-async-computed/dist/vue-async-computed.js");
+/* harmony import */ var vue_async_computed__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(vue_async_computed__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _propertiesPanel__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./propertiesPanel */ "./src/propertiesPanel.ts");
 /* harmony import */ var _positionPanel__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./positionPanel */ "./src/positionPanel.ts");
 /* harmony import */ var _toolbar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./toolbar */ "./src/toolbar.ts");
 /* harmony import */ var _typographyPanel__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./typographyPanel */ "./src/typographyPanel.ts");
 /* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./row */ "./src/row.ts");
-/* harmony import */ var _whiteboard__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./whiteboard */ "./src/whiteboard.ts");
+/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./editor */ "./src/editor.ts");
 /* harmony import */ var _transformPanel__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./transformPanel */ "./src/transformPanel.ts");
 /* harmony import */ var _borderPanel__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./borderPanel */ "./src/borderPanel.ts");
 /* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
@@ -59080,11 +59268,13 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_resize__WEBPACK_IMPORTED_MODULE_6__["default"]);
 
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_touch__WEBPACK_IMPORTED_MODULE_7___default.a);
 
 
-vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_material__WEBPACK_IMPORTED_MODULE_7___default.a);
 
-vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_async_computed__WEBPACK_IMPORTED_MODULE_10___default.a);
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_material__WEBPACK_IMPORTED_MODULE_8___default.a);
+
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_async_computed__WEBPACK_IMPORTED_MODULE_11___default.a);
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].mixin({
     methods: {
         $emitState: function (name, value) {
@@ -59099,8 +59289,6 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].mixin({
         }
     }
 });
-
-vue__WEBPACK_IMPORTED_MODULE_2__["default"].use(vue_touch__WEBPACK_IMPORTED_MODULE_11___default.a);
 
 
 
@@ -59124,12 +59312,6 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_3__["default"].create({
         height: '100vh',
         top: 0,
         left: 0
-    },
-    test: {
-        width: 100,
-        height: 100,
-        background: 'red',
-        floatTop: 10
     },
     colorPickerModal: {
         zIndex: 9999,
@@ -59161,11 +59343,12 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
         'modal': ambients_modal__WEBPACK_IMPORTED_MODULE_4__["default"],
         'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_5__["Sketch"]
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar @showColorPicker=\"showColorPicker\" :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><whiteboard/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.stage + "\">\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar\n                     v-model=\"tool\"\n                     @showColorPicker=\"showColorPicker\"\n                     :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><editor :tool=\"tool\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
     data: function () {
         return {
             colorPicker: colorPicker,
-            textColorPicker: textColorPicker
+            textColorPicker: textColorPicker,
+            tool: 'cursor'
         };
     },
     methods: {
@@ -59791,7 +59974,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     },
     toolbarButton: {
         width: '100%',
-        height: 50,
+        height: 40,
         floatTop: 0,
         cursor: 'pointer'
     }
@@ -59810,12 +59993,10 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-section', {
     template: "\n        <div class=\"" + css.toolbarSection + "\"><slot/></div>\n    "
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
-    template: "\n        <div class=\"" + css.toolbar + "\">\n            <toolbar-section>\n                <toolbar-button checked @check=\"$emit('tool', 'cursor')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor.svg */ "./src/icons/cursor.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor-filled.svg */ "./src/icons/cursor-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'transform')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform.svg */ "./src/icons/transform.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform-filled.svg */ "./src/icons/transform-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button @check=\"$emit('tool', 'rectangle')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle.svg */ "./src/icons/rectangle.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle-filled.svg */ "./src/icons/rectangle-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'circle')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle.svg */ "./src/icons/circle.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle-filled.svg */ "./src/icons/circle-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'line')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line-filled.svg */ "./src/icons/line-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'textarea')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea.svg */ "./src/icons/textarea.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea-filled.svg */ "./src/icons/textarea-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'textfield')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield.svg */ "./src/icons/textfield.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield-filled.svg */ "./src/icons/textfield-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'type')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type.svg */ "./src/icons/type.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type-filled.svg */ "./src/icons/type-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'checkbox')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox.svg */ "./src/icons/checkbox.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox-filled.svg */ "./src/icons/checkbox-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button @check=\"$emit('tool', 'dropper')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper.svg */ "./src/icons/dropper.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper-filled.svg */ "./src/icons/dropper-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'magnet')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet.svg */ "./src/icons/magnet.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet-filled.svg */ "./src/icons/magnet-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button @check=\"$emit('tool', 'paint')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint.svg */ "./src/icons/paint.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint-filled.svg */ "./src/icons/paint-filled.svg")) + "\n                </toolbar-button>\n                <div class=\"" + css.toolbarButton + "\" @click=\"$emit('showColorPicker', $event)\">\n                    <color-picker style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true }) + "\" :color=\"colorPicked\"/>\n                </div>\n            </toolbar-section>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.toolbar + "\">\n            <toolbar-section>\n                <toolbar-button :checked=\"value === 'cursor'\" @check=\"$emit('input', 'cursor')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor.svg */ "./src/icons/cursor.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor-filled.svg */ "./src/icons/cursor-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'transform'\" @check=\"$emit('input', 'transform')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform.svg */ "./src/icons/transform.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform-filled.svg */ "./src/icons/transform-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button :checked=\"value === 'rectangle'\" @check=\"$emit('input', 'rectangle')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle.svg */ "./src/icons/rectangle.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle-filled.svg */ "./src/icons/rectangle-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'circle'\" @check=\"$emit('input', 'circle')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle.svg */ "./src/icons/circle.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle-filled.svg */ "./src/icons/circle-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'line'\" @check=\"$emit('input', 'line')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line-filled.svg */ "./src/icons/line-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'textarea'\" @check=\"$emit('input', 'textarea')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea.svg */ "./src/icons/textarea.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea-filled.svg */ "./src/icons/textarea-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'textfield'\" @check=\"$emit('input', 'textfield')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield.svg */ "./src/icons/textfield.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield-filled.svg */ "./src/icons/textfield-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'type'\" @check=\"$emit('input', 'type')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type.svg */ "./src/icons/type.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type-filled.svg */ "./src/icons/type-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'checkbox'\" @check=\"$emit('input', 'checkbox')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox.svg */ "./src/icons/checkbox.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox-filled.svg */ "./src/icons/checkbox-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button :checked=\"value === 'dropper'\" @check=\"$emit('input', 'dropper')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper.svg */ "./src/icons/dropper.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper-filled.svg */ "./src/icons/dropper-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'paint'\" @check=\"$emit('input', 'paint')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint.svg */ "./src/icons/paint.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint-filled.svg */ "./src/icons/paint-filled.svg")) + "\n                </toolbar-button>\n                <div class=\"" + css.toolbarButton + "\" @click=\"$emit('showColorPicker', $event)\">\n                    <color-picker style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true }) + "\" :color=\"colorPicked\"/>\n                </div>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button name=\"magnet\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet.svg */ "./src/icons/magnet.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet-filled.svg */ "./src/icons/magnet-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n        </div>\n    ",
     props: {
-        colorPicked: {
-            type: String,
-            default: 'blue'
-        }
+        colorPicked: String,
+        value: String
     }
 });
 
@@ -59919,135 +60100,6 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-panel', {
     props: {
         expanded: Boolean,
         colorPicked: String
-    }
-});
-
-
-/***/ }),
-
-/***/ "./src/whiteboard.ts":
-/*!***************************!*\
-  !*** ./src/whiteboard.ts ***!
-  \***************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
-/* harmony import */ var ambients_math__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ambients-math */ "./node_modules/ambients-math/index.js");
-/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
-
-
-
-
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
-    canvasContainer: {
-        width: '100%',
-        height: '100%',
-        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
-        position: 'relative',
-        overflow: 'hidden'
-    },
-    canvas: {
-        width: 800,
-        height: 600,
-        background: 'white',
-        centerX: true,
-        centerY: true
-    },
-});
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
-    template: "\n        <div v-if=\"pointer.down\" :style=\"computedStyle\"></div>\n    ",
-    props: {
-        pointer: Object
-    },
-    computed: {
-        computedStyle: function () {
-            var width = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.pointer.deltaX), height = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.pointer.deltaY);
-            var x, y;
-            switch (this.pointer.quadrant) {
-                case 1:
-                    x = this.pointer.startX;
-                    y = this.pointer.startY - height;
-                    break;
-                case 2:
-                    x = this.pointer.startX - width;
-                    y = this.pointer.startY - height;
-                    break;
-                case 3:
-                    x = this.pointer.startX - width;
-                    y = this.pointer.startY;
-                    break;
-                case 4:
-                    x = this.pointer.startX;
-                    y = this.pointer.startY;
-                    break;
-            }
-            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
-                background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
-                opacity: 0.3,
-                border: '1px solid blue',
-                width: width,
-                height: height,
-                absLeft: x,
-                absTop: y
-            });
-        },
-    },
-});
-var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
-function vertices(el) {
-    var b = el.getBoundingClientRect();
-    return [
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
-    ];
-}
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('whiteboard', {
-    template: "\n        <v-touch\n         class=\"" + css.canvasContainer + "\"\n         :pan-options=\"{ direction: 'all', threshold: 0 }\"\n         @pan=\"onPan\"\n         @panstart=\"panStart\"\n         @panend=\"panEnd\">\n            <div ref=\"canvas\" class=\"" + css.canvas + "\">\n                <editor-box :pointer=\"pointer\"/>\n            </div>\n        </v-touch>\n    ",
-    data: function () {
-        return {
-            pointer: {
-                parent: undefined,
-                startX: 0,
-                startY: 0,
-                x: 0,
-                y: 0,
-                deltaX: 0,
-                deltaY: 0,
-                quadrant: 0,
-                down: false
-            }
-        };
-    },
-    mounted: function () {
-        this.pointer.parent = this.$refs.canvas;
-    },
-    watch: {
-        'pointer.parent': function (p) {
-            pTrans.setDestination(0, 0, p.clientWidth, 0, p.clientWidth, p.clientHeight, 0, p.clientHeight);
-        }
-    },
-    methods: {
-        onPan: function (e) {
-            var pt = pTrans.solve(e.center.x, e.center.y);
-            this.pointer.deltaX = pt.x - this.pointer.startX;
-            this.pointer.deltaY = pt.y - this.pointer.startY;
-            this.pointer.quadrant = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["quadrant"])(this.pointer.deltaX, this.pointer.deltaY, 0, 0);
-        },
-        panStart: function (e) {
-            this.pointer.down = true;
-            var v = vertices(this.pointer.parent);
-            pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
-            var pt = pTrans.solve(e.center.x, e.center.y);
-            this.pointer.startX = pt.x;
-            this.pointer.startY = pt.y;
-        },
-        panEnd: function (e) {
-            this.pointer.down = false;
-        }
     }
 });
 
