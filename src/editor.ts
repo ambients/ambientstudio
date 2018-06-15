@@ -3,6 +3,7 @@ import rinss, { rss } from "rinss";
 import { quadrant, abs, PerspectiveTransform, Point } from 'ambients-math';
 import theme from "./theme";
 import { Obj, pullOne } from "ambients-utils";
+import Color from 'color';
 
 class EditorNode {
     public tagName: string;
@@ -67,6 +68,19 @@ const css = rinss.create({
         background: theme.primary,
         opacity: 0.3,
         border: '1px solid blue'
+    },
+    selectionHandle: {
+        width: 8,
+        height: 8,
+        background: 'white',
+        border: '1px solid ' + theme.primary,
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%'
+    },
+    selectionMask: {
+        fillParent: true,
+        background: theme.primary
     }
 });
 
@@ -128,11 +142,28 @@ Vue.component('editor-box', {
     }
 });
 
+Vue.component('selection-mask', {
+    template: `
+        <div class="${ css.selectionMask }">
+            <div class="${css.selectionHandle}" style="${rss({ left: 0, top: 0 })}"/>
+            <div class="${css.selectionHandle}" style="${rss({ left: '50%', top: 0 })}"/>
+            <div class="${css.selectionHandle}" style="${rss({ left: '100%', top: 0 })}"/>
+            
+            <div class="${css.selectionHandle}" style="${rss({ left: 0, top: '50%' })}"/>
+            <div class="${css.selectionHandle}" style="${rss({ left: '100%', top: '50%' })}"/>
+
+            <div class="${css.selectionHandle}" style="${rss({ left: 0, top: '100%' })}"/>
+            <div class="${css.selectionHandle}" style="${rss({ left: '50%', top: '100%' })}"/>
+            <div class="${css.selectionHandle}" style="${rss({ left: '100%', top: '100%' })}"/>
+        </div>
+    `
+});
+
 Vue.component('node-wrapper', {
     template: `
         <div :style="computedStyle">
             <div v-html="computedHTML"/>
-            <div :style="maskStyle"/>
+            <selection-mask v-if="checked"/>
         </div>
     `,
     props: {
@@ -161,13 +192,6 @@ Vue.component('node-wrapper', {
         },
         checked():boolean {
             return this.checkedNodes.indexOf(this) > -1;
-        },
-        maskStyle():string {
-            return rss({
-                fillParent: true,
-                background: theme.primary,
-                opacity: this.checked ? 0.3 : 0
-            });
         }
     },
     mounted() {

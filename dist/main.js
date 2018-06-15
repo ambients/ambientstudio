@@ -58367,6 +58367,19 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
         opacity: 0.3,
         border: '1px solid blue'
+    },
+    selectionHandle: {
+        width: 8,
+        height: 8,
+        background: 'white',
+        border: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%'
+    },
+    selectionMask: {
+        fillParent: true,
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary
     }
 });
 var checkedNodes = [];
@@ -58422,8 +58435,11 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
         }));
     }
 });
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('selection-mask', {
+    template: "\n        <div class=\"" + css.selectionMask + "\">\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: 0 }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: 0 }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: 0 }) + "\"/>\n            \n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '50%' }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '50%' }) + "\"/>\n\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '100%' }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: '100%' }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '100%' }) + "\"/>\n        </div>\n    "
+});
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('node-wrapper', {
-    template: "\n        <div :style=\"computedStyle\">\n            <div v-html=\"computedHTML\"/>\n            <div :style=\"maskStyle\"/>\n        </div>\n    ",
+    template: "\n        <div :style=\"computedStyle\">\n            <div v-html=\"computedHTML\"/>\n            <selection-mask v-if=\"checked\"/>\n        </div>\n    ",
     props: {
         render: Object
     },
@@ -58450,13 +58466,6 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('node-wrapper', {
         },
         checked: function () {
             return this.checkedNodes.indexOf(this) > -1;
-        },
-        maskStyle: function () {
-            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
-                fillParent: true,
-                background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
-                opacity: this.checked ? 0.3 : 0
-            });
         }
     },
     mounted: function () {

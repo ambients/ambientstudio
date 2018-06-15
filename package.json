@@ -12,7 +12,8 @@
     "vue-material": "beta",
     "vue-perfect-scrollbar": "*",
     "vue-resize": "*",
-    "vue-touch": "next"
+    "vue-touch": "next",
+    "color": "*"
   },
   "devDependencies": {
     "@types/node": "^10.3.3",
