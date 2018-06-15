@@ -4,6 +4,9 @@
     "ambients-modal": "^1.0.7",
     "ambients-utils": "^1.3.0",
     "babel-polyfill": "*",
+    "color": "^3.0.0",
+    "hammerjs": "*",
+    "lodash": "*",
     "normalize.css": "*",
     "rinss": "^1.5.5",
     "vue": "*",
@@ -11,12 +14,12 @@
     "vue-color": "*",
     "vue-material": "beta",
     "vue-perfect-scrollbar": "*",
-    "vue-resize": "*",
-    "vue-touch": "next",
-    "color": "*"
+    "vue-resize": "*"
   },
   "devDependencies": {
     "@types/node": "^10.3.3",
+    "@types/hammerjs": "*",
+    "@lodash": "*",
     "css-loader": "*",
     "html-webpack-plugin": "*",
     "style-loader": "*",

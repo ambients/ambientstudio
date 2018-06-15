@@ -23,7 +23,7 @@ const css = rinss.create({
     },
     toolbarButton: {
         width: '100%',
-        height: 40,
+        height: 50,
         floatTop: 0,
         cursor: 'pointer'
     }

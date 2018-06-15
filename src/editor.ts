@@ -1,9 +1,50 @@
-import Vue from "vue";
+import Vue, { VueConstructor } from "vue";
 import rinss, { rss } from "rinss";
 import { quadrant, abs, PerspectiveTransform, Point } from 'ambients-math';
 import theme from "./theme";
-import { Obj, pullOne } from "ambients-utils";
-import Color from 'color';
+import { Obj, pullOne, pushOne } from "ambients-utils";
+import color from 'color';
+import * as Hammer from 'hammerjs';
+import { debounce } from 'lodash';
+
+const pointer = {
+    startX: 0,
+    startY: 0,
+    x: 0,
+    y: 0,
+    deltaX: 0,
+    deltaY: 0,
+    quadrant: 0,
+    down: false
+};
+
+const selectedNodes = [];
+
+const boundingBox = {
+    startLeft: 0,
+    startTop: 0,
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+    rotate: 0
+}
+
+const HammerJS = Vue.extend({
+    mounted() {
+        const hammerManager = new Hammer.Manager(this.$el, {
+            domEvents: true,
+            recognizers: [
+                [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 0 }],
+                [Hammer.Tap]
+            ]
+        });
+        this.$on('destroyHammer', () => hammerManager.destroy());
+    },
+    beforeDestroy() {
+        this.$emit('destroyHammer');
+    }
+});
 
 class EditorNode {
     public tagName: string;
@@ -39,22 +80,14 @@ class EditorNode {
             position: ''
         });
     }
+
+    public static getStyle(child: EditorNode) {
+        const { el, children, tagName, ...style } = child;
+        return style;
+    }
 }
 
-function getStyle(child:EditorNode) {
-    const { el, children, tagName, ...style } = child;
-    return style;
-}
-
-const pTrans = new PerspectiveTransform();
-
-function vertices(el: HTMLElement): Array<Point> {
-    const b = el.getBoundingClientRect();
-    return [
-        new Point(b.left, b.top), new Point(b.right, b.top),
-        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
-    ];
-}
+const selectionColor = color(theme.primary).alpha(0.3).darken(0.1).string();
 
 const css = rinss.create({
     canvasContainer: {
@@ -65,11 +98,10 @@ const css = rinss.create({
         overflow: 'hidden'
     },
     selectionBox: {
-        background: theme.primary,
-        opacity: 0.3,
-        border: '1px solid blue'
+        background: selectionColor,
+        border: '1px solid ' + theme.primary
     },
-    selectionHandle: {
+    transformHandle: {
         width: 8,
         height: 8,
         background: 'white',
@@ -78,21 +110,31 @@ const css = rinss.create({
         translateX: '-50%',
         translateY: '-50%'
     },
-    selectionMask: {
+    selectionOverlay: {
         fillParent: true,
-        background: theme.primary
+        background: selectionColor,
+        border: '1px solid' + theme.primary,
+        pointerEvents: 'auto'
+    },
+    transformOverlay: {
+        position: 'absolute',
+        border: '1px solid ' + theme.primary,
+        pointerEvents: 'none'
     }
 });
-
-const checkedNodes = [];
 
 Vue.component('editor-box', {
     template: `
         <div :style="computedStyle"></div>
     `,
     props: {
-        pointer: Object,
         color: String
+    },
+    data() {
+        return {
+            pointer,
+            selectedNodes
+        };
     },
     computed: {
         computedStyle(): string {
@@ -127,7 +169,7 @@ Vue.component('editor-box', {
         },
     },
     mounted() {
-        checkedNodes.splice(0, checkedNodes.length);
+        this.selectedNodes.splice(0, this.selectedNodes.length);
     },
     beforeDestroy() {
         this.$emit('input', new EditorNode({
@@ -142,28 +184,45 @@ Vue.component('editor-box', {
     }
 });
 
-Vue.component('selection-mask', {
+Vue.component('transform-overlay', {
     template: `
-        <div class="${ css.selectionMask }">
-            <div class="${css.selectionHandle}" style="${rss({ left: 0, top: 0 })}"/>
-            <div class="${css.selectionHandle}" style="${rss({ left: '50%', top: 0 })}"/>
-            <div class="${css.selectionHandle}" style="${rss({ left: '100%', top: 0 })}"/>
+        <div class="${ css.transformOverlay }" :style="computedStyle" v-if="selectedNodes.length > 0">
+            <div class="${css.transformHandle}" style="${rss({ left: 0, top: 0 })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: '50%', top: 0 })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: '100%', top: 0 })}"/>
             
-            <div class="${css.selectionHandle}" style="${rss({ left: 0, top: '50%' })}"/>
-            <div class="${css.selectionHandle}" style="${rss({ left: '100%', top: '50%' })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: 0, top: '50%' })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: '100%', top: '50%' })}"/>
 
-            <div class="${css.selectionHandle}" style="${rss({ left: 0, top: '100%' })}"/>
-            <div class="${css.selectionHandle}" style="${rss({ left: '50%', top: '100%' })}"/>
-            <div class="${css.selectionHandle}" style="${rss({ left: '100%', top: '100%' })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: 0, top: '100%' })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: '50%', top: '100%' })}"/>
+            <div class="${css.transformHandle}" style="${rss({ left: '100%', top: '100%' })}"/>
         </div>
-    `
+    `,
+    data() {
+        return {
+            boundingBox,
+            selectedNodes
+        };
+    },
+    computed: {
+        computedStyle():string {
+            return rss({
+                left: this.boundingBox.left,
+                top: this.boundingBox.top,
+                width: this.boundingBox.width,
+                height: this.boundingBox.height
+            });
+        }
+    }
 });
 
-Vue.component('node-wrapper', {
+Vue.component('editor-node', {
+    mixins: [HammerJS],
     template: `
-        <div :style="computedStyle">
-            <div v-html="computedHTML"/>
-            <selection-mask v-if="checked"/>
+        <div :style="outerStyle" @tap="select" @panstart="panStart" @pan="pan">
+            <component :is="render.tagName" :style="innerStyle"/>
+            <div class="${ css.selectionOverlay }" v-if="selected"/>
         </div>
     `,
     props: {
@@ -171,40 +230,79 @@ Vue.component('node-wrapper', {
     },
     data() {
         return {
-            checkedNodes
+            selectedNodes,
+            boundingBox,
+            startX: 0,
+            startY: 0
         }
     },
     computed: {
-        computedStyle():string {
-            return rss({
-                left: this.render.left,
-                top: this.render.top,
-                right: this.render.right,
-                bottom: this.render.bottom,
-                position: this.render.position
-            });
-        },
-        computedHTML():string {
+        innerStyle():string {
             const o = { ...this.render };
             o.position = 'relative';
-            o.left = o.top = o.right = o.bottom = undefined;
-            return `<${o.tagName} style="${ rss(getStyle(o)) }"></${o.tagName}>`
+            o.top = o.left = o.right = o.bottom = undefined;
+            return rss(EditorNode.getStyle(o));
         },
-        checked():boolean {
-            return this.checkedNodes.indexOf(this) > -1;
+        outerStyle():string {
+            return rss({
+                position: this.render.position,
+                top: this.render.top,
+                left: this.render.left,
+                right: this.render.right,
+                bottom: this.render.bottom
+            });
+        },
+        selected():boolean {
+            return this.selectedNodes.indexOf(this) > -1;
         }
     },
     mounted() {
-        this.checkedNodes.push(this);
+        this.select();
+    },
+    methods: {
+        panStartDebounce: debounce(function(this:any) {
+            this.boundingBox.startLeft = this.boundingBox.left;
+            this.boundingBox.startTop = this.boundingBox.top;
+        }, 0),
+        panStart(e) {
+            e.stopPropagation();
+
+            //todo: this needs to be leading-debounced
+            if (!e.gesture.srcEvent.shiftKey && this.selectedNodes.length < 2) this.select();
+            else pushOne(this.selectedNodes, this);
+
+            this.panStartDebounce(e);
+        },
+        pan: debounce(function (this: any, { gesture: { deltaX, deltaY } }) {
+            this.boundingBox.left = this.boundingBox.startLeft + deltaX;
+            this.boundingBox.top = this.boundingBox.startTop + deltaY;
+        }, 0),
+        select: debounce(function(this:any, e?) {
+            if (e == undefined || !e.gesture.srcEvent.shiftKey)
+                this.selectedNodes.splice(0, this.selectedNodes.length);
+
+            if (!this.selected) this.selectedNodes.push(this);
+            else pullOne(this.selectedNodes, this);
+        }, 0)
     }
 });
 
+const pTrans = new PerspectiveTransform();
+
+function vertices(el: HTMLElement): Array<Point> {
+    const b = el.getBoundingClientRect();
+    return [
+        new Point(b.left, b.top), new Point(b.right, b.top),
+        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
+    ];
+}
+
 Vue.component('editor', {
+    mixins: [HammerJS],
     template:`
-        <v-touch
+        <div
          class="${ css.canvasContainer }"
-         :pan-options="{ direction: 'all', threshold: 0 }"
-         @pan="onPan"
+         @pan="pan"
          @panstart="panStart"
          @panend="panEnd">
             <div ref="canvas" style="${ rss({
@@ -214,23 +312,23 @@ Vue.component('editor', {
                 centerX: true,
                 centerY: true
             }) }">
-                <node-wrapper
+                <editor-node
                  v-for="(child, index) of parent.children"
                  :render="child"
                  :key="index"/>
 
+                <transform-overlay/>
+
                 <editor-box
-                 :pointer="pointer"
                  :color="colorPicked"
                  @input="parent.children.push($event)"
                  v-if="tool === 'rectangle' && pointer.down"/>
 
                 <editor-box
                  class="${ css.selectionBox }"
-                 :pointer="pointer"
                  v-if="(tool === 'cursor' || tool === 'transform') && pointer.down"/>
             </div>
-        </v-touch>
+        </div>
     `,
     props: {
         colorPicked: String,
@@ -240,16 +338,9 @@ Vue.component('editor', {
         return{
             sceneGraph: undefined,
             parent: EditorNode.default(),
-            pointer: {
-                startX: 0,
-                startY: 0,
-                x: 0,
-                y: 0,
-                deltaX: 0,
-                deltaY: 0,
-                quadrant: 0,
-                down: false
-            }
+            selectedNodes,
+            pointer,
+            boundingBox
         }
     },
     mounted() {
@@ -267,30 +358,45 @@ Vue.component('editor', {
         this.sceneGraph = this.parent;
     },
     watch: {
-        parent(p:{ el:HTMLElement, children:Array<Obj<any>> }) {
+        parent(p:EditorNode) {
             pTrans.setDestination(
                 0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
             );
+        },
+        selectedNodes(nodes) {
+            if (nodes.length === 0) return;
+
+            let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+            for (const node of nodes) {
+                const bounds = (node.$el as HTMLElement).getBoundingClientRect();
+                if (bounds.left < xMin) xMin = bounds.left;
+                if (bounds.right > xMax) xMax = bounds.right;
+                if (bounds.top < yMin) yMin = bounds.top;
+                if (bounds.bottom > yMax) yMax = bounds.bottom;
+            }
+            const pt0 = pTrans.solve(xMin, yMin), pt2 = pTrans.solve(xMax, yMax);
+            this.boundingBox.left = pt0.x, this.boundingBox.top = pt0.y;
+            this.boundingBox.width = pt2.x - pt0.x, this.boundingBox.height = pt2.y - pt0.y;
         }
     },
-    methods : {
-        onPan(e){
-            const pt = pTrans.solve(e.center.x, e.center.y);
+    methods: {
+        pan({ gesture: { center } }){
+            const pt = pTrans.solve(center.x, center.y);
             this.pointer.deltaX = pt.x - this.pointer.startX;
             this.pointer.deltaY = pt.y - this.pointer.startY;
             this.pointer.quadrant = quadrant(this.pointer.deltaX, this.pointer.deltaY, 0, 0);
         },
-        panStart(e){
+        panStart({ gesture: { center } }){
             this.pointer.down = true;
 
             const v = vertices(this.parent.el);
             pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
 
-            const pt = pTrans.solve(e.center.x, e.center.y);
+            const pt = pTrans.solve(center.x, center.y);
             this.pointer.startX = pt.x;
             this.pointer.startY = pt.y;
         },
-        panEnd(e){
+        panEnd(){
             this.pointer.down = false;
         }
     }
