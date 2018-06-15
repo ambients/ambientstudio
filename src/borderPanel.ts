@@ -1,8 +1,12 @@
 import Vue from "vue";
-import rinss from "rinss";
+import rinss, { rss } from "rinss";
 import "./panels";
 import theme from "./theme";
 import processSvg from './processSvg';
+import Radio from './radio';
+import './icon';
+import './row';
+import './colorPicker';
 
 const borderTopRight = processSvg(require('./icons/border-top-right.svg'));
 const borderTop = processSvg(require('./icons/border-top.svg'));
@@ -15,198 +19,178 @@ const borderThickness = require('./icons/thickness.svg');
 const borderLine = processSvg(require('./icons/line.svg'));
 
 const css = rinss.create({
-    borderIcon:{
-        width:40,
-        height:40,
-        cursor: 'pointer',
-        margin: 5,    
-    },
-    borderRow:{
-        floatTop: 0,
-        display:'flex',
-        width: '100%'
-    },
-    borderOptions:{
-        width:'100%',
-        flex:'1 1 auto',
-        marginLeft:20
-    },
-    borderStyle:{
-        width:'100%',
-        display: 'flex',
-        floatTop:0,
-    },
-    borderInputStyle:{
-        width:'100%',
-        flex: '1 1 auto',
-        display: 'flex',
-        background: theme.background,
-    },
-    borderThickness:{
-        flex:'1 1 auto',
-        width:'100%',
-        display:'flex'
-    },
-    inputIcons:{
-        width:20,
-        height:20,
-        marginLeft:5,
-        cursor: 'pointer'
-    },
-    borderThicknessInput:{
-        flex:'1 1 auto',
-        width:'100%',
-        border: 'none',
-        background: 'none'
-    },
-    borderType:{
-        width:'100%',
-        floatTop:0,
-        display:'flex',
-    },
-    borderTypeTable:{
-
+    borderColorInput:{
+        background:'none',
+        border:'none',
+        borderBottom:'1px solid black'   
     },
     separator: {
         width: '100%',
         height: 0,
         borderBottom: '1px solid ' + theme.background,
         floatTop: 0,
-        marginBottom: 10
-    },
-    rotation:{
-        svg:{
-            rotate: -90,
-        }
-    },
-    rotation2:{
-        svg:{
-            rotate: -180,
-        }
-    },
-    rotation3:{
-        svg:{
-            rotate: -270,
-        }
+        margin: 10
     }
 });
 
-Vue.component('border-icon',{
+
+Vue.component('border-type',{
+    mixins:[Radio],
     template:`
-        <div class="${css.borderIcon}" :style="getStyle()" @click="toggleSelected()"><slot></slot></div>
-    `,
-    data: function() {return{
-        iconColor: false
-    }},
-    methods: {
-        toggleSelected: function() :void{
-            this.iconColor=!this.iconColor;
-        },
-        getStyle: function() :string {
-            return rinss.compile({
-                color: (this.iconColor) ? theme.primary : theme.textPrimary
-            });
-        }
-    }
+        <icon style="cursor:pointer" @click.native="check" :active="isChecked"><slot/></icon>
+    `
 });
-
-const borderStyleName ={value: ''};
-
-Vue.component('input-icon',{
-    template:`
-        <div class="${css.inputIcons}" :style="getType()" @click="toggleSelect()"><slot></slot></div>
-    `,
-    props: {
-        name: String,
-    },
-    data: function() {return{
-        borderStyleName: borderStyleName
-    }},
-    methods:{
-        toggleSelect: function() :void{
-            if (this.borderStyleName.value === this.name)
-                this.borderStyleName.value = '';
-            else
-                this.borderStyleName.value = this.name;
-            },
-        getType: function() :string {
-            return rinss.compile({
-                color: (this.borderStyleName.value === this.name) ? theme.primary : theme.textPrimary
-            });
-        }
-    }
-});
-
-Vue.component('border-card',{
-    template:`
-        <div class="${css.borderRow}">
-            <border-icon><slot></slot></border-icon>
-            <div class="${css.borderOptions}">
-                <div class="${css.borderStyle}">
-                    <div class="${css.borderInputStyle}">
-                        <div class="${css.borderThickness}">
-                            <input-icon>${borderThickness}</input-icon>
-                            <input class="${css.borderThicknessInput}" :placeholder="name"></input>
-                        </div>
-                    </div>
-                    <input-icon>${colorPalette}</input-icon>
-                </div>
-                <div class="${css.borderType}">
-                    <table class="${css.borderTypeTable}">
-                        <tr>
-                            <td align="center"><input-icon name="L1">${borderLine}</input-icon></td>
-                            <td align="center"><input-icon name="L2">${borderLine}</input-icon></td>
-                            <td align="center"><input-icon name="L3">${borderLine}</input-icon></td>
-                            <td align="center"><input-icon name="L4">${borderLine}</input-icon></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-    `,
-    props: {
-        name: String,
-    },
-});
-
-Vue.component('border-radius-card',{
-    template:`
-        <div class="${css.borderRow}">
-            <border-icon><slot></slot></border-icon>
-            <div class="${css.borderOptions}">
-                <div class="${css.borderStyle}">
-                    <div class="${css.borderInputStyle}">
-                        <div class="${css.borderThickness}">
-                            <input-icon>${borderThickness}</input-icon>
-                            <input class="${css.borderThicknessInput}" :placeholder="name"></input>
-                        </div>
-                    </div>
-                    <input-icon>${colorPalette}</input-icon>
-                </div>
-            </div>
-        </div>
-    `,
-    props: {
-        name: String,
-    },
-});
-
 
 Vue.component('border-panel',{
     template:`
     <panel title="Border" expanded>
-        <border-card name=" top thickness">${borderTop}</border-card>
-        <border-card name=" left thickness">${borderLeft}</border-card>
-        <border-card name=" right thickness">${borderRight}</border-card>
-        <border-card name=" bottom thickness">${borderBottom}</border-card>
-        
+        <row stretch style="${rss({floatTop:0})}">
+            <cell shrink><border-type>
+                ${borderTop}
+            </border-type></cell>
+            <gap/>
+            <cell>
+                <material-input placeholder="Top thickness"/>
+            </cell>
+        </row>
+        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
+            <cell shrink><color-picker size="20px" :color="borderTopColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderTopColor"/></cell>
+            <gap/>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <row stretch style="${rss({floatTop:0})}">
+            <cell shrink><border-type>${borderBottom}</border-type></cell>
+            <gap/>
+            <cell><material-input placeholder="Bottom thickness"/></cell>
+        </row>
+        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
+            <cell shrink><color-picker size="20px" :color="borderBottomColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderBottomColor"/></cell>
+            <gap/>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <row stretch style="${rss({floatTop:0})}">
+            <cell shrink><border-type>
+                ${borderLeft}
+            </border-type></cell>
+            <gap/>
+            <cell>
+                <material-input placeholder="Left thickness"/>
+            </cell>
+        </row>
+        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
+            <cell shrink><color-picker size="20px" :color="borderLeftColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderLeftColor"/></cell>
+            <gap/>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <row stretch style="${rss({floatTop:0})}">
+            <cell shrink><border-type>
+                ${borderRight}
+            </border-type></cell>
+            <gap/>
+            <cell>
+                <material-input placeholder="Right thickness"/>
+            </cell>
+        </row>
+        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
+            <cell shrink><color-picker size="20px" :color="borderRightColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderRightColor"/></cell>
+            <gap/>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
         <div class="${ css.separator }"></div>
 
-        <border-radius-card name=" top left radius">${borderTopRight}</border-radius-card>
-        <border-radius-card name=" bottom right radius">${borderTopRight}</border-radius-card>
-        <border-radius-card name=" bottom left radius">${borderTopRight}</border-radius-card>
-        <border-radius-card name=" top right radius">${borderTopRight}</border-radius-card>
-        
+        <row stretch style="${rss({floatTop:0})}">
+            <cell shrink><border-type>
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Top right size"/>
+            </cell>
+            <gap/>
+            <cell shrink><border-type style="${rss({rotate:-90})}">
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Top left size"/>
+            </cell>
+        </row>
+        <row stretch style="${rss({floatTop:0})}">
+            <cell shrink><border-type style="${rss({rotate:90})}">
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Bottom right size"/>
+            </cell>
+            <gap/>
+            <cell shrink><border-type style="${rss({rotate:180})}">
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Bottom left size"/>
+            </cell>
+        </row>
     </panel>
-    `
+    `,
+    props:{
+        colorPicked: String
+    },
 });
