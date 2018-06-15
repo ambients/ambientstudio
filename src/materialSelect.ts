@@ -27,7 +27,7 @@ Vue.component('material-select', {
             <md-field class="${ css.field }">
                 <label class="${ css.label }">{{placeholder}}</label>
                 <md-select class="${ css.select }" v-model="selected">
-                    <md-option v-for="o of options" :value="o" :key="o">{{o}}</md-option>
+                    <md-option v-for="(o, index) of options" :value="o" :key="index">{{o}}</md-option>
                 </md-select>
                 <select style="${ rss({ fillParent: true, opacity: 0, cursor: 'pointer' }) }" v-model="selected">
                     <option v-for="o of options" :value="o">{{o}}</option>

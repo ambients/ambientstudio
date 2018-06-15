@@ -58295,6 +58295,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var ambients_math__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ambients-math */ "./node_modules/ambients-math/index.js");
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __rest = (undefined && undefined.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -58311,6 +58319,7 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
 var EditorNode = (function () {
     function EditorNode(o) {
         this.children = [];
+        this.tagName = o.tagName;
         this.el = o.el;
         if (o.children != undefined)
             this.children = o.children;
@@ -58321,11 +58330,30 @@ var EditorNode = (function () {
         this.background = o.background;
         this.position = o.position;
     }
+    EditorNode.default = function () {
+        return new EditorNode({
+            tagName: '',
+            width: 0,
+            height: 0,
+            left: 0,
+            top: 0,
+            background: '',
+            position: ''
+        });
+    };
     return EditorNode;
 }());
 function getStyle(child) {
-    var el = child.el, children = child.children, style = __rest(child, ["el", "children"]);
+    var el = child.el, children = child.children, tagName = child.tagName, style = __rest(child, ["el", "children", "tagName"]);
     return style;
+}
+var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
+function vertices(el) {
+    var b = el.getBoundingClientRect();
+    return [
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
+    ];
 }
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     canvasContainer: {
@@ -58341,6 +58369,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         border: '1px solid blue'
     }
 });
+var checkedNodes = [];
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
     template: "\n        <div :style=\"computedStyle\"></div>\n    ",
     props: {
@@ -58378,8 +58407,12 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
             });
         },
     },
+    mounted: function () {
+        checkedNodes.splice(0, checkedNodes.length);
+    },
     beforeDestroy: function () {
         this.$emit('input', new EditorNode({
+            tagName: 'div',
             width: this.$el.style.width,
             height: this.$el.style.height,
             left: this.$el.style.left,
@@ -58389,14 +58422,47 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-box', {
         }));
     }
 });
-var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
-function vertices(el) {
-    var b = el.getBoundingClientRect();
-    return [
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
-    ];
-}
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('node-wrapper', {
+    template: "\n        <div :style=\"computedStyle\">\n            <div v-html=\"computedHTML\"/>\n            <div :style=\"maskStyle\"/>\n        </div>\n    ",
+    props: {
+        render: Object
+    },
+    data: function () {
+        return {
+            checkedNodes: checkedNodes
+        };
+    },
+    computed: {
+        computedStyle: function () {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+                left: this.render.left,
+                top: this.render.top,
+                right: this.render.right,
+                bottom: this.render.bottom,
+                position: this.render.position
+            });
+        },
+        computedHTML: function () {
+            var o = __assign({}, this.render);
+            o.position = 'relative';
+            o.left = o.top = o.right = o.bottom = undefined;
+            return "<" + o.tagName + " style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])(getStyle(o)) + "\"></" + o.tagName + ">";
+        },
+        checked: function () {
+            return this.checkedNodes.indexOf(this) > -1;
+        },
+        maskStyle: function () {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+                fillParent: true,
+                background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
+                opacity: this.checked ? 0.3 : 0
+            });
+        }
+    },
+    mounted: function () {
+        this.checkedNodes.push(this);
+    }
+});
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
     template: "\n        <v-touch\n         class=\"" + css.canvasContainer + "\"\n         :pan-options=\"{ direction: 'all', threshold: 0 }\"\n         @pan=\"onPan\"\n         @panstart=\"panStart\"\n         @panend=\"panEnd\">\n            <div ref=\"canvas\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
         width: 800,
@@ -58404,7 +58470,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         background: 'white',
         centerX: true,
         centerY: true
-    }) + "\">\n                <div v-for=\"child of parent.children\" :style=\"getComputedStyle(child)\"/>\n                <editor-box\n                 :pointer=\"pointer\"\n                 :color=\"colorPicked\"\n                 @input=\"parent.children.push($event)\"\n                 v-if=\"tool === 'rectangle' && pointer.down\"/>\n                <editor-box\n                 class=\"" + css.selectionBox + "\"\n                 :pointer=\"pointer\"\n                 v-if=\"(tool === 'cursor' || tool === 'transform') && pointer.down\"/>\n            </div>\n        </v-touch>\n    ",
+    }) + "\">\n                <node-wrapper\n                 v-for=\"(child, index) of parent.children\"\n                 :render=\"child\"\n                 :key=\"index\"/>\n\n                <editor-box\n                 :pointer=\"pointer\"\n                 :color=\"colorPicked\"\n                 @input=\"parent.children.push($event)\"\n                 v-if=\"tool === 'rectangle' && pointer.down\"/>\n\n                <editor-box\n                 class=\"" + css.selectionBox + "\"\n                 :pointer=\"pointer\"\n                 v-if=\"(tool === 'cursor' || tool === 'transform') && pointer.down\"/>\n            </div>\n        </v-touch>\n    ",
     props: {
         colorPicked: String,
         tool: String
@@ -58412,7 +58478,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
     data: function () {
         return {
             sceneGraph: undefined,
-            parent: new EditorNode({ width: 0, height: 0, left: 0, top: 0, background: '', position: '' }),
+            parent: EditorNode.default(),
             pointer: {
                 startX: 0,
                 startY: 0,
@@ -58428,6 +58494,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
     mounted: function () {
         var el = this.$refs.canvas;
         this.parent = new EditorNode({
+            tagName: el.tagName.toLowerCase(),
             el: el,
             width: el.style.width,
             height: el.style.height,
@@ -58460,9 +58527,6 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         },
         panEnd: function (e) {
             this.pointer.down = false;
-        },
-        getComputedStyle: function (child) {
-            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])(getStyle(child));
         }
     }
 });
@@ -59455,7 +59519,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-select', {
-    template: "\n        <div class=\"" + css.wrapper + "\">\n            <md-field class=\"" + css.field + "\">\n                <label class=\"" + css.label + "\">{{placeholder}}</label>\n                <md-select class=\"" + css.select + "\" v-model=\"selected\">\n                    <md-option v-for=\"o of options\" :value=\"o\" :key=\"o\">{{o}}</md-option>\n                </md-select>\n                <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fillParent: true, opacity: 0, cursor: 'pointer' }) + "\" v-model=\"selected\">\n                    <option v-for=\"o of options\" :value=\"o\">{{o}}</option>\n                </select>\n            </md-field>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.wrapper + "\">\n            <md-field class=\"" + css.field + "\">\n                <label class=\"" + css.label + "\">{{placeholder}}</label>\n                <md-select class=\"" + css.select + "\" v-model=\"selected\">\n                    <md-option v-for=\"(o, index) of options\" :value=\"o\" :key=\"index\">{{o}}</md-option>\n                </md-select>\n                <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fillParent: true, opacity: 0, cursor: 'pointer' }) + "\" v-model=\"selected\">\n                    <option v-for=\"o of options\" :value=\"o\">{{o}}</option>\n                </select>\n            </md-field>\n        </div>\n    ",
     props: {
         placeholder: String,
         options: Array,

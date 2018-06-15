@@ -2,9 +2,10 @@ import Vue from "vue";
 import rinss, { rss } from "rinss";
 import { quadrant, abs, PerspectiveTransform, Point } from 'ambients-math';
 import theme from "./theme";
-import { Obj } from "ambients-utils";
+import { Obj, pullOne } from "ambients-utils";
 
 class EditorNode {
+    public tagName: string;
     public el?: HTMLElement;
     public children?: Array<EditorNode> = [];
     public width: string | number;
@@ -15,6 +16,7 @@ class EditorNode {
     public position: string;
 
     constructor(o: EditorNode) {
+        this.tagName = o.tagName;
         this.el = o.el;
         if (o.children != undefined) this.children = o.children;
         this.width = o.width;
@@ -24,11 +26,33 @@ class EditorNode {
         this.background = o.background;
         this.position = o.position;
     }
+
+    public static default():EditorNode {
+        return new EditorNode({
+            tagName: '',
+            width: 0,
+            height: 0,
+            left: 0,
+            top: 0,
+            background: '',
+            position: ''
+        });
+    }
 }
 
 function getStyle(child:EditorNode) {
-    const { el, children, ...style } = child;
+    const { el, children, tagName, ...style } = child;
     return style;
+}
+
+const pTrans = new PerspectiveTransform();
+
+function vertices(el: HTMLElement): Array<Point> {
+    const b = el.getBoundingClientRect();
+    return [
+        new Point(b.left, b.top), new Point(b.right, b.top),
+        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
+    ];
 }
 
 const css = rinss.create({
@@ -45,6 +69,8 @@ const css = rinss.create({
         border: '1px solid blue'
     }
 });
+
+const checkedNodes = [];
 
 Vue.component('editor-box', {
     template: `
@@ -86,8 +112,12 @@ Vue.component('editor-box', {
             });
         },
     },
+    mounted() {
+        checkedNodes.splice(0, checkedNodes.length);
+    },
     beforeDestroy() {
         this.$emit('input', new EditorNode({
+            tagName: 'div',
             width: this.$el.style.width,
             height: this.$el.style.height,
             left: this.$el.style.left,
@@ -98,15 +128,52 @@ Vue.component('editor-box', {
     }
 });
 
-const pTrans = new PerspectiveTransform();
-
-function vertices(el:HTMLElement):Array<Point> {
-    const b = el.getBoundingClientRect();
-    return [
-        new Point(b.left, b.top), new Point(b.right, b.top),
-        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
-    ];
-}
+Vue.component('node-wrapper', {
+    template: `
+        <div :style="computedStyle">
+            <div v-html="computedHTML"/>
+            <div :style="maskStyle"/>
+        </div>
+    `,
+    props: {
+        render: Object
+    },
+    data() {
+        return {
+            checkedNodes
+        }
+    },
+    computed: {
+        computedStyle():string {
+            return rss({
+                left: this.render.left,
+                top: this.render.top,
+                right: this.render.right,
+                bottom: this.render.bottom,
+                position: this.render.position
+            });
+        },
+        computedHTML():string {
+            const o = { ...this.render };
+            o.position = 'relative';
+            o.left = o.top = o.right = o.bottom = undefined;
+            return `<${o.tagName} style="${ rss(getStyle(o)) }"></${o.tagName}>`
+        },
+        checked():boolean {
+            return this.checkedNodes.indexOf(this) > -1;
+        },
+        maskStyle():string {
+            return rss({
+                fillParent: true,
+                background: theme.primary,
+                opacity: this.checked ? 0.3 : 0
+            });
+        }
+    },
+    mounted() {
+        this.checkedNodes.push(this);
+    }
+});
 
 Vue.component('editor', {
     template:`
@@ -123,12 +190,17 @@ Vue.component('editor', {
                 centerX: true,
                 centerY: true
             }) }">
-                <div v-for="child of parent.children" :style="getComputedStyle(child)"/>
+                <node-wrapper
+                 v-for="(child, index) of parent.children"
+                 :render="child"
+                 :key="index"/>
+
                 <editor-box
                  :pointer="pointer"
                  :color="colorPicked"
                  @input="parent.children.push($event)"
                  v-if="tool === 'rectangle' && pointer.down"/>
+
                 <editor-box
                  class="${ css.selectionBox }"
                  :pointer="pointer"
@@ -143,7 +215,7 @@ Vue.component('editor', {
     data(){
         return{
             sceneGraph: undefined,
-            parent: new EditorNode({ width: 0, height: 0, left: 0, top: 0, background: '', position: '' }),
+            parent: EditorNode.default(),
             pointer: {
                 startX: 0,
                 startY: 0,
@@ -159,6 +231,7 @@ Vue.component('editor', {
     mounted() {
         const el:HTMLElement = this.$refs.canvas as any;
         this.parent = new EditorNode({
+            tagName: el.tagName.toLowerCase(),
             el: el,
             width: el.style.width,
             height: el.style.height,
@@ -195,9 +268,6 @@ Vue.component('editor', {
         },
         panEnd(e){
             this.pointer.down = false;
-        },
-        getComputedStyle(child:EditorNode) {
-            return rss(getStyle(child));
         }
     }
 }); 
