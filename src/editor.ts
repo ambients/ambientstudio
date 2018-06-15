@@ -161,7 +161,7 @@ Vue.component('selection-mask', {
 
 Vue.component('node-wrapper', {
     template: `
-        <div :style="computedStyle">
+        <div :style="computedStyle" @click="childClicked()">
             <div v-html="computedHTML"/>
             <selection-mask v-if="checked"/>
         </div>
@@ -173,6 +173,12 @@ Vue.component('node-wrapper', {
         return {
             checkedNodes
         }
+    },
+    methods:{
+        childClicked(){
+            this.checkedNodes.splice(0, this.checkedNodes.length);
+            this.checkedNodes.push(this);
+        },
     },
     computed: {
         computedStyle():string {

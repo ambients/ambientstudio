@@ -58081,6 +58081,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
 /* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+/* harmony import */ var _radio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./radio */ "./src/radio.ts");
+/* harmony import */ var _icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./icon */ "./src/icon.ts");
+/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./row */ "./src/row.ts");
+/* harmony import */ var _colorPicker__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./colorPicker */ "./src/colorPicker.ts");
+
+
+
+
 
 
 
@@ -58095,136 +58103,28 @@ var colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icon
 var borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
 var borderLine = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"));
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
-    borderIcon: {
-        width: 40,
-        height: 40,
-        cursor: 'pointer',
-        margin: 5,
-    },
-    borderRow: {
-        floatTop: 0,
-        display: 'flex',
-        width: '100%'
-    },
-    borderOptions: {
-        width: '100%',
-        flex: '1 1 auto',
-        marginLeft: 20
-    },
-    borderStyle: {
-        width: '100%',
-        display: 'flex',
-        floatTop: 0,
-    },
-    borderInputStyle: {
-        width: '100%',
-        flex: '1 1 auto',
-        display: 'flex',
-        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
-    },
-    borderThickness: {
-        flex: '1 1 auto',
-        width: '100%',
-        display: 'flex'
-    },
-    inputIcons: {
-        width: 20,
-        height: 20,
-        marginLeft: 5,
-        cursor: 'pointer'
-    },
-    borderThicknessInput: {
-        flex: '1 1 auto',
-        width: '100%',
+    borderColorInput: {
+        background: 'none',
         border: 'none',
-        background: 'none'
+        borderBottom: '1px solid black'
     },
-    borderType: {
-        width: '100%',
-        floatTop: 0,
-        display: 'flex',
-    },
-    borderTypeTable: {},
     separator: {
         width: '100%',
         height: 0,
         borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
         floatTop: 0,
-        marginBottom: 10
-    },
-    rotation: {
-        svg: {
-            rotate: -90,
-        }
-    },
-    rotation2: {
-        svg: {
-            rotate: -180,
-        }
-    },
-    rotation3: {
-        svg: {
-            rotate: -270,
-        }
+        margin: 10
     }
 });
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-icon', {
-    template: "\n        <div class=\"" + css.borderIcon + "\" :style=\"getStyle()\" @click=\"toggleSelected()\"><slot></slot></div>\n    ",
-    data: function () {
-        return {
-            iconColor: false
-        };
-    },
-    methods: {
-        toggleSelected: function () {
-            this.iconColor = !this.iconColor;
-        },
-        getStyle: function () {
-            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
-                color: (this.iconColor) ? _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["default"].textPrimary
-            });
-        }
-    }
-});
-var borderStyleName = { value: '' };
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('input-icon', {
-    template: "\n        <div class=\"" + css.inputIcons + "\" :style=\"getType()\" @click=\"toggleSelect()\"><slot></slot></div>\n    ",
-    props: {
-        name: String,
-    },
-    data: function () {
-        return {
-            borderStyleName: borderStyleName
-        };
-    },
-    methods: {
-        toggleSelect: function () {
-            if (this.borderStyleName.value === this.name)
-                this.borderStyleName.value = '';
-            else
-                this.borderStyleName.value = this.name;
-        },
-        getType: function () {
-            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
-                color: (this.borderStyleName.value === this.name) ? _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_3__["default"].textPrimary
-            });
-        }
-    }
-});
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-card', {
-    template: "\n        <div class=\"" + css.borderRow + "\">\n            <border-icon><slot></slot></border-icon>\n            <div class=\"" + css.borderOptions + "\">\n                <div class=\"" + css.borderStyle + "\">\n                    <div class=\"" + css.borderInputStyle + "\">\n                        <div class=\"" + css.borderThickness + "\">\n                            <input-icon>" + borderThickness + "</input-icon>\n                            <input class=\"" + css.borderThicknessInput + "\" :placeholder=\"name\"></input>\n                        </div>\n                    </div>\n                    <input-icon>" + colorPalette + "</input-icon>\n                </div>\n                <div class=\"" + css.borderType + "\">\n                    <table class=\"" + css.borderTypeTable + "\">\n                        <tr>\n                            <td align=\"center\"><input-icon name=\"L1\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L2\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L3\">" + borderLine + "</input-icon></td>\n                            <td align=\"center\"><input-icon name=\"L4\">" + borderLine + "</input-icon></td>\n                        </tr>\n                    </table>\n                </div>\n            </div>\n        </div>\n    ",
-    props: {
-        name: String,
-    },
-});
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-radius-card', {
-    template: "\n        <div class=\"" + css.borderRow + "\">\n            <border-icon><slot></slot></border-icon>\n            <div class=\"" + css.borderOptions + "\">\n                <div class=\"" + css.borderStyle + "\">\n                    <div class=\"" + css.borderInputStyle + "\">\n                        <div class=\"" + css.borderThickness + "\">\n                            <input-icon>" + borderThickness + "</input-icon>\n                            <input class=\"" + css.borderThicknessInput + "\" :placeholder=\"name\"></input>\n                        </div>\n                    </div>\n                    <input-icon>" + colorPalette + "</input-icon>\n                </div>\n            </div>\n        </div>\n    ",
-    props: {
-        name: String,
-    },
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-type', {
+    mixins: [_radio__WEBPACK_IMPORTED_MODULE_5__["default"]],
+    template: "\n        <icon style=\"cursor:pointer\" @click.native=\"check\" :active=\"isChecked\"><slot/></icon>\n    "
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-panel', {
-    template: "\n    <panel title=\"Border\" expanded>\n        <border-card name=\" top thickness\">" + borderTop + "</border-card>\n        <border-card name=\" left thickness\">" + borderLeft + "</border-card>\n        <border-card name=\" right thickness\">" + borderRight + "</border-card>\n        <border-card name=\" bottom thickness\">" + borderBottom + "</border-card>\n        \n        <div class=\"" + css.separator + "\"></div>\n\n        <border-radius-card name=\" top left radius\">" + borderTopRight + "</border-radius-card>\n        <border-radius-card name=\" bottom right radius\">" + borderTopRight + "</border-radius-card>\n        <border-radius-card name=\" bottom left radius\">" + borderTopRight + "</border-radius-card>\n        <border-radius-card name=\" top right radius\">" + borderTopRight + "</border-radius-card>\n        \n    </panel>\n    "
+    template: "\n    <panel title=\"Border\" expanded>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderTop + "\n            </border-type></cell>\n            <gap/>\n            <cell>\n                <material-input placeholder=\"Top thickness\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker size=\"20px\" :color=\"borderTopColor\" @click.native=\"$emit('showColorPicker', $event)\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\" v-model=\"borderTopColor\"/></cell>\n            <gap/>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>" + borderBottom + "</border-type></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Bottom thickness\"/></cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker size=\"20px\" :color=\"borderBottomColor\" @click.native=\"$emit('showColorPicker', $event)\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\" v-model=\"borderBottomColor\"/></cell>\n            <gap/>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderLeft + "\n            </border-type></cell>\n            <gap/>\n            <cell>\n                <material-input placeholder=\"Left thickness\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker size=\"20px\" :color=\"borderLeftColor\" @click.native=\"$emit('showColorPicker', $event)\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\" v-model=\"borderLeftColor\"/></cell>\n            <gap/>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderRight + "\n            </border-type></cell>\n            <gap/>\n            <cell>\n                <material-input placeholder=\"Right thickness\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker size=\"20px\" :color=\"borderRightColor\" @click.native=\"$emit('showColorPicker', $event)\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\" v-model=\"borderRightColor\"/></cell>\n            <gap/>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <div class=\"" + css.separator + "\"></div>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Top right size\"/>\n            </cell>\n            <gap/>\n            <cell shrink><border-type style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: -90 }) + "\">\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Top left size\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: 90 }) + "\">\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Bottom right size\"/>\n            </cell>\n            <gap/>\n            <cell shrink><border-type style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: 180 }) + "\">\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Bottom left size\"/>\n            </cell>\n        </row>\n    </panel>\n    ",
+    props: {
+        colorPicked: String
+    },
 });
 
 
@@ -58439,7 +58339,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('selection-mask', {
     template: "\n        <div class=\"" + css.selectionMask + "\">\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: 0 }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: 0 }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: 0 }) + "\"/>\n            \n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '50%' }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '50%' }) + "\"/>\n\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '100%' }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: '100%' }) + "\"/>\n            <div class=\"" + css.selectionHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '100%' }) + "\"/>\n        </div>\n    "
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('node-wrapper', {
-    template: "\n        <div :style=\"computedStyle\">\n            <div v-html=\"computedHTML\"/>\n            <selection-mask v-if=\"checked\"/>\n        </div>\n    ",
+    template: "\n        <div :style=\"computedStyle\" @click=\"childClicked()\">\n            <div v-html=\"computedHTML\"/>\n            <selection-mask v-if=\"checked\"/>\n        </div>\n    ",
     props: {
         render: Object
     },
@@ -58447,6 +58347,12 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('node-wrapper', {
         return {
             checkedNodes: checkedNodes
         };
+    },
+    methods: {
+        childClicked: function () {
+            this.checkedNodes.splice(0, this.checkedNodes.length);
+            this.checkedNodes.push(this);
+        },
     },
     computed: {
         computedStyle: function () {
@@ -58963,6 +58869,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/lock-filled.svg":
+/*!***********************************!*\
+  !*** ./src/icons/lock-filled.svg ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 25 3 C 18.363281 3 13 8.363281 13 15 L 13 20 L 9 20 C 7.300781 20 6 21.300781 6 23 L 6 47 C 6 48.699219 7.300781 50 9 50 L 41 50 C 42.699219 50 44 48.699219 44 47 L 44 23 C 44 21.300781 42.699219 20 41 20 L 37 20 L 37 15 C 37 8.363281 31.636719 3 25 3 Z M 25 5 C 30.566406 5 35 9.433594 35 15 L 35 20 L 15 20 L 15 15 C 15 9.433594 19.433594 5 25 5 Z M 25 30 C 26.699219 30 28 31.300781 28 33 C 28 33.898438 27.601563 34.6875 27 35.1875 L 27 38 C 27 39.101563 26.101563 40 25 40 C 23.898438 40 23 39.101563 23 38 L 23 35.1875 C 22.398438 34.6875 22 33.898438 22 33 C 22 31.300781 23.300781 30 25 30 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/lock.svg":
 /*!****************************!*\
   !*** ./src/icons/lock.svg ***!
@@ -58970,7 +58887,7 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 52 52\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 32 0 C 27.578125 0 23.757813 1.835938 21.375 4.8125 C 18.992188 7.789063 18 11.648438 18 15.8125 L 18 18 L 24 18 L 24 15.8125 C 24 12.65625 24.78125 10.171875 26.0625 8.5625 C 27.34375 6.953125 29.085938 6 32 6 C 34.921875 6 36.65625 6.898438 37.9375 8.5 C 39.21875 10.101563 40 12.617188 40 15.8125 L 40 18 L 46 18 L 46 15.8125 C 46 11.625 44.945313 7.726563 42.5625 4.75 C 40.179688 1.773438 36.414063 0 32 0 Z M 18 20 C 14.6875 20 12 22.6875 12 26 L 12 46 C 12 49.3125 14.6875 52 18 52 L 46 52 C 49.3125 52 52 49.3125 52 46 L 52 26 C 52 22.6875 49.3125 20 46 20 Z M 32 30 C 34.210938 30 36 31.789063 36 34 C 36 35.476563 35.195313 36.742188 34 37.4375 L 34 42 C 34 43.101563 33.101563 44 32 44 C 30.898438 44 30 43.101563 30 42 L 30 37.4375 C 28.804688 36.742188 28 35.476563 28 34 C 28 31.789063 29.789063 30 32 30 Z \"></path></g></svg>"
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 25 3 C 18.363281 3 13 8.363281 13 15 L 13 20 L 9 20 C 7.355469 20 6 21.355469 6 23 L 6 47 C 6 48.644531 7.355469 50 9 50 L 41 50 C 42.644531 50 44 48.644531 44 47 L 44 23 C 44 21.355469 42.644531 20 41 20 L 37 20 L 37 15 C 37 8.363281 31.636719 3 25 3 Z M 25 5 C 30.566406 5 35 9.433594 35 15 L 35 20 L 15 20 L 15 15 C 15 9.433594 19.433594 5 25 5 Z M 9 22 L 41 22 C 41.554688 22 42 22.445313 42 23 L 42 47 C 42 47.554688 41.554688 48 41 48 L 9 48 C 8.445313 48 8 47.554688 8 47 L 8 23 C 8 22.445313 8.445313 22 9 22 Z M 25 30 C 23.300781 30 22 31.300781 22 33 C 22 33.898438 22.398438 34.6875 23 35.1875 L 23 38 C 23 39.101563 23.898438 40 25 40 C 26.101563 40 27 39.101563 27 38 L 27 35.1875 C 27.601563 34.6875 28 33.898438 28 33 C 28 31.300781 26.699219 30 25 30 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -59062,6 +58979,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/placeholder-filled.svg":
+/*!******************************************!*\
+  !*** ./src/icons/placeholder-filled.svg ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 41 4 L 9 4 C 6.238281 4 4 6.238281 4 9 L 4 41 C 4 43.03125 5.21875 44.789063 6.960938 45.570313 C 7.578125 45.839844 8.269531 46 9 46 L 41 46 C 41.730469 46 42.421875 45.839844 43.039063 45.570313 C 44.78125 44.789063 46 43.03125 46 41 L 46 9 C 46 6.238281 43.761719 4 41 4 Z M 20.871094 34.441406 C 21.039063 33.101563 20.960938 32.210938 20.960938 30.949219 C 20.328125 30.589844 19.160156 28.539063 18.980469 26.839844 C 18.53125 26.839844 17.71875 26.390625 17.539063 24.511719 C 17.359375 23.53125 17.898438 22.988281 18.171875 22.808594 C 16.550781 16.640625 17.449219 11.179688 24.910156 11 C 26.800781 11 28.238281 11.539063 28.691406 12.519531 C 34.171875 13.238281 32.550781 20.570313 31.738281 22.898438 C 32.011719 23.078125 32.460938 23.621094 32.371094 24.601563 C 32.191406 26.390625 31.378906 26.929688 30.929688 26.929688 C 30.75 28.71875 29.671875 30.679688 29.039063 31.039063 C 29.039063 32.210938 29.039063 33.191406 29.128906 34.53125 C 30.589844 38.289063 39.648438 37.480469 40.871094 44 L 9.128906 44 C 10.359375 37.480469 19.5 38.28125 20.871094 34.441406 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/placeholder.svg":
 /*!***********************************!*\
   !*** ./src/icons/placeholder.svg ***!
@@ -59069,7 +58997,7 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 64 64\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 8 8 L 8 56 L 56 56 L 56 8 Z M 12 12 L 52 12 L 52 52 L 47.875 52 C 47.1875 46.59375 43.765625 42.023438 39.0625 39.6875 C 42.046875 37.5 44 33.96875 44 30 C 44 23.398438 38.601563 18 32 18 C 25.398438 18 20 23.398438 20 30 C 20 33.96875 21.953125 37.5 24.9375 39.6875 C 20.234375 42.023438 16.8125 46.59375 16.125 52 L 12 52 Z M 32 22 C 36.445313 22 40 25.554688 40 30 C 40 34.445313 36.445313 38 32 38 C 27.554688 38 24 34.445313 24 30 C 24 25.554688 27.554688 22 32 22 Z M 32 42 C 37.96875 42 42.867188 46.304688 43.8125 52 L 20.1875 52 C 21.132813 46.304688 26.03125 42 32 42 Z \"></path></g></svg>"
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 9 4 C 6.253906 4 4 6.253906 4 9 L 4 41 C 4 43.746094 6.253906 46 9 46 L 41 46 C 43.746094 46 46 43.746094 46 41 L 46 9 C 46 6.253906 43.746094 4 41 4 Z M 9 6 L 41 6 C 42.65625 6 44 7.34375 44 9 L 44 41 C 44 42.355469 43.09375 43.488281 41.859375 43.859375 C 41.558594 42.261719 40.839844 40.976563 39.886719 40.007813 C 38.722656 38.828125 37.277344 38.082031 35.871094 37.472656 C 34.460938 36.863281 33.074219 36.390625 32.015625 35.863281 C 30.992188 35.355469 30.386719 34.828125 30.125 34.222656 C 30.066406 33.195313 30.054688 32.351563 30.054688 31.4375 C 30.457031 31.035156 30.761719 30.570313 31.058594 29.960938 C 31.40625 29.238281 31.644531 28.363281 31.796875 27.480469 C 32.574219 27.035156 33.214844 26.214844 33.363281 24.703125 L 33.367188 24.699219 L 33.367188 24.691406 C 33.449219 23.800781 33.171875 23.183594 32.824219 22.699219 C 33.246094 21.34375 33.75 19.234375 33.570313 17.027344 C 33.472656 15.800781 33.15625 14.558594 32.394531 13.527344 C 31.71875 12.601563 30.617188 11.964844 29.261719 11.675781 C 28.867188 11.140625 28.34375 10.710938 27.703125 10.460938 C 26.894531 10.140625 25.949219 10 24.910156 10 L 24.886719 10 C 20.914063 10.09375 18.328125 11.746094 17.21875 14.25 C 16.171875 16.621094 16.394531 19.539063 17.125 22.554688 C 16.734375 23.039063 16.402344 23.699219 16.5625 24.652344 C 16.71875 26.175781 17.375 26.972656 18.125 27.394531 C 18.285156 28.261719 18.535156 29.125 18.90625 29.851563 C 19.125 30.28125 19.359375 30.667969 19.605469 30.996094 C 19.699219 31.125 19.84375 31.210938 19.945313 31.324219 C 19.957031 32.339844 19.996094 33.136719 19.875 34.148438 C 19.632813 34.777344 19.035156 35.308594 18.015625 35.828125 C 16.964844 36.367188 15.578125 36.847656 14.164063 37.460938 C 12.75 38.074219 11.296875 38.824219 10.128906 40.003906 C 9.171875 40.972656 8.445313 42.257813 8.140625 43.859375 C 6.90625 43.488281 6 42.355469 6 41 L 6 9 C 6 7.34375 7.34375 6 9 6 Z M 24.921875 12 C 25.765625 12.003906 26.480469 12.128906 26.96875 12.324219 C 27.460938 12.515625 27.691406 12.75 27.777344 12.9375 L 28.003906 13.441406 L 28.558594 13.515625 C 29.703125 13.664063 30.332031 14.09375 30.785156 14.710938 C 31.238281 15.328125 31.496094 16.203125 31.578125 17.1875 C 31.738281 19.164063 31.164063 21.523438 30.796875 22.574219 L 30.542969 23.304688 L 31.1875 23.734375 C 31.117188 23.6875 31.433594 23.863281 31.375 24.507813 C 31.375 24.507813 31.375 24.511719 31.375 24.511719 C 31.21875 25.992188 30.585938 25.925781 30.933594 25.925781 L 30.03125 25.925781 L 29.9375 26.828125 C 29.863281 27.558594 29.585938 28.414063 29.257813 29.082031 C 28.929688 29.753906 28.394531 30.261719 28.550781 30.171875 L 28.046875 30.460938 L 28.046875 31.042969 C 28.046875 32.207031 28.042969 33.226563 28.136719 34.597656 L 28.148438 34.75 L 28.203125 34.894531 C 28.722656 36.230469 29.882813 37.035156 31.125 37.65625 C 32.367188 38.273438 33.765625 38.742188 35.078125 39.308594 C 36.386719 39.875 37.589844 40.527344 38.457031 41.410156 C 39.128906 42.089844 39.621094 42.894531 39.859375 44 L 10.140625 44 C 10.382813 42.898438 10.878906 42.09375 11.550781 41.410156 C 12.425781 40.527344 13.640625 39.871094 14.957031 39.296875 C 16.277344 38.722656 17.683594 38.246094 18.921875 37.609375 C 20.160156 36.976563 21.320313 36.144531 21.808594 34.78125 L 21.84375 34.679688 L 21.855469 34.574219 C 22.050781 33.128906 21.953125 32.160156 21.953125 30.953125 L 21.953125 30.371094 L 21.449219 30.082031 C 21.535156 30.132813 21.363281 30.011719 21.207031 29.800781 C 21.050781 29.589844 20.863281 29.285156 20.6875 28.941406 C 20.339844 28.257813 20.042969 27.398438 19.96875 26.734375 L 19.875 25.839844 L 19.015625 25.839844 C 18.953125 25.8125 18.648438 25.609375 18.535156 24.417969 L 18.53125 24.375 L 18.523438 24.332031 C 18.417969 23.757813 18.707031 23.652344 18.71875 23.644531 L 19.316406 23.25 L 19.136719 22.558594 C 18.355469 19.582031 18.246094 16.875 19.046875 15.0625 C 19.847656 13.253906 21.441406 12.089844 24.921875 12 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -59260,6 +59188,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/visibility-filled.svg":
+/*!*****************************************!*\
+  !*** ./src/icons/visibility-filled.svg ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 18.9375 12.84375 C 8.921875 15.546875 1.613281 23.921875 1.25 24.34375 C 0.929688 24.71875 0.929688 25.28125 1.25 25.65625 C 1.683594 26.160156 11.988281 38 25 38 C 38.011719 38 48.316406 26.160156 48.75 25.65625 C 49.070313 25.28125 49.070313 24.71875 48.75 24.34375 C 48.386719 23.921875 41.078125 15.550781 31.0625 12.84375 C 34.027344 14.8125 36 18.171875 36 22 C 35.996094 28.074219 31.074219 33 25 33 C 18.925781 33 14.003906 28.074219 14 22 C 14 18.171875 15.972656 14.8125 18.9375 12.84375 Z M 25 17 C 22.238281 17 20 19.238281 20 22 C 20 24.761719 22.238281 27 25 27 C 27.761719 27 30 24.761719 30 22 C 30 19.238281 27.761719 17 25 17 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/visibility.svg":
 /*!**********************************!*\
   !*** ./src/icons/visibility.svg ***!
@@ -59267,7 +59206,7 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 48 48\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 24 10 C 12 10 2.773438 22.210938 2.375 22.8125 C 1.773438 23.609375 1.773438 24.390625 2.375 25.1875 C 2.773438 25.789063 12 38 24 38 C 36 38 45.226563 25.789063 45.625 25.1875 C 46.226563 24.390625 46.226563 23.609375 45.625 22.8125 C 45.226563 22.210938 36 10 24 10 Z M 24 14 C 29.601563 14 34 18.398438 34 24 C 34 29.601563 29.601563 34 24 34 C 18.398438 34 14 29.601563 14 24 C 14 18.398438 18.398438 14 24 14 Z M 24 19 C 21.242188 19 19 21.242188 19 24 C 19 26.757813 21.242188 29 24 29 C 26.757813 29 29 26.757813 29 24 C 29 21.242188 26.757813 19 24 19 Z \"></path></g></svg>"
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 25 12 C 11.667969 12 1.25 24.34375 1.25 24.34375 C 0.921875 24.71875 0.921875 25.28125 1.25 25.65625 C 1.25 25.65625 11.667969 38 25 38 C 38.332031 38 48.75 25.65625 48.75 25.65625 C 49.078125 25.28125 49.078125 24.71875 48.75 24.34375 C 48.75 24.34375 38.332031 12 25 12 Z M 25 14 C 27.628906 14 30.140625 14.542969 32.46875 15.375 C 34.03125 17.140625 35 19.449219 35 22 C 35 27.535156 30.535156 32 25 32 C 19.464844 32 15 27.535156 15 22 C 15 19.449219 15.9375 17.140625 17.5 15.375 C 19.835938 14.539063 22.363281 14 25 14 Z M 14.1875 16.84375 C 13.4375 18.40625 13 20.15625 13 22 C 13 28.617188 18.382813 34 25 34 C 31.617188 34 37 28.617188 37 22 C 37 20.164063 36.582031 18.40625 35.84375 16.84375 C 41.492188 19.714844 45.554688 23.878906 46.59375 25 C 44.96875 26.757813 35.972656 36 25 36 C 14.027344 36 5.03125 26.757813 3.40625 25 C 4.445313 23.875 8.527344 19.714844 14.1875 16.84375 Z M 25 17 C 22.238281 17 20 19.238281 20 22 C 20 24.761719 22.238281 27 25 27 C 27.761719 27 30 24.761719 30 22 C 30 19.238281 27.761719 17 25 17 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -59556,13 +59495,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./row */ "./src/row.ts");
+/* harmony import */ var _radio__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./radio */ "./src/radio.ts");
+
+
+
 
 
 
 
 var visibility = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility.svg */ "./src/icons/visibility.svg"));
+var visibilityFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility-filled.svg */ "./src/icons/visibility-filled.svg"));
 var lock = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock.svg */ "./src/icons/lock.svg"));
+var lockFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock-filled.svg */ "./src/icons/lock-filled.svg"));
 var placeholder = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+var placeholderFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder-filled.svg */ "./src/icons/placeholder-filled.svg"));
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     outline: {
         background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].white,
@@ -59570,18 +59517,6 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         height: '100%',
         paddingLeft: 5,
         borderRight: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background
-    },
-    outlineRow: {
-        floatTop: 0,
-        height: 20,
-        width: '100%',
-        marginTop: 10,
-    },
-    tabs: {
-        width: 20,
-        height: 20,
-        floatLeft: 0,
-        margin: 1
     },
     elementName: {
         floatLeft: 0,
@@ -59594,14 +59529,12 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         marginTop: 10,
     },
 });
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-header', {
-    template: "\n        <div class=\"" + css.outlineRow + "\">\n            <div class=\"" + css.tabs + "\">" + visibility + "</div>\n            <div class=\"" + css.tabs + "\">" + lock + "</div>\n        </div>\n    "
-});
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-row', {
-    template: "\n        <div class=\"" + css.outlineRow + "\">\n            <div class=\"" + css.tabs + "\">" + visibility + "</div>\n            <div class=\"" + css.tabs + "\">" + lock + "</div>\n            <div class=\"" + css.tabs + "\">" + placeholder + "</div>\n            <div class=\"" + css.elementName + "\"><slot></slot></div>\n        </div>\n    "
+    mixins: [_radio__WEBPACK_IMPORTED_MODULE_5__["default"]],
+    template: "\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><icon @click.native=\"check\" name=\"visibility\" :active=\"isChecked\" style=\"cursor:pointer\">\n                " + visibility + "\n                " + visibilityFilled + "\n            </icon></cell>\n            <cell shrink><icon @click.native=\"check\" name=\"lock\" :active=\"isChecked\" style=\"cursor:pointer\">\n                " + lock + "\n                " + lockFilled + "\n            </icon></cell>\n            <cell shrink><icon style=\"cursor:pointer;\">\n                " + placeholder + "\n                " + placeholderFilled + "\n            </icon></cell>\n            <cell align=\"left\"> <div class=\"" + css.elementName + "\"><slot></slot></div></cell>\n        </row>\n    "
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline', {
-    template: "\n        <div class=\"" + css.outline + "\">\n            <outline-header></outline-header>\n            <div class=\"" + css.separator + "\"></div>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n        </div>\n    "
+    template: "\n        <div class=\"" + css.outline + "\">\n            <outline-row style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginTop: 10 }) + "\"></outline-row>\n            <div class=\"" + css.separator + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginBottom: 10 }) + "\"></div>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n        </div>\n    "
 });
 
 
@@ -60089,37 +60022,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 /* harmony import */ var _panels__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./panels */ "./src/panels.ts");
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./row */ "./src/row.ts");
+
+
 
 
 
 
 var iconholder = __webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg");
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
-    transformIcon: {
-        width: 20,
-        height: 20
-    },
-    transformRow: {
-        display: 'flex',
-        width: '100%',
-        floatTop: 0,
-        marginBottom: 5
-    },
-    transformInputs: {
-        flex: '1 1 auto',
-        display: 'flex',
-        width: '33%',
-        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
-        ':not(:first-child)': {
-            marginLeft: 5
-        }
-    },
-    transformInput: {
-        flex: '1 1 auto',
-        width: '100%',
-        background: 'none',
-        border: 'none',
-    },
     separator: {
         width: '100%',
         height: 0,
@@ -60129,11 +60040,8 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         marginTop: 5
     },
 });
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-icon', {
-    template: "\n        <div class=\"" + css.transformIcon + "\"><slot></slot></div>\n    "
-});
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-panel', {
-    template: "\n    <panel title=\"Transform\" expanded>\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.X\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.Y\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  trans.Z\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  scaleX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  scaleY\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.separator + "\"></div>\n\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateY\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  rotateZ\"></input>\n            </div>\n        </div>\n\n        <div class=\"" + css.transformRow + "\">\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  skewX\"></input>\n            </div>\n            <div class=\"" + css.transformInputs + "\">\n                <transform-icon>" + iconholder + "</transform-icon>\n                <input class=\"" + css.transformInput + "\" placeholder=\"  skewY\"></input>\n            </div>\n        </div>\n    </panel>\n    "
+    template: "\n    <panel title=\"Transform\" expanded>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Trans. X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Trans. Y\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Trans. Z\"/></cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Scale X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Scale Y\"/></cell>\n        </row>\n\n        <div class=\"" + css.separator + "\"></div>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Rotate X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Rotate Y\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Rotate Z\"/></cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Skew X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Skew Y\"/></cell>\n        </row>\n    </panel>\n    "
 });
 
 
