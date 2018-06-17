@@ -33,7 +33,6 @@ const css = rinss.create({
     }
 });
 
-
 Vue.component('border-type',{
     mixins:[Radio],
     template:`
@@ -54,9 +53,9 @@ Vue.component('border-panel',{
             </cell>
         </row>
         <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker size="20px" :color="borderTopColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <cell shrink><color-picker color="red"/></cell>
             <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderTopColor"/></cell>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
             <gap/>
             <cell><border-type name="topBorder">
                 ${borderLine}
@@ -79,9 +78,9 @@ Vue.component('border-panel',{
             <cell><material-input placeholder="Bottom thickness"/></cell>
         </row>
         <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker size="20px" :color="borderBottomColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <cell shrink><color-picker color="red"/></cell>
             <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderBottomColor"/></cell>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
             <gap/>
             <cell><border-type name="bottomBorder">
                 ${borderLine}
@@ -108,9 +107,9 @@ Vue.component('border-panel',{
             </cell>
         </row>
         <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker size="20px" :color="borderLeftColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <cell shrink><color-picker color="red"/></cell>
             <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderLeftColor"/></cell>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
             <gap/>
             <cell><border-type name="topBorder">
                 ${borderLine}
@@ -137,9 +136,9 @@ Vue.component('border-panel',{
             </cell>
         </row>
         <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker size="20px" :color="borderRightColor" @click.native="$emit('showColorPicker', $event)"/></cell>
+            <cell shrink><color-picker color="red"/></cell>
             <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color" v-model="borderRightColor"/></cell>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
             <gap/>
             <cell><border-type name="topBorder">
                 ${borderLine}

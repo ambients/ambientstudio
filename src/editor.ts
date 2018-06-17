@@ -271,7 +271,7 @@ Vue.component('editor-node', {
             if (!e.gesture.srcEvent.shiftKey && this.selectedNodes.length < 2) this.select();
             else pushOne(this.selectedNodes, this);
 
-            this.panStartDebounce(e);
+            this.panStartDebounce();
         },
         pan: debounce(function (this: any, { gesture: { deltaX, deltaY } }) {
             this.boundingBox.left = this.boundingBox.startLeft + deltaX;

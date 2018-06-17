@@ -57,6 +57,7 @@ import './editor';
 import './transformPanel';
 import './borderPanel';
 import './outline';
+import './menu-bar';
 
 rinss.config({ duration: 250 });
 
@@ -109,6 +110,7 @@ new Vue({
     },
     template: `
         <div class="${ css.stage }">
+            <menu-bar/>
             <row stretch stretchy>
                 <cell shrink>
                     <toolbar
@@ -151,7 +153,7 @@ new Vue({
         return {
             colorPicker,
             textColorPicker,
-            tool: 'cursor'
+            tool: 'cursor',
         }
     },
     methods: {
