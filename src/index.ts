@@ -58,6 +58,7 @@ import './transformPanel';
 import './borderPanel';
 import './outline';
 import './menu-bar';
+import './NewPage';
 
 rinss.config({ duration: 250 });
 
@@ -81,6 +82,16 @@ const css = rinss.create({
     },
     sketchPicker: {
         userSelect: 'none'
+    },
+    test: {
+        width: 100,
+        height: 100,
+        background: 'red',
+        centerX: true,
+        centerY: true,
+        ':hover': {
+            background: 'blue'
+        }
     }
 });
 
@@ -147,6 +158,7 @@ new Vue({
              @close="textColorPicker.show=false">
                 <sketch-picker class="${ css.sketchPicker }" v-model="textColorPicker.color"/>
             </modal>
+            <div class="${ css.test }"/>
         </div>
     `,
     data() {

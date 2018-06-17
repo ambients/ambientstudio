@@ -76974,6 +76974,55 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./src/NewPage.ts":
+/*!************************!*\
+  !*** ./src/NewPage.ts ***!
+  \************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./row */ "./src/row.ts");
+
+
+
+
+var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    newPageStyle: {
+        width: '90%',
+        height: '90%',
+        absLeft: 0,
+        absTop: 0,
+        zIndex: 9999,
+        border: '3px solid' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background,
+    },
+    newPageTop: {
+        height: '50%',
+        width: '100%',
+        borderBottom: '3px solid' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background,
+    },
+    newPageRow: {
+        width: '100%',
+        height: '50%',
+        background: 'blue'
+    },
+    newPageCell: {
+        width: '50%',
+        height: '100%',
+        background: 'red'
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('NewPage', {
+    template: "\n        <div class=\"" + css.newPageStyle + "\">\n            <div class=\"" + css.newPageTop + "\"></div>\n            <row stretch class=\"" + css.newPageRow + "\">\n                <cell><div class=\"" + css.newPageCell + "\"></div></cell>\n                <cell><div class=\"" + css.newPageCell + "\"></div></cell>\n            </row>\n        </div>            \n    "
+});
+
+
+/***/ }),
+
 /***/ "./src/borderPanel.ts":
 /*!****************************!*\
   !*** ./src/borderPanel.ts ***!
@@ -77813,6 +77862,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/display-size.svg":
+/*!************************************!*\
+  !*** ./src/icons/display-size.svg ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 4 1 C 1.792969 1 0 2.792969 0 5 L 0 43 C 0 45.207031 1.792969 47 4 47 L 25 47 L 25 39 L 5 39 L 5 6 L 31 6 L 31 14 L 36 14 L 36 5 C 36 2.792969 34.207031 1 32 1 Z M 29 15 C 27.347656 15 26 16.347656 26 18 L 26 47 C 26 48.652344 27.347656 50 29 50 L 47 50 C 48.652344 50 50 48.652344 50 47 L 50 18 C 50 16.347656 48.652344 15 47 15 Z M 31 20 L 45 20 L 45 42 L 31 42 Z M 18 41 C 18.828125 41 19.5 41.671875 19.5 42.5 C 19.5 43.328125 18.828125 44 18 44 C 17.171875 44 16.5 43.328125 16.5 42.5 C 16.5 41.671875 17.171875 41 18 41 Z M 38 44 C 38.828125 44 39.5 44.671875 39.5 45.5 C 39.5 46.328125 38.828125 47 38 47 C 37.171875 47 36.5 46.328125 36.5 45.5 C 36.5 44.671875 37.171875 44 38 44 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/dropper-filled.svg":
 /*!**************************************!*\
   !*** ./src/icons/dropper-filled.svg ***!
@@ -77835,6 +77895,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 
 /***/ }),
 
+/***/ "./src/icons/export.svg":
+/*!******************************!*\
+  !*** ./src/icons/export.svg ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 0.78125 -0.03125 C 0.300781 0.078125 -0.0390625 0.507813 -0.03125 1 L -0.03125 49 C -0.0273438 49.566406 0.433594 50.027344 1 50.03125 L 31 50.03125 C 31.566406 50.027344 32.027344 49.566406 32.03125 49 L 32.03125 39 L 29.96875 39 L 29.96875 47.96875 L 2.03125 47.96875 L 2.03125 2.03125 L 29.96875 2.03125 L 29.96875 11 L 32.03125 11 L 32.03125 1 C 32.027344 0.433594 31.566406 -0.0273438 31 -0.03125 L 1 -0.03125 C 0.925781 -0.0390625 0.855469 -0.0390625 0.78125 -0.03125 Z M 38.90625 15.09375 C 38.53125 15.160156 38.230469 15.433594 38.125 15.796875 C 38.019531 16.164063 38.128906 16.554688 38.40625 16.8125 L 45.5625 24 L 16 24 C 15.96875 24 15.9375 24 15.90625 24 C 15.355469 24.027344 14.925781 24.496094 14.953125 25.046875 C 14.980469 25.597656 15.449219 26.027344 16 26 L 45.5625 26 L 38.40625 33.1875 C 38.109375 33.429688 37.972656 33.816406 38.058594 34.191406 C 38.144531 34.5625 38.4375 34.855469 38.808594 34.941406 C 39.183594 35.027344 39.570313 34.890625 39.8125 34.59375 L 48.71875 25.71875 L 49.40625 25 L 48.71875 24.28125 L 39.8125 15.40625 C 39.605469 15.183594 39.304688 15.070313 39 15.09375 C 38.96875 15.09375 38.9375 15.09375 38.90625 15.09375 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/font-color.svg":
 /*!**********************************!*\
   !*** ./src/icons/font-color.svg ***!
@@ -77843,6 +77914,28 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 26.300781 0 C 15.550781 0 3 6.207031 3 23.699219 C 3 36.402344 12.804688 50 27.398438 50 C 27.40625 50 27.609375 50 27.617188 50 C 33.101563 49.898438 39 46.355469 39 38.800781 C 39 37.355469 38.464844 36.101563 37.988281 34.996094 C 37.863281 34.707031 37.742188 34.421875 37.628906 34.132813 C 36.550781 31.414063 37.742188 30.417969 40.539063 28.425781 C 43.714844 26.167969 48.058594 23.074219 48 14.898438 C 48 10.039063 42.695313 0 26.300781 0 Z M 26.5 6 C 28.433594 6 30 8.015625 30 10.5 C 30 12.984375 28.433594 15 26.5 15 C 24.566406 15 23 12.984375 23 10.5 C 23 8.015625 24.566406 6 26.5 6 Z M 14.5 33 C 12.566406 33 11 30.984375 11 28.5 C 11 26.015625 12.566406 24 14.5 24 C 16.433594 24 18 26.015625 18 28.5 C 18 30.984375 16.433594 33 14.5 33 Z M 15.5 20 C 13.566406 20 12 17.984375 12 15.5 C 12 13.015625 13.566406 11 15.5 11 C 17.433594 11 19 13.015625 19 15.5 C 19 17.984375 17.433594 20 15.5 20 Z M 27 43 C 24.757813 43 23 41.242188 23 39 C 23 36.757813 24.757813 35 27 35 C 29.242188 35 31 36.757813 31 39 C 31 41.242188 29.242188 43 27 43 Z M 37.5 20 C 35.566406 20 34 17.984375 34 15.5 C 34 13.015625 35.566406 11 37.5 11 C 39.433594 11 41 13.015625 41 15.5 C 41 17.984375 39.433594 20 37.5 20 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/forward.svg":
+/*!*******************************!*\
+  !*** ./src/icons/forward.svg ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 14.988281 3.992188 C 14.582031 3.992188 14.21875 4.238281 14.0625 4.613281 C 13.910156 4.992188 14 5.421875 14.292969 5.707031 L 33.585938 25 L 14.292969 44.292969 C 14.03125 44.542969 13.925781 44.917969 14.019531 45.265625 C 14.109375 45.617188 14.382813 45.890625 14.734375 45.980469 C 15.082031 46.074219 15.457031 45.96875 15.707031 45.707031 L 35.707031 25.707031 C 36.097656 25.316406 36.097656 24.683594 35.707031 24.292969 L 15.707031 4.292969 C 15.519531 4.097656 15.261719 3.992188 14.988281 3.992188 Z \"></path></g></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/hamburger.svg":
+/*!*********************************!*\
+  !*** ./src/icons/hamburger.svg ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 0 9 L 0 11 L 50 11 L 50 9 Z M 0 24 L 0 26 L 50 26 L 50 24 Z M 0 39 L 0 41 L 50 41 L 50 39 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -78041,6 +78134,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\
 /***/ (function(module, exports) {
 
 module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 50 50\" enable-background=\"new 0 0 50 50\" fill=\"#000000\"><path style=\"text-indent:0;text-align:start;line-height:normal;text-transform:none;block-progression:tb;-inkscape-font-specification:Bitstream Vera Sans\" d=\"M 7 7 C 5.3545455 7 4 8.3545455 4 10 L 4 40 C 4 41.645455 5.3545455 43 7 43 L 43 43 C 44.645455 43 46 41.645455 46 40 L 46 10 C 46 8.3545455 44.645455 7 43 7 L 7 7 z M 7 9 L 43 9 C 43.554545 9 44 9.4454545 44 10 L 44 40 C 44 40.554545 43.554545 41 43 41 L 7 41 C 6.4454545 41 6 40.554545 6 40 L 6 10 C 6 9.4454545 6.4454545 9 7 9 z\" color=\"#000\" overflow=\"visible\" enable-background=\"accumulate\" font-family=\"Bitstream Vera Sans\" fill=\"#000000\"></path></svg>"
+
+/***/ }),
+
+/***/ "./src/icons/right-triangle.svg":
+/*!**************************************!*\
+  !*** ./src/icons/right-triangle.svg ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 16 5 L 16 47 L 38 26 Z \"></path></g></svg>"
 
 /***/ }),
 
@@ -78291,6 +78395,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _borderPanel__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./borderPanel */ "./src/borderPanel.ts");
 /* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
 /* harmony import */ var _menu_bar__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./menu-bar */ "./src/menu-bar.ts");
+/* harmony import */ var _NewPage__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./NewPage */ "./src/NewPage.ts");
 
 
 
@@ -78330,6 +78435,7 @@ vue__WEBPACK_IMPORTED_MODULE_2__["default"].mixin({
 
 
 
+
 rinss__WEBPACK_IMPORTED_MODULE_3__["default"].config({ duration: 250 });
 var container = document.createElement('div');
 document.body.appendChild(container);
@@ -78350,6 +78456,16 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_3__["default"].create({
     },
     sketchPicker: {
         userSelect: 'none'
+    },
+    test: {
+        width: 100,
+        height: 100,
+        background: 'red',
+        centerX: true,
+        centerY: true,
+        ':hover': {
+            background: 'blue'
+        }
     }
 });
 var colorPicker = {
@@ -78374,7 +78490,7 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
         'modal': ambients_modal__WEBPACK_IMPORTED_MODULE_4__["default"],
         'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_5__["Sketch"]
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <menu-bar/>\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar\n                     v-model=\"tool\"\n                     @showColorPicker=\"showColorPicker\"\n                     :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><editor :tool=\"tool\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.stage + "\">\n            <menu-bar/>\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar\n                     v-model=\"tool\"\n                     @showColorPicker=\"showColorPicker\"\n                     :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><editor :tool=\"tool\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.colorPickerModal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n            <div class=\"" + css.test + "\"/>\n        </div>\n    ",
     data: function () {
         return {
             colorPicker: colorPicker,
@@ -78419,17 +78535,23 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var menuIcon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
-var rightArrow = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+var forward = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/forward.svg */ "./src/icons/forward.svg"));
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     menu: {
         width: 250,
+        height: '100vh',
         background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].white,
         borderRight: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background,
         borderBottom: '3px solid' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background,
         zIndex: 999,
-        absLeft: 0,
-        absTop: 40
+        floatLeft: 0,
+        fontSize: 13
+    },
+    menuStyle: {
+        color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary,
+        ':hover': {
+            background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background
+        }
     },
     separator: {
         width: '100%',
@@ -78441,7 +78563,41 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     },
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('main-menu', {
-    template: "\n        <div class=\"" + css.menu + "\">\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">New</cell>\n                <cell align=\"right\">Ctrl + N</cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Open</cell>\n                <cell align=\"right\">Ctr + O</cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Open Recent</cell>\n                <cell align=\"right\"><icon>\n                    " + rightArrow + "\n                </icon></cell>\n                <gap/>\n            </row>\n            \n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Get UI Kits</cell>\n                <cell align=\"right\"><icon>\n                    " + rightArrow + "\n                </icon></cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Open CC Libraries</cell>\n                <cell align=\"right\">Shift + Ctrl + L</cell>\n                <gap/>\n            </row>\n\n            <div class=\"" + css.separator + "\"></div>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Save</cell>\n                <cell align=\"right\">Ctrl + S</cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Save As</cell>\n                <cell align=\"right\">Shift + Ctrl + S</cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Revert to Saved</cell>\n                <cell align=\"right\"></cell>\n                <gap/>\n            </row>\n\n            <div class=\"" + css.separator + "\"></div>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Export</cell>\n                <cell align=\"right\"><icon>\n                    " + rightArrow + "\n                </icon></cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Import</cell>\n                <cell align=\"right\">Shift + Ctrl + I</cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Share</cell>\n                <cell align=\"right\"></cell>\n                <gap/>\n            </row>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Manage Published Links</cell>\n                <cell align=\"right\"></cell>\n                <gap/>\n            </row>\n\n            <div class=\"" + css.separator + "\"></div>\n\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40, color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary }) + "\">\n                <gap/>\n                <cell shrink align=\"left\">Help</cell>\n                <cell align=\"right\"><icon>\n                    " + rightArrow + "\n                </icon></cell>\n                <gap/>\n            </row>\n        </div>\n    ",
+    template: "\n        <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ absLeft: 0, absTop: 40 }) + "\">\n            <div class=\"" + css.menu + "\">\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">New</cell>\n                    <cell align=\"right\">Ctrl + N</cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Open</cell>\n                    <cell align=\"right\">Ctr + O</cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\" class=\"" + css.menuStyle + "\" @mouseenter.native=\"openRecentHover\" @mouseleave.native=\"openRecentHoverOff\">\n                    <gap/>\n                    <cell shrink align=\"left\">Open Recent</cell>\n                    <cell align=\"right\"><icon>\n                        " + forward + "\n                    </icon></cell>\n                    <gap/>\n                </row>\n                \n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\" @mouseenter.native=\"getUIHover\" @mouseleave.native=\"getUIHoverOff\">\n                    <gap/>\n                    <cell shrink align=\"left\">Get UI Kits</cell>\n                    <cell align=\"right\"><icon>\n                        " + forward + "\n                    </icon></cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Open CC Libraries</cell>\n                    <cell align=\"right\">Shift + Ctrl + L</cell>\n                    <gap/>\n                </row>\n\n                <div class=\"" + css.separator + "\"></div>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Save</cell>\n                    <cell align=\"right\">Ctrl + S</cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Save As</cell>\n                    <cell align=\"right\">Shift + Ctrl + S</cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Revert to Saved</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n\n                <div class=\"" + css.separator + "\"></div>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\" @mouseenter.native=\"exportHover\" @mouseleave.native=\"exportHoverOff\">\n                    <gap/>\n                    <cell shrink align=\"left\">Export</cell>\n                    <cell align=\"right\"><icon>\n                        " + forward + "\n                    </icon></cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Import</cell>\n                    <cell align=\"right\">Shift + Ctrl + I</cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Share</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Manage Published Links</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n\n                <div class=\"" + css.separator + "\"></div>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\"class=\"" + css.menuStyle + "\" @mouseenter.native=\"helpHover\" @mouseleave.native=\"helpHoverOff\">\n                    <gap/>\n                    <cell shrink align=\"left\">Help</cell>\n                    <cell align=\"right\"><icon>\n                        " + forward + "\n                    </icon></cell>\n                    <gap/>\n                </row>\n            </div>\n\n\n\n\n            \n            <div class=\"" + css.menu + "\" v-if=\"openRecentMenu\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Recent files</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                \n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Delete files</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n            </div>\n\n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"getUIMenu\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Apple IOS</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Google materials</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Microsoft windows</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n\n                <div class=\"" + css.separator + "\"></div>\n\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Wireframe</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Other UI libraries</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n            </div>\n\n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"exportMenu\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Export all</cell>\n                    <cell align=\"right\">Shift + Ctrl + E</cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Selected</cell>\n                    <cell align=\"right\">Ctrl + E</cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">All art boards</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n            </div>\n\n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"helpMenu\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Patch notes</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Tutorials and resources</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Feedback</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n                <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"class=\"" + css.menuStyle + "\">\n                    <gap/>\n                    <cell shrink align=\"left\">Future release</cell>\n                    <cell align=\"right\"></cell>\n                    <gap/>\n                </row>\n            </div>\n        </div>\n    ",
+    data: function () {
+        return {
+            openRecentMenu: false,
+            getUIMenu: false,
+            exportMenu: false,
+            helpMenu: false,
+        };
+    },
+    methods: {
+        openRecentHover: function () {
+            this.openRecentMenu = true;
+        },
+        openRecentHoverOff: function () {
+            this.openRecentMenu = false;
+        },
+        getUIHover: function () {
+            this.getUIMenu = true;
+        },
+        getUIHoverOff: function () {
+            this.getUIMenu = false;
+        },
+        exportHover: function () {
+            this.exportMenu = true;
+        },
+        exportHoverOff: function () {
+            this.exportMenu = false;
+        },
+        helpHover: function () {
+            this.helpMenu = true;
+        },
+        helpHoverOff: function () {
+            this.helpMenu = false;
+        },
+    },
 });
 
 
@@ -78573,11 +78729,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var menuicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
-var mobileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
-var monitoricon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
-var compileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
-var exporticon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+var menuicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/hamburger.svg */ "./src/icons/hamburger.svg"));
+var mobileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/display-size.svg */ "./src/icons/display-size.svg"));
+var compileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/right-triangle.svg */ "./src/icons/right-triangle.svg"));
+var exporticon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/export.svg */ "./src/icons/export.svg"));
 var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     menuBarTitle: {
         color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary,
@@ -78589,12 +78744,25 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     },
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('menu-bar', {
-    template: "\n        <div>\n            <main-menu v-if=\"showMenu\"/>\n            <row stretch class=\"" + css.menuBar + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\">\n                <gap/>\n                <cell shrink><icon style=\"cursor:pointer;\" @click=\"showMenu=!showMenu\">\n                    " + menuicon + "\n                </icon></cell>\n                <cell><div class=\"" + css.menuBarTitle + "\">hello</div></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + mobileicon + "\n                    " + monitoricon + "\n                </icon></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + compileicon + "\n                </icon></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + exporticon + "\n                </icon></cell>\n                <gap/>\n            </row>\n        </div>   \n        \n    ",
+    template: "\n        <div>\n            <main-menu v-if=\"showMenu\"/>\n            <row stretch class=\"" + css.menuBar + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\">\n                <gap/>\n                <cell shrink><icon @click.native=\"buttonClick\" :style=\"buttonStyle\">\n                    " + menuicon + "\n                </icon></cell>\n                <cell><div class=\"" + css.menuBarTitle + "\">hello</div></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + mobileicon + "\n                </icon></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + compileicon + "\n                </icon></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + exporticon + "\n                </icon></cell>\n                <gap/>\n            </row>\n        </div>   \n        \n    ",
     data: function () {
         return {
             showMenu: false
         };
     },
+    methods: {
+        buttonClick: function () {
+            this.showMenu = !this.showMenu;
+        },
+    },
+    computed: {
+        buttonStyle: function () {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+                cursor: 'pointer',
+                color: this.showMenu ? _theme__WEBPACK_IMPORTED_MODULE_2__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary
+            });
+        }
+    }
 });
 
 
@@ -79105,7 +79273,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
     mixins: [_radio__WEBPACK_IMPORTED_MODULE_4__["default"]],
-    template: "\n        <div class=\"" + css.toolbarButton + "\" @click=\"check\">\n            <icon style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true }) + "\" :active=\"isChecked\"><slot/></icon>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.toolbarButton + "\" @click=\"check\">\n            <icon style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true }) + "\" :ayrective=\"isChecked\"><slot/></icon>\n        </div>\n    ",
     props: {
         name: {
             type: String,
