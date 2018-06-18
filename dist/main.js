@@ -59982,7 +59982,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('PointerListener', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
-    template: "\n        <div :style=\"outerStyle\">\n            <PointerListener v-if=\"focused\" style=\"background:rgba(255, 255, 255, 0.5)\"\n             @pan=\"panPointer\" @panstart=\"panPointerStart\" @panend=\"panPointerEnd\" @tap=\"tapPointer\"/>\n\n            <component :is=\"nodeData.tagName\" :style=\"innerStyle\" ref=\"el\"/>\n            <div class=\"" + css.selectionOverlay + "\" v-if=\"selected\"/>\n\n            <StaticPointerListener v-if=\"parentNodeFocused && selectable\"\n             @tap=\"tap\" @doubletap=\"doubleTap\" @panstart=\"panStart\" @pan=\"pan\"/>\n\n            <editor-node\n             v-for=\"(child, index) of nodeData.children\"\n             :key=\"index\"\n             :node=\"child\"\n             :parentNodeFocused=\"focused\"\n             :tool=\"tool\"\n             :colorPicked=\"colorPicked\"/>\n\n            <transform-overlay v-if=\"focused && selectedNodes.length > 0\"/>\n\n            <DrawableBox\n             :colorPicked=\"colorPicked\"\n             @push=\"nodeData.children.push($event)\"\n             v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n            </DrawableBox>\n\n            <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                <div class=\"" + css.selectionDrawableBox + "\"/>\n            </DrawableBox>\n        </div>\n    ",
+    template: "\n        <div :style=\"outerStyle\">\n            <PointerListener v-if=\"focused\" style=\"background:rgba(255, 255, 255, 0.5)\"\n             @pan=\"panPointer\"\n             @panstart=\"panPointerStart\"\n             @panend=\"panPointerEnd\"\n             @tap=\"tapPointer\"\n             @doubletap=\"doubleTapPointer\"/>\n\n            <component :is=\"nodeData.tagName\" :style=\"innerStyle\" ref=\"el\"/>\n            <div class=\"" + css.selectionOverlay + "\" v-if=\"selected\"/>\n\n            <StaticPointerListener v-if=\"parentNodeFocused && selectable\"\n             @tap=\"tap\" @doubletap=\"doubleTap\" @panstart=\"panStart\" @pan=\"pan\"/>\n\n            <editor-node\n             v-for=\"(child, index) of nodeData.children\"\n             :key=\"index\"\n             :node=\"child\"\n             :parentNodeFocused=\"focused\"\n             :tool=\"tool\"\n             :colorPicked=\"colorPicked\"/>\n\n            <transform-overlay v-if=\"focused && selectedNodes.length > 0\"/>\n\n            <DrawableBox\n             :colorPicked=\"colorPicked\"\n             @push=\"nodeData.children.push($event)\"\n             v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n            </DrawableBox>\n\n            <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                <div class=\"" + css.selectionDrawableBox + "\"/>\n            </DrawableBox>\n        </div>\n    ",
     props: {
         node: Object,
         parentNodeFocused: Boolean,
@@ -60113,6 +60113,13 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
         tapPointer: function () {
             if (this.tool === 'cursor' || this.tool === 'transform')
                 this.selectedNodes.splice(0, this.selectedNodes.length);
+        },
+        doubleTapPointer: function () {
+            if (this.tool !== 'cursor' && this.tool !== 'transform')
+                return;
+            this.selectedNodes.splice(0, this.selectedNodes.length);
+            this.nodeFocusHierarchy.pop();
+            this.nodeInFocus.value = this.nodeFocusHierarchy[this.nodeFocusHierarchy.length - 1];
         }
     }
 });

@@ -395,7 +395,11 @@ Vue.component('editor-node', {
     template: `
         <div :style="outerStyle">
             <PointerListener v-if="focused" style="background:rgba(255, 255, 255, 0.5)"
-             @pan="panPointer" @panstart="panPointerStart" @panend="panPointerEnd" @tap="tapPointer"/>
+             @pan="panPointer"
+             @panstart="panPointerStart"
+             @panend="panPointerEnd"
+             @tap="tapPointer"
+             @doubletap="doubleTapPointer"/>
 
             <component :is="nodeData.tagName" :style="innerStyle" ref="el"/>
             <div class="${ css.selectionOverlay }" v-if="selected"/>
@@ -547,6 +551,12 @@ Vue.component('editor-node', {
         tapPointer() {
             if (this.tool === 'cursor' || this.tool === 'transform')
                 this.selectedNodes.splice(0, this.selectedNodes.length);
+        },
+        doubleTapPointer() {
+            if (this.tool !== 'cursor' && this.tool !== 'transform') return;
+            this.selectedNodes.splice(0, this.selectedNodes.length);
+            this.nodeFocusHierarchy.pop();
+            this.nodeInFocus.value = this.nodeFocusHierarchy[this.nodeFocusHierarchy.length - 1];
         }
     }
 });
