@@ -6,11 +6,12 @@ import { Obj, pullOne, pushOne, identify } from "ambients-utils";
 import color from 'color';
 import * as Hammer from 'hammerjs';
 import { debounce } from 'lodash';
+import { Eventss } from 'eventss';
 
-class EditorNode implements IEditorNode {
+class EditorNodeData implements IEditorNodeData {
     public tagName: string;
     public el: HTMLElement;
-    public children: Array<IEditorNode> = [];
+    public children: Array<IEditorNodeData> = [];
     public width: string | number;
     public height: string | number;
     public left: string | number;
@@ -32,7 +33,7 @@ class EditorNode implements IEditorNode {
         this.top = val;
     }
 
-    constructor(o: IEditorNode) {
+    constructor(o: IEditorNodeData) {
         this.tagName = o.tagName;
         this.el = o.el;
         if (o.children != undefined) this.children = o.children;
@@ -44,8 +45,8 @@ class EditorNode implements IEditorNode {
         this.position = o.position;
     }
 
-    public static default(): IEditorNode {
-        return new EditorNode({
+    public static default(): IEditorNodeData {
+        return new EditorNodeData({
             tagName: '',
             width: 0,
             height: 0,
@@ -56,11 +57,13 @@ class EditorNode implements IEditorNode {
         });
     }
 
-    public static getStyle(child: IEditorNode) {
+    public static getStyle(child: IEditorNodeData) {
         const { el, children, tagName, ...style } = child;
         return style;
     }
 }
+
+let canvasContainer:HTMLElement;
 
 const selectionPointer = {
     startX: 0,
@@ -84,7 +87,7 @@ const transformOverlay = {
 }
 
 const selectedNodes = [];
-const nodeInFocus = { value: EditorNode.default() };
+const nodeInFocus = { value: EditorNodeData.default() };
 const nodeFocusHierarchy = [];
 
 const HammerJS = Vue.extend({
@@ -107,10 +110,10 @@ const HammerJS = Vue.extend({
     }
 });
 
-interface IEditorNode {
+interface IEditorNodeData {
     tagName: string;
     el?: HTMLElement;
-    children?: Array<IEditorNode>;
+    children?: Array<IEditorNodeData>;
     width: string | number;
     height: string | number;
     left: string | number;
@@ -157,13 +160,9 @@ const css = rinss.create({
         pointerEvents: 'none',
         zIndex: 100
     },
-    focusMask: {
-        width: '100vw',
-        height: '100vh',
-        fixTop: 0,
-        fixLeft: 0,
-        background: 'rgba(255, 255, 255, 0.5)',
-        pointerEvents: 'none'
+    staticPointerListener: {
+        fillParent: true,
+        pointerEvents: 'auto'
     }
 });
 
@@ -215,7 +214,7 @@ Vue.component('DrawableBox', {
         this.selectedNodes.splice(0, this.selectedNodes.length);
     },
     beforeDestroy() {
-        this.$emit('push', new EditorNode({
+        this.$emit('push', new EditorNodeData({
             tagName: 'div',
             width: this.$el.style.width,
             height: this.$el.style.height,
@@ -299,13 +298,110 @@ Vue.component('EditorBoxInner', {
     }
 });
 
-Vue.component('editor-node', {
+Vue.component('StaticPointerListener', {
     mixins: [HammerJS],
     template: `
-        <div :style="outerStyle" @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan">
-            <div class="${ css.focusMask }" v-if="inFocusHierarchy"/>
+        <div class="${ css.staticPointerListener }"
+         @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
+    `,
+    methods: {
+        panStart(e) {
+            e.stopPropagation();
+            this.$emit('panstart', e);
+        },
+        pan(e) {
+            e.stopPropagation();
+            this.$emit('pan', e);
+        },
+        panEnd(e) {
+            e.stopPropagation();
+            this.$emit('panend', e);
+        },
+        tap(e) {
+            e.stopPropagation();
+            this.$emit('tap', e);
+        },
+        doubleTap(e) {
+            e.stopPropagation();
+            this.$emit('doubletap', e);
+        }
+    }
+});
+
+Vue.component('PointerListener', {
+    mixins: [HammerJS],
+    template: `
+        <div :style="computedStyle"
+         @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
+    `,
+    data() {
+        return {
+            left: 0,
+            top: 0,
+            eventss: new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize')
+        };  
+    },
+    mounted() {
+        this.$nextTick(()=>{
+            this.eventss.off('windowSize').on('windowSize', () => {
+                const vContainer = vertices(canvasContainer);
+                const vSelf = vertices(this.$el);
+
+                const xDiff = vContainer[0].x - vSelf[0].x, yDiff = vContainer[0].y - vSelf[0].y;
+                this.left += xDiff, this.top += yDiff;
+            });
+        });
+    },
+    beforeDestroy() {
+        this.eventss.reset();
+    },
+    computed: {
+        computedStyle():string {
+            return rss({
+                width: '100vw',
+                height: '100vh',
+                position: 'fixed',
+                left: this.left,
+                top: this.top,
+                pointerEvents: 'auto'
+            });
+        }
+    },
+    methods: {
+        panStart(e) {
+            e.stopPropagation();
+            this.$emit('panstart', e);
+        },
+        pan(e) {
+            e.stopPropagation();
+            this.$emit('pan', e);
+        },
+        panEnd(e) {
+            e.stopPropagation();
+            this.$emit('panend', e);
+        },
+        tap(e) {
+            e.stopPropagation();
+            this.$emit('tap', e);
+        },
+        doubleTap(e) {
+            e.stopPropagation();
+            this.$emit('doubletap', e);
+        }
+    }
+});
+
+Vue.component('editor-node', {
+    template: `
+        <div :style="outerStyle">
+            <PointerListener v-if="focused" style="background:rgba(255, 255, 255, 0.5)"
+             @pan="panPointer" @panstart="panPointerStart" @panend="panPointerEnd" @tap="tapPointer"/>
+
             <component :is="nodeData.tagName" :style="innerStyle" ref="el"/>
             <div class="${ css.selectionOverlay }" v-if="selected"/>
+
+            <StaticPointerListener v-if="parentNodeFocused && selectable"
+             @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan"/>
 
             <editor-node
              v-for="(child, index) of nodeData.children"
@@ -349,11 +445,12 @@ Vue.component('editor-node', {
     },
     computed: {
         innerStyle():string {
-            return rss(EditorNode.getStyle({
+            return rss(EditorNodeData.getStyle({
                 ...this.nodeData,
                 position: 'relative',
                 top: undefined,
-                left: undefined
+                left: undefined,
+                pointerEvents: 'none'
             }));
         },
         outerStyle():string {
@@ -361,7 +458,8 @@ Vue.component('editor-node', {
                 position: this.nodeData.position,
                 top: parseFloat(this.nodeData.top),
                 left: parseFloat(this.nodeData.left),
-                zIndex: this.inFocusHierarchy ? 1 : ''
+                zIndex: this.inFocusHierarchy ? 1 : '',
+                pointerEvents: 'none'
             });
         },
         selected():boolean {
@@ -383,74 +481,77 @@ Vue.component('editor-node', {
         this.select();
     },
     methods: {
-        panStartDebounceLeading: debounce(function(this:any, e) {
+        panStart(e) {
+            if (!this.selectable) return;
+
             if (!e.gesture.srcEvent.shiftKey) {
                 if (!this.selected) this.select();
             }
             else pushOne(this.selectedNodes, this);
 
-        }, 0, { leading: true, trailing: false }),
+            this.$nextTick(()=>{
+                for (const node of selectedNodes)
+                    node.startX = node.nodeData.x, node.startY = node.nodeData.y;
 
-        panStartDebounceTrailing: debounce(function(this:any) {
-            for (const node of selectedNodes) {
-                node.startX = node.nodeData.x;
-                node.startY = node.nodeData.y;
-            }
-            this.transformOverlay.startX = this.transformOverlay.x;
-            this.transformOverlay.startY = this.transformOverlay.y;
-
-        }, 0, { leading: false, trailing: true }),
-
-        panStart(e) {
-            if (!this.selectable) return;
-            e.stopPropagation();
-            this.panStartDebounceLeading(e);
-            this.panStartDebounceTrailing();
+                this.transformOverlay.startX = this.transformOverlay.x;
+                this.transformOverlay.startY = this.transformOverlay.y;
+            });
         },
-        panDebounce: debounce(function (this: any, { gesture: { deltaX, deltaY } }) {
-            const ptStart = pTrans.solve(0, 0);
-            const ptDelta = pTrans.solve(deltaX, deltaY);
-            const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
-
-            for (const node of this.selectedNodes) {
-                node.nodeData.x = node.startX + dx;
-                node.nodeData.y = node.startY + dy;
-            }
-            this.transformOverlay.x = this.transformOverlay.startX + dx;
-            this.transformOverlay.y = this.transformOverlay.startY + dy;
-        }),
         pan(e) {
             if (!this.selectable) return;
-            e.stopPropagation();
-            this.panDebounce(e);
+
+            this.$nextTick(()=>{
+                const ptStart = pTrans.solve(0, 0);
+                const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
+                const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
+
+                for (const node of this.selectedNodes) {
+                    node.nodeData.x = node.startX + dx;
+                    node.nodeData.y = node.startY + dy;
+                }
+                this.transformOverlay.x = this.transformOverlay.startX + dx;
+                this.transformOverlay.y = this.transformOverlay.startY + dy;
+            });
         },
         tap(e) {
             if (!this.selectable) return;
-            e.stopPropagation();
-            this.select(e);
+            this.select(e.gesture.srcEvent.shiftKey);
         },
-        doubleTapDebounce: debounce(function (this: any, { gesture: { srcEvent: { shiftKey } } }) {
-            if (shiftKey) return;
+        doubleTap(e) {
+            if (!this.selectable) return;
+            if (e.gesture.srcEvent.shiftKey) return;
             this.nodeInFocus.value = this.nodeData;
             this.nodeFocusHierarchy.push(this.nodeData);
             this.selectedNodes.splice(0, this.selectedNodes.length);
-        }),
-        doubleTap(e) {
-            if (!this.selectable) return;
-            e.stopPropagation();
-            this.doubleTapDebounce(e);
         },
-        select: debounce(function(this:any, e?) {
-            if (e == undefined || !e.gesture.srcEvent.shiftKey)
-                this.selectedNodes.splice(0, this.selectedNodes.length);
-
+        select(multiple = false) {
+            if (!multiple) this.selectedNodes.splice(0, this.selectedNodes.length);
             if (!this.selected) this.selectedNodes.push(this);
             else pullOne(this.selectedNodes, this);
-        })
+        },
+        panPointer({ gesture: { center: { x, y } } }) {
+            const pt = pTrans.solve(x, y);
+            this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
+            this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
+            this.selectionPointer.quadrant = quadrant(this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0);
+        },
+        panPointerStart({ gesture: { center: { x, y } } }) {
+            this.selectionPointer.down = true;
+            const pt = pTrans.solve(x, y);
+            this.selectionPointer.startX = pt.x;
+            this.selectionPointer.startY = pt.y;
+        },
+        panPointerEnd() {
+            this.selectionPointer.down = false;
+        },
+        tapPointer() {
+            if (this.tool === 'cursor' || this.tool === 'transform')
+                this.selectedNodes.splice(0, this.selectedNodes.length);
+        }
     }
 });
 
-const pTrans = new PerspectiveTransform();
+const pTrans = new PerspectiveTransform(), pTransReverse = new PerspectiveTransform();
 
 function vertices(el: HTMLElement): Array<Point> {
     const b = el.getBoundingClientRect();
@@ -460,10 +561,13 @@ function vertices(el: HTMLElement): Array<Point> {
     ];
 }
 
+const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
+
 Vue.component('editor', {
-    mixins: [HammerJS],
     template:`
-        <div class="${ css.canvasContainer }" @pan="pan" @panstart="panStart" @panend="panEnd" @tap="tap">
+        <div
+         ref="canvasContainer"
+         class="${ css.canvasContainer }">
             <div ref="canvas" style="${ rss({
                 width: 800,
                 height: 600,
@@ -471,6 +575,8 @@ Vue.component('editor', {
                 centerX: true,
                 centerY: true
             }) }">
+                <PointerListener v-if="focused" @pan="pan" @panstart="panStart" @panend="panEnd" @tap="tap"/>
+
                 <editor-node
                  v-for="(child, index) of children"
                  :key="index"
@@ -514,8 +620,10 @@ Vue.component('editor', {
         }
     },
     mounted() {
+        canvasContainer = this.$refs.canvasContainer as any;
+
         const el:HTMLElement = this.$refs.canvas as any;
-        this.sceneGraph = new EditorNode({
+        this.sceneGraph = new EditorNodeData({
             tagName: el.tagName.toLowerCase(),
             el: el,
             width: el.style.width,
@@ -533,12 +641,19 @@ Vue.component('editor', {
         tool(tool) {
             selectionPointer.tool = tool;
         },
-        'nodeInFocus.value'(p:IEditorNode) {
-            const v = vertices(p.el);
-            pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+        'nodeInFocus.value'(p:IEditorNodeData) {
             pTrans.setDestination(
                 0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
             );
+            pTransReverse.setSource(
+                0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
+            );
+
+            editorEventss.off('windowSize').on('windowSize', ()=>{
+                const v = vertices(p.el);
+                pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+                pTransReverse.setDestination(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+            });
         }
     },
     methods: {

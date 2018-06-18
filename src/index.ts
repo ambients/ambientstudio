@@ -2,10 +2,6 @@ import "normalize.css";
 import "babel-polyfill";
 
 import Vue from "vue";
-import rinss, { rss } from "rinss";
-import Modal from 'ambients-modal';
-import { Sketch } from 'vue-color';
-import { Obj } from "ambients-utils";
 
 import VueResize from 'vue-resize';
 Vue.use(VueResize);
@@ -15,37 +11,36 @@ import "vue-material/dist/vue-material.min.css";
 import 'vue-material/dist/theme/default.css';
 Vue.use(VueMaterial);
 
-import AsyncComputed from 'vue-async-computed';
-Vue.use(AsyncComputed)
-declare module 'vue/types/options' {
-    interface ComponentOptions<V extends Vue> {
-        asyncComputed?: Obj<Function>
-    }
-}
+import rinss, { rss } from "rinss";
+rinss.config({ duration: 250 });
 
-Vue.mixin({
-    methods: {
-        $emitState(name:string, value?:any):void {
-            this.$emit(name, value);
-            (this.$stateValue || (this.$stateValue = {}))[name] = value;
-            (this.$stateEmitted || (this.$stateEmitted = {}))[name] = true;
-        },
-        $onState(name:string, cb:(value:any)=>void):void {
-            if ((this.$stateEmitted || (this.$stateEmitted = {}))[name])
-                cb.call(this, (this.$stateValue || (this.$stateValue = {}))[name]);
+import Modal from 'ambients-modal';
+import { Sketch } from 'vue-color';
+// import { Obj } from "ambients-utils";
 
-            this.$on(name, cb);
-        }
-    }
-});
-declare module 'vue/types/vue' {
-    interface Vue {
-        $stateEmitted: Obj<boolean>,
-        $stateValue: Obj<any>,
-        $emitState: (name:string, value?:any)=>void,
-        $onState: (name: string, cb: (value: any) => void)=>void
-    }
-}
+// Vue.mixin({
+//     methods: {
+//         $emitState(name:string, value?:any):void {
+//             this.$emit(name, value);
+//             (this.$stateValue || (this.$stateValue = {}))[name] = value;
+//             (this.$stateEmitted || (this.$stateEmitted = {}))[name] = true;
+//         },
+//         $onState(name:string, cb:(value:any)=>void):void {
+//             if ((this.$stateEmitted || (this.$stateEmitted = {}))[name])
+//                 cb.call(this, (this.$stateValue || (this.$stateValue = {}))[name]);
+
+//             this.$on(name, cb);
+//         }
+//     }
+// });
+// declare module 'vue/types/vue' {
+//     interface Vue {
+//         $stateEmitted: Obj<boolean>,
+//         $stateValue: Obj<any>,
+//         $emitState: (name:string, value?:any)=>void,
+//         $onState: (name: string, cb: (value: any) => void)=>void
+//     }
+// }
 
 import './panels';
 import './propertiesPanel';
@@ -59,8 +54,6 @@ import './borderPanel';
 import './outline';
 import './menu-bar';
 import './NewPage';
-
-rinss.config({ duration: 250 });
 
 const container = document.createElement('div');
 document.body.appendChild(container);
