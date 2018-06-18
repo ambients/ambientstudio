@@ -33,7 +33,7 @@ Vue.component('toolbar-button', {
     mixins: [Radio],
     template: `
         <div class="${ css.toolbarButton }" @click="check">
-            <icon style="${ rss({ centerX: true, centerY: true }) }" :ayrective="isChecked"><slot/></icon>
+            <icon style="${ rss({ centerX: true, centerY: true }) }" :active="isChecked"><slot/></icon>
         </div>
     `,
     props: {
