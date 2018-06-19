@@ -35,266 +35,109 @@ const css=rinss.create({
     },
 });
 
+let count = -1;
+let nameFocused = { value: '' };
+
+Vue.component('MenuRow', {
+    template: `
+        <row stretch style="${rss({height:40})}" class="${css.menuStyle}" @mouseenter.native="changeName">
+            <gap/>
+            <cell shrink align="left"><slot name="ops"/></cell>
+            <cell align="right"><slot/></cell>
+            <gap/>
+        </row>
+    `,
+    props: {
+        name: {
+            type: String,
+            default: 'menuRow' + (++count)
+        },
+        unnamed: Boolean
+    },
+    data() {
+        return {
+            nameFocused
+        };
+    },
+    methods: {
+        changeName() {
+            if (!this.unnamed) this.nameFocused.value = this.name;
+        }
+    }
+});
+
 Vue.component('main-menu',{
     template:`
-        <div style="${ rss({ absLeft:0, absTop:40 }) }">
+        <div style="${ rss({ absLeft:0, absTop:40, userSelect:'none',}) }">
             <div class="${css.menu}">
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">New</cell>
-                    <cell align="right">Ctrl + N</cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Open</cell>
-                    <cell align="right">Ctr + O</cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}" class="${css.menuStyle}" @mouseenter.native="openRecentHover" @mouseleave.native="openRecentHoverOff">
-                    <gap/>
-                    <cell shrink align="left">Open Recent</cell>
-                    <cell align="right"><icon>
-                        ${forward}
-                    </icon></cell>
-                    <gap/>
-                </row>
-                
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}" @mouseenter.native="getUIHover" @mouseleave.native="getUIHoverOff">
-                    <gap/>
-                    <cell shrink align="left">Get UI Kits</cell>
-                    <cell align="right"><icon>
-                        ${forward}
-                    </icon></cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Open CC Libraries</cell>
-                    <cell align="right">Shift + Ctrl + L</cell>
-                    <gap/>
-                </row>
-
+                <MenuRow><div slot="ops">New</div>Ctrl + N</MenuRow>
+                <MenuRow><div slot="ops">Open</div>Ctrl + O</MenuRow>
+                <MenuRow name="openRecent"><div slot="ops">Open recent</div><icon>${forward}</icon></MenuRow>
+                <MenuRow name="getUIKit"><div slot="ops">Get UI kit</div><icon>${forward}</icon></MenuRow>
+                <MenuRow><div slot="ops">Open CC Libraries</div>Shift + Ctrl + L</MenuRow>
+                <MenuRow><div slot="ops">Open CC Libraries</div>Shift + Ctrl + L</MenuRow>
                 <div class="${ css.separator }"></div>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Save</cell>
-                    <cell align="right">Ctrl + S</cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Save As</cell>
-                    <cell align="right">Shift + Ctrl + S</cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Revert to Saved</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-
+                <MenuRow><div slot="ops">Save</div>Ctrl + S</MenuRow>
+                <MenuRow><div slot="ops">Save As</div>Shift + Ctrl + S</MenuRow>
+                <MenuRow><div slot="ops">Revert to Saved</div></MenuRow>
                 <div class="${ css.separator }"></div>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}" @mouseenter.native="exportHover" @mouseleave.native="exportHoverOff">
-                    <gap/>
-                    <cell shrink align="left">Export</cell>
-                    <cell align="right"><icon>
-                        ${forward}
-                    </icon></cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Import</cell>
-                    <cell align="right">Shift + Ctrl + I</cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Share</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Manage Published Links</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-
+                <MenuRow name="export"><div slot="ops">Export</div><icon>${forward}</icon></MenuRow>
+                <MenuRow><div slot="ops">Import</div>Shift + Ctrl + I</MenuRow>
+                <MenuRow><div slot="ops">Share</div></MenuRow>
+                <MenuRow><div slot="ops">Manage published links</div></MenuRow>
                 <div class="${ css.separator }"></div>
-
-                <row stretch style="${rss({height:40})}"class="${css.menuStyle}" @mouseenter.native="helpHover" @mouseleave.native="helpHoverOff">
-                    <gap/>
-                    <cell shrink align="left">Help</cell>
-                    <cell align="right"><icon>
-                        ${forward}
-                    </icon></cell>
-                    <gap/>
-                </row>
+                <MenuRow name="help"><div slot="ops">Help</div><icon>${forward}</icon></MenuRow>
             </div>
 
 
 
 
+            <div class="${css.menu}" v-if="nameFocused.value === 'openRecent'" style="${rss({paddingTop:20})}">
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Recent files</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Delete files</div></MenuRow>
+            </div>
             
-            <div class="${css.menu}" v-if="openRecentMenu" style="${rss({paddingTop:20})}">
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Recent files</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
+
+
+
+
+            <div class="${css.menu}" v-if="nameFocused.value === 'getUIKit'" style="${rss({paddingTop:20})}">
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Apple IOS</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Google materials</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Microsoft windows</div></MenuRow>
                 
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Delete files</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-            </div>
-
-
-
-
-
-            <div class="${css.menu}" v-if="getUIMenu" style="${rss({paddingTop:20})}">
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Apple IOS</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Google materials</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Microsoft windows</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-
                 <div class="${ css.separator }"></div>
 
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Wireframe</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Other UI libraries</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Wireframe</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Other UI libraries</div></MenuRow>
             </div>
 
 
 
 
-
-            <div class="${css.menu}" v-if="exportMenu" style="${rss({paddingTop:20})}">
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Export all</cell>
-                    <cell align="right">Shift + Ctrl + E</cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Selected</cell>
-                    <cell align="right">Ctrl + E</cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">All art boards</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
+            <div class="${css.menu}" v-if="nameFocused.value === 'export'" style="${rss({paddingTop:20})}">
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Export all</div>Shift + Ctrl + E</MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Export selected</div>Ctrl + E</MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">All art boards</div></MenuRow>
             </div>
 
 
 
 
-
-            <div class="${css.menu}" v-if="helpMenu" style="${rss({paddingTop:20})}">
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Patch notes</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Tutorials and resources</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Feedback</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
-                <row stretch style="${rss({height:30})}"class="${css.menuStyle}">
-                    <gap/>
-                    <cell shrink align="left">Future release</cell>
-                    <cell align="right"></cell>
-                    <gap/>
-                </row>
+            <div class="${css.menu}" v-if="nameFocused.value === 'help'" style="${rss({paddingTop:20})}">
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Patch notes</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Tutorials and resources</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Feedback</div></MenuRow>
+                <MenuRow unnamed style="${rss({height:30})}"><div slot="ops">Future release</div></MenuRow>
             </div>
         </div>
     `,
-    data(){
-        return{
-            openRecentMenu: false,
-            getUIMenu: false,
-            exportMenu: false,
-            helpMenu: false,
-        }
+    data() {
+        return {
+            nameFocused
+        };
     },
-    methods:{
-        openRecentHover(){
-            this.openRecentMenu = true
-        },
-        openRecentHoverOff(){
-            this.openRecentMenu = false
-        },
-        getUIHover(){
-            this.getUIMenu = true
-        },
-        getUIHoverOff(){
-            this.getUIMenu = false
-        },
-        exportHover(){
-            this.exportMenu = true
-        },
-        exportHoverOff(){
-            this.exportMenu = false
-        },
-        helpHover(){
-            this.helpMenu = true
-        },
-        helpHoverOff(){
-            this.helpMenu = false
-        },
-    },
+    mounted() {
+        this.nameFocused.value = '';
+    }
 });

@@ -19,7 +19,8 @@ const css=rinss.create({
         width: 200,
         height:'100%',
         paddingLeft:5,
-        borderRight: '3px solid ' + theme.background
+        borderRight: '3px solid ' + theme.background,
+        userSelect:'none'
     },
     elementName:{
         floatLeft:0,

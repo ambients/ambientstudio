@@ -17,9 +17,9 @@
     "vue-resize": "*"
   },
   "devDependencies": {
-    "@types/node": "^10.3.3",
     "@types/hammerjs": "*",
-    "@types/lodash": "*",
+    "@types/lodash": "^4.14.110",
+    "@types/node": "^10.3.4",
     "css-loader": "*",
     "html-webpack-plugin": "*",
     "style-loader": "*",
