@@ -53,7 +53,7 @@ import './transformPanel';
 import './borderPanel';
 import './outline';
 import './menu-bar';
-import './NewPage';
+import './NewProject';
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -69,7 +69,7 @@ const css = rinss.create({
         top: 0,
         left: 0
     },
-    colorPickerModal: {
+    modal: {
         zIndex: 9999,
         boxShadow: '0 19px 38px rgba(0,0,0,0.10), 0 15px 12px rgba(0,0,0,0.05)'
     },
@@ -127,19 +127,22 @@ new Vue({
                     <border-panel/>
                 </panels></cell>
             </row>
-            <modal class="${ css.colorPickerModal }"
+            <modal class="${ css.modal }"
              v-if="colorPicker.show"
              :left="colorPicker.left"
              :top="colorPicker.top"
              @close="colorPicker.show=false">
                 <sketch-picker class="${ css.sketchPicker }" v-model="colorPicker.color"/>
             </modal>
-            <modal class="${ css.colorPickerModal}"
+            <modal class="${ css.modal}"
              v-if="textColorPicker.show"
              :left="textColorPicker.left"
              :top="textColorPicker.top"
              @close="textColorPicker.show=false">
                 <sketch-picker class="${ css.sketchPicker }" v-model="textColorPicker.color"/>
+            </modal>
+            <modal class="${ css.modal }" v-if="showNewProject" @close="showNewProject = false">
+                <NewProject/>
             </modal>
         </div>
     `,
@@ -148,6 +151,7 @@ new Vue({
             colorPicker,
             textColorPicker,
             tool: 'cursor',
+            showNewProject: true
         }
     },
     methods: {

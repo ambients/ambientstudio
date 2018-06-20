@@ -25,7 +25,7 @@ const css=rinss.create ({
 
 Vue.component('menu-bar',{
     template:`
-        <div>
+        <div style="${rss({userSelect:'none'})}">
             <main-menu v-if="showMenu"/>
             <row stretch class="${css.menuBar}" style="${rss({height:40})}">
                 <gap/>
