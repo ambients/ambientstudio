@@ -1,12 +1,12 @@
 import Vue, { VueConstructor } from "vue";
 import rinss, { rss } from "rinss";
-import { quadrant, abs, PerspectiveTransform, Point } from 'ambients-math';
+import { quadrant, abs, PerspectiveTransform, Point, rad2Deg } from 'ambients-math';
 import theme from "./theme";
 import { Obj, pullOne, pushOne, identify } from "ambients-utils";
 import color from 'color';
 import * as Hammer from 'hammerjs';
-import { debounce } from 'lodash';
 import { Eventss } from 'eventss';
+import processSvg from "./processSvg";
 
 class EditorNodeData implements IEditorNodeData {
     public tagName: string;
@@ -78,6 +78,10 @@ const selectionPointer = {
 };
 
 const transformOverlay = {
+    startDeltaRotate: 0,
+    deltaRotate: 0,
+    startRotate: 0,
+    rotate: 0,
     startX: 0,
     startY: 0,
     x: 0,
@@ -90,19 +94,25 @@ const selectedNodes = [];
 const nodeInFocus = { value: EditorNodeData.default() };
 const nodeFocusHierarchy = [];
 
-const HammerJS = Vue.extend({
+Vue.component('Hammer', {
+    template: `
+        <div
+         @panstart="$emit('panstart', $event)"
+         @pan="$emit('pan', $event)"
+         @panend="$emit('panend', $event)"
+         @tap="$emit('tap', $event)"
+         @dblclick="$emit('doubletap', $event)">
+            <slot/>
+        </div>
+    `,
     mounted() {
         const mc = new Hammer.Manager(this.$el, {
             domEvents: true,
             recognizers: [
-                [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 0 }]
+                [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 0 }],
+                [Hammer.Tap, { event: 'tap', interval: 0, threshold: 10 }]
             ]
         });
-        mc.add(new Hammer.Tap({ event: 'doubletap', taps: 2 }));
-        mc.add(new Hammer.Tap({ event: 'tap', interval: 50 }));
-        mc.get('doubletap').recognizeWith('tap');
-        mc.get('tap').requireFailure('doubletap');
-
         this.$on('destroyHammer', () => mc.destroy());
     },
     beforeDestroy() {
@@ -146,13 +156,21 @@ const css = rinss.create({
         pointerEvents: 'none'
     },
     transformHandle: {
+        width: 30,
+        height: 30,
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%',
+        cursor: `url('data:image/svg+xml;utf8,${processSvg(require("./icons/rotate.svg"), true)}') 25 25, auto`,
+        pointerEvents: 'auto'
+    },
+    transformHandleInner: {
         width: 8,
         height: 8,
         background: 'white',
         border: '1px solid ' + theme.primary,
-        position: 'absolute',
-        translateX: '-50%',
-        translateY: '-50%'
+        centerX: true,
+        centerY: true
     },
     transformOverlay: {
         position: 'absolute',
@@ -226,21 +244,68 @@ Vue.component('DrawableBox', {
     }
 });
 
+Vue.component('TransformHandle', {
+    template: `
+        <Hammer class="${css.transformHandle}" :style="computedStyle" @panstart="rPanStart" @pan="rPan">
+            <div class="${ css.transformHandleInner }"/>
+        </Hammer>
+    `,
+    props: {
+        index: Number
+    },
+    computed: {
+        computedStyle():string {
+            if (this.index === 0) return rss({ left: 0, top: 0 });
+            else if (this.index === 1) return rss({ left: '50%', top: 0 });
+            else if (this.index === 2) return rss({ left: '100%', top: 0 });
+            else if (this.index === 3) return rss({ left: 0, top: '50%' });
+            else if (this.index === 4) return rss({ left: '100%', top: '50%' });
+            else if (this.index === 5) return rss({ left: 0, top: '100%' });
+            else if (this.index === 6) return rss({ left: '50%', top: '100%' });
+            else return rss({ left: '100%', top: '100%' });
+        }
+    },
+    data() {
+        return {
+            transformOverlay
+        };
+    },
+    methods: {
+        rPanStart({ gesture: { center: { x, y } } }) {
+            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            const pt = pTrans.solve(x, y);
+            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
+            this.transformOverlay.startDeltaRotate = angle;
+            this.transformOverlay.startRotate = this.transformOverlay.rotate;
+        },
+        rPan({ gesture: { center: { x, y } } }) {
+            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            const pt = pTrans.solve(x, y);
+            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
+            this.transformOverlay.deltaRotate = angle - this.transformOverlay.startDeltaRotate;
+            this.transformOverlay.rotate = this.transformOverlay.startRotate + this.transformOverlay.deltaRotate;
+        }
+    }
+});
+
 Vue.component('transform-overlay', {
     template: `
         <div class="${ css.transformOverlay }" :style="computedStyle">
-            <div class="${css.transformHandle}" style="${rss({ left: 0, top: 0 })}"/>
-            <div class="${css.transformHandle}" style="${rss({ left: '50%', top: 0 })}"/>
-            <div class="${css.transformHandle}" style="${rss({ left: '100%', top: 0 })}"/>
-            
-            <div class="${css.transformHandle}" style="${rss({ left: 0, top: '50%' })}"/>
-            <div class="${css.transformHandle}" style="${rss({ left: '100%', top: '50%' })}"/>
-
-            <div class="${css.transformHandle}" style="${rss({ left: 0, top: '100%' })}"/>
-            <div class="${css.transformHandle}" style="${rss({ left: '50%', top: '100%' })}"/>
-            <div class="${css.transformHandle}" style="${rss({ left: '100%', top: '100%' })}"/>
+            <TransformHandle :index="0" v-if="tool === 'transform'"/>
+            <TransformHandle :index="1" v-if="tool === 'transform'"/>
+            <TransformHandle :index="2" v-if="tool === 'transform'"/>
+            <TransformHandle :index="3" v-if="tool === 'transform'"/>
+            <TransformHandle :index="4" v-if="tool === 'transform'"/>
+            <TransformHandle :index="5" v-if="tool === 'transform'"/>
+            <TransformHandle :index="6" v-if="tool === 'transform'"/>
+            <TransformHandle :index="7" v-if="tool === 'transform'"/>
         </div>
     `,
+    props: {
+        tool: String
+    },
     data() {
         return {
             selectedNodes,
@@ -253,7 +318,8 @@ Vue.component('transform-overlay', {
                 left: this.transformOverlay.x,
                 top: this.transformOverlay.y,
                 width: this.transformOverlay.width,
-                height: this.transformOverlay.height
+                height: this.transformOverlay.height,
+                rotate: this.transformOverlay.rotate
             });
         }
     },
@@ -275,6 +341,7 @@ Vue.component('transform-overlay', {
                 this.transformOverlay.y = pt0.y;
                 this.transformOverlay.width = pt2.x - pt0.x;
                 this.transformOverlay.height = pt2.y - pt0.y;
+                this.transformOverlay.rotate = 0;
             }
         }
     }
@@ -299,9 +366,8 @@ Vue.component('EditorBoxInner', {
 });
 
 Vue.component('StaticPointerListener', {
-    mixins: [HammerJS],
     template: `
-        <div class="${ css.staticPointerListener }"
+        <Hammer class="${ css.staticPointerListener }"
          @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
     `,
     methods: {
@@ -329,9 +395,8 @@ Vue.component('StaticPointerListener', {
 });
 
 Vue.component('PointerListener', {
-    mixins: [HammerJS],
     template: `
-        <div :style="computedStyle"
+        <Hammer :style="computedStyle"
          @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
     `,
     data() {
@@ -402,7 +467,6 @@ Vue.component('editor-node', {
              @doubletap="doubleTapPointer"/>
 
             <component :is="nodeData.tagName" :style="innerStyle" ref="el"/>
-            <div class="${ css.selectionOverlay }" v-if="selected"/>
 
             <StaticPointerListener v-if="parentNodeFocused && selectable"
              @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan"/>
@@ -415,7 +479,9 @@ Vue.component('editor-node', {
              :tool="tool"
              :colorPicked="colorPicked"/>
 
-            <transform-overlay v-if="focused && selectedNodes.length > 0"/>
+            <div class="${ css.selectionOverlay }" v-if="selected"/>
+
+            <transform-overlay v-if="focused && selectedNodes.length > 0" :tool="tool"/>
 
             <DrawableBox
              :colorPicked="colorPicked"
@@ -523,7 +589,7 @@ Vue.component('editor-node', {
         },
         doubleTap(e) {
             if (!this.selectable) return;
-            if (e.gesture.srcEvent.shiftKey) return;
+            if (e.shiftKey) return;
             this.nodeInFocus.value = this.nodeData;
             this.nodeFocusHierarchy.push(this.nodeData);
             this.selectedNodes.splice(0, this.selectedNodes.length);
@@ -595,7 +661,7 @@ Vue.component('editor', {
                  :tool="tool"
                  :colorPicked="colorPicked"/>
 
-                <transform-overlay v-if="focused && selectedNodes.length > 0"/>
+                <transform-overlay v-if="focused && selectedNodes.length > 0" :tool="tool"/>
 
                 <DrawableBox
                  :colorPicked="colorPicked"

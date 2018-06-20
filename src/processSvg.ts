@@ -4,7 +4,7 @@ function isDelimiter(str: string): boolean {
     return str === ';' || str === ':' || isQuote(str);
 }
 
-export default function(html: string): string {
+export default function(html: string, replaceViewBox = false): string {
     const colors: Array<string> = [];
     for (const index of indexesOf(html, '#')) {
         if (isDelimiter(html[index - 1])) {
@@ -16,27 +16,38 @@ export default function(html: string): string {
     }
     for (const index of indexesOf(html, 'rgba(')) {
         let indexEnd = -1;
-        for (let i = index; i < html.length; ++i)
+        for (let i = index + 5; i < html.length; ++i)
             if (html[i] === ')') {
                 indexEnd = i + 1;
                 break;
             }
-        if (indexEnd !== -1)
-            pushOne(colors, html.substring(index, indexEnd));
+        if (indexEnd !== -1) pushOne(colors, html.substring(index, indexEnd));
     }
     for (const index of indexesOf(html, 'rgb(')) {
         let indexEnd = -1;
-        for (let i = index; i < html.length; ++i)
+        for (let i = index + 4; i < html.length; ++i)
             if (html[i] === ')') {
                 indexEnd = i + 1;
                 break;
             }
-        if (indexEnd !== -1)
-            pushOne(colors, html.substring(index, indexEnd));
+        if (indexEnd !== -1) pushOne(colors, html.substring(index, indexEnd));
     }
-    let htmlNew = html;
     for (const color of colors.sort((a, b) => { return b.length - a.length })) {
-        htmlNew = replaceAll(htmlNew, color, 'currentColor');
+        html = replaceAll(html, color, 'currentColor');
     }
-    return htmlNew;
+    if (replaceViewBox) {
+        const index = html.indexOf('viewBox="');
+        let indexEnd = -1;
+        for (let i = index + 9; i < html.length; ++i)
+            if (html[i] === '"') {
+                indexEnd = i + 1;
+                break;
+            }
+        if (indexEnd !== -1) {
+            const viewBox = html.substring(index, indexEnd);
+            const parts = viewBox.split(' '), width = parts[2], height = parts[3].slice(0, -1);
+            html = html.replace(viewBox, `width="${ width }" height="${ height }"`);
+        }
+    }
+    return html;
 }
