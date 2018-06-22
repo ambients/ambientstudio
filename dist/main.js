@@ -13259,7 +13259,8 @@ var Eventss = (function () {
         return new Cancellable().then(function () { return Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["pullOne"])(events, cb); });
     };
     Eventss.prototype.once = function (name, cb) {
-        var handle = new Cancellable().watch(this.on(name, function (value) {
+        var handle = new Cancellable();
+        handle.watch(this.on(name, function (value) {
             handle.cancel(), cb(value);
         }));
         return handle;
@@ -13279,6 +13280,12 @@ var Eventss = (function () {
         this.emit(name, value);
         return this;
     };
+    Eventss.prototype.cancelState = function (name) {
+        this.stateValue[name] = undefined;
+        this.stateEmitted[name] = false;
+        return this;
+    };
+    ;
     Eventss.prototype.emitDebounce = function (duration, name, value) {
         var newTime = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["now"])();
         if (newTime - (this.timeMap[name] || 0) >= duration) {
@@ -59645,6 +59652,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! hammerjs */ "./node_modules/hammerjs/hammer.js");
 /* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(hammerjs__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var eventss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! eventss */ "./node_modules/eventss/lib-esm/index.js");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
 var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -59670,11 +59678,13 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
 
 
 
+
 var EditorNodeData = (function () {
     function EditorNodeData(o) {
         this.children = [];
         this.tagName = o.tagName;
         this.el = o.el;
+        this.vue = o.vue;
         if (o.children != undefined)
             this.children = o.children;
         this.width = o.width;
@@ -59734,6 +59744,10 @@ var selectionPointer = {
     tool: ''
 };
 var transformOverlay = {
+    startDeltaRotate: 0,
+    deltaRotate: 0,
+    startRotate: 0,
+    rotate: 0,
     startX: 0,
     startY: 0,
     x: 0,
@@ -59741,21 +59755,42 @@ var transformOverlay = {
     width: 0,
     height: 0
 };
-var selectedNodes = [];
+var editorEventss = new eventss__WEBPACK_IMPORTED_MODULE_7__["Eventss"]().emitState('windowSize').from(window, 'resize', 'windowSize');
+var nodesSelected = [];
+function nodesSelectedPush(node) {
+    editorEventss.cancelState('nodesSelectedReady');
+    Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["pushOne"])(nodesSelected, node);
+}
+function nodesSelectedPull(node) {
+    editorEventss.cancelState('nodesSelectedReady');
+    Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["pullOne"])(nodesSelected, node);
+}
+function nodesSelectedClear() {
+    editorEventss.cancelState('nodesSelectedReady');
+    nodesSelected.splice(0, nodesSelected.length);
+}
+window.addEventListener('keydown', function (e) {
+    if (e.key === 'a' && e.ctrlKey) {
+        e.preventDefault();
+        nodesSelectedClear();
+        for (var _i = 0, _a = nodeFocusHierarchy[nodeFocusHierarchy.length - 1].children; _i < _a.length; _i++) {
+            var node = _a[_i];
+            nodesSelectedPush(node);
+        }
+    }
+});
 var nodeInFocus = { value: EditorNodeData.default() };
 var nodeFocusHierarchy = [];
-var HammerJS = vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('Hammer', {
+    template: "\n        <div\n         @panstart=\"$emit('panstart', $event)\"\n         @pan=\"$emit('pan', $event)\"\n         @panend=\"$emit('panend', $event)\"\n         @tap=\"$emit('tap', $event)\"\n         @dblclick=\"$emit('doubletap', $event)\">\n            <slot/>\n        </div>\n    ",
     mounted: function () {
         var mc = new hammerjs__WEBPACK_IMPORTED_MODULE_6__["Manager"](this.$el, {
             domEvents: true,
             recognizers: [
-                [hammerjs__WEBPACK_IMPORTED_MODULE_6__["Pan"], { direction: hammerjs__WEBPACK_IMPORTED_MODULE_6__["DIRECTION_ALL"], threshold: 0 }]
+                [hammerjs__WEBPACK_IMPORTED_MODULE_6__["Pan"], { direction: hammerjs__WEBPACK_IMPORTED_MODULE_6__["DIRECTION_ALL"], threshold: 0 }],
+                [hammerjs__WEBPACK_IMPORTED_MODULE_6__["Tap"], { event: 'tap', interval: 0, threshold: 10 }]
             ]
         });
-        mc.add(new hammerjs__WEBPACK_IMPORTED_MODULE_6__["Tap"]({ event: 'doubletap', taps: 2 }));
-        mc.add(new hammerjs__WEBPACK_IMPORTED_MODULE_6__["Tap"]({ event: 'tap', interval: 50 }));
-        mc.get('doubletap').recognizeWith('tap');
-        mc.get('tap').requireFailure('doubletap');
         this.$on('destroyHammer', function () { return mc.destroy(); });
     },
     beforeDestroy: function () {
@@ -59783,13 +59818,21 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         pointerEvents: 'none'
     },
     transformHandle: {
+        width: 30,
+        height: 30,
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%',
+        cursor: "url('data:image/svg+xml;utf8," + Object(_processSvg__WEBPACK_IMPORTED_MODULE_8__["default"])(__webpack_require__(/*! ./icons/rotate.svg */ "./src/icons/rotate.svg"), true) + "') 25 25, auto",
+        pointerEvents: 'auto'
+    },
+    transformHandleInner: {
         width: 8,
         height: 8,
         background: 'white',
         border: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
-        position: 'absolute',
-        translateX: '-50%',
-        translateY: '-50%'
+        centerX: true,
+        centerY: true
     },
     transformOverlay: {
         position: 'absolute',
@@ -59809,8 +59852,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('DrawableBox', {
     },
     data: function () {
         return {
-            selectionPointer: selectionPointer,
-            selectedNodes: selectedNodes
+            selectionPointer: selectionPointer
         };
     },
     computed: {
@@ -59844,7 +59886,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('DrawableBox', {
         },
     },
     mounted: function () {
-        this.selectedNodes.splice(0, this.selectedNodes.length);
+        nodesSelectedClear();
     },
     beforeDestroy: function () {
         this.$emit('push', new EditorNodeData({
@@ -59858,11 +59900,73 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('DrawableBox', {
         }));
     }
 });
-vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-overlay', {
-    template: "\n        <div class=\"" + css.transformOverlay + "\" :style=\"computedStyle\">\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: 0 }) + "\"/>\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: 0 }) + "\"/>\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: 0 }) + "\"/>\n            \n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '50%' }) + "\"/>\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '50%' }) + "\"/>\n\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '100%' }) + "\"/>\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: '100%' }) + "\"/>\n            <div class=\"" + css.transformHandle + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '100%' }) + "\"/>\n        </div>\n    ",
+var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
+function vertices(el) {
+    var b = el.getBoundingClientRect();
+    return [
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
+        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
+    ];
+}
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('TransformHandle', {
+    template: "\n        <Hammer class=\"" + css.transformHandle + "\" :style=\"computedStyle\" @panstart=\"rPanStart\" @pan=\"rPan\">\n            <div class=\"" + css.transformHandleInner + "\"/>\n        </Hammer>\n    ",
+    props: {
+        index: Number
+    },
+    computed: {
+        computedStyle: function () {
+            if (this.index === 0)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: 0 });
+            else if (this.index === 1)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: 0 });
+            else if (this.index === 2)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: 0 });
+            else if (this.index === 3)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '50%' });
+            else if (this.index === 4)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '50%' });
+            else if (this.index === 5)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: '100%' });
+            else if (this.index === 6)
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '50%', top: '100%' });
+            else
+                return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '100%' });
+        }
+    },
     data: function () {
         return {
-            selectedNodes: selectedNodes,
+            transformOverlay: transformOverlay
+        };
+    },
+    methods: {
+        rPanStart: function (_a) {
+            var _b = _a.gesture.center, x = _b.x, y = _b.y;
+            var centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            var centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            var pt = pTrans.solve(x, y);
+            var angle = Math.atan2(centerY - pt.y, centerX - pt.x) * ambients_math__WEBPACK_IMPORTED_MODULE_2__["rad2Deg"];
+            this.transformOverlay.startDeltaRotate = angle;
+            this.transformOverlay.startRotate = this.transformOverlay.rotate;
+        },
+        rPan: function (_a) {
+            var _b = _a.gesture.center, x = _b.x, y = _b.y;
+            var centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            var centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            var pt = pTrans.solve(x, y);
+            var angle = Math.atan2(centerY - pt.y, centerX - pt.x) * ambients_math__WEBPACK_IMPORTED_MODULE_2__["rad2Deg"];
+            this.transformOverlay.deltaRotate = angle - this.transformOverlay.startDeltaRotate;
+            this.transformOverlay.rotate = this.transformOverlay.startRotate + this.transformOverlay.deltaRotate;
+        }
+    }
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-overlay', {
+    template: "\n        <div class=\"" + css.transformOverlay + "\" :style=\"computedStyle\">\n            <TransformHandle :index=\"0\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"1\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"2\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"3\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"4\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"5\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"6\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"7\" v-if=\"tool === 'transform'\"/>\n        </div>\n    ",
+    props: {
+        tool: String
+    },
+    data: function () {
+        return {
+            nodesSelected: nodesSelected,
             transformOverlay: transformOverlay
         };
     },
@@ -59872,18 +59976,19 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-overlay', {
                 left: this.transformOverlay.x,
                 top: this.transformOverlay.y,
                 width: this.transformOverlay.width,
-                height: this.transformOverlay.height
+                height: this.transformOverlay.height,
+                rotate: this.transformOverlay.rotate
             });
         }
     },
     watch: {
-        selectedNodes: {
+        nodesSelected: {
             immediate: true,
             handler: function (nodes) {
                 var xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-                for (var _i = 0, _a = this.selectedNodes; _i < _a.length; _i++) {
+                for (var _i = 0, _a = this.nodesSelected; _i < _a.length; _i++) {
                     var node = _a[_i];
-                    var bounds = node.$el.getBoundingClientRect();
+                    var bounds = node.el.getBoundingClientRect();
                     if (bounds.left < xMin)
                         xMin = bounds.left;
                     if (bounds.right > xMax)
@@ -59899,6 +60004,8 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-overlay', {
                 this.transformOverlay.y = pt0.y;
                 this.transformOverlay.width = pt2.x - pt0.x;
                 this.transformOverlay.height = pt2.y - pt0.y;
+                this.transformOverlay.rotate = 0;
+                editorEventss.emitState('nodesSelectedReady');
             }
         }
     }
@@ -59919,8 +60026,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('EditorBoxInner', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('StaticPointerListener', {
-    mixins: [HammerJS],
-    template: "\n        <div class=\"" + css.staticPointerListener + "\"\n         @panstart=\"panStart\" @pan=\"pan\" @panend=\"panEnd\" @tap=\"tap\" @doubletap=\"doubleTap\"/>\n    ",
+    template: "\n        <Hammer class=\"" + css.staticPointerListener + "\"\n         @panstart=\"panStart\" @pan=\"pan\" @panend=\"panEnd\" @tap=\"tap\" @doubletap=\"doubleTap\"/>\n    ",
     methods: {
         panStart: function (e) {
             e.stopPropagation();
@@ -59945,8 +60051,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('StaticPointerListener', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('PointerListener', {
-    mixins: [HammerJS],
-    template: "\n        <div :style=\"computedStyle\"\n         @panstart=\"panStart\" @pan=\"pan\" @panend=\"panEnd\" @tap=\"tap\" @doubletap=\"doubleTap\"/>\n    ",
+    template: "\n        <Hammer :style=\"computedStyle\"\n         @panstart=\"panStart\" @pan=\"pan\" @panend=\"panEnd\" @tap=\"tap\" @doubletap=\"doubleTap\"/>\n    ",
     data: function () {
         return {
             left: 0,
@@ -59956,7 +60061,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('PointerListener', {
     },
     mounted: function () {
         var _this = this;
-        this.$nextTick(function () {
+        editorEventss.once('mounted', function () {
             _this.eventss.off('windowSize').on('windowSize', function () {
                 var vContainer = vertices(canvasContainer);
                 var vSelf = vertices(_this.$el);
@@ -60004,7 +60109,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('PointerListener', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
-    template: "\n        <div :style=\"outerStyle\">\n            <PointerListener v-if=\"focused\" style=\"background:rgba(255, 255, 255, 0.5)\"\n             @pan=\"panPointer\"\n             @panstart=\"panPointerStart\"\n             @panend=\"panPointerEnd\"\n             @tap=\"tapPointer\"\n             @doubletap=\"doubleTapPointer\"/>\n\n            <component :is=\"nodeData.tagName\" :style=\"innerStyle\" ref=\"el\"/>\n            <div class=\"" + css.selectionOverlay + "\" v-if=\"selected\"/>\n\n            <StaticPointerListener v-if=\"parentNodeFocused && selectable\"\n             @tap=\"tap\" @doubletap=\"doubleTap\" @panstart=\"panStart\" @pan=\"pan\"/>\n\n            <editor-node\n             v-for=\"(child, index) of nodeData.children\"\n             :key=\"index\"\n             :node=\"child\"\n             :parentNodeFocused=\"focused\"\n             :tool=\"tool\"\n             :colorPicked=\"colorPicked\"/>\n\n            <transform-overlay v-if=\"focused && selectedNodes.length > 0\"/>\n\n            <DrawableBox\n             :colorPicked=\"colorPicked\"\n             @push=\"nodeData.children.push($event)\"\n             v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n            </DrawableBox>\n\n            <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                <div class=\"" + css.selectionDrawableBox + "\"/>\n            </DrawableBox>\n        </div>\n    ",
+    template: "\n        <div :style=\"outerStyle\">\n            <PointerListener v-if=\"focused\" style=\"background:rgba(255, 255, 255, 0.5)\"\n             @pan=\"panPointer\"\n             @panstart=\"panPointerStart\"\n             @panend=\"panPointerEnd\"\n             @tap=\"tapPointer\"\n             @doubletap=\"doubleTapPointer\"/>\n\n            <component :is=\"nodeData.tagName\" :style=\"innerStyle\" ref=\"el\"/>\n\n            <StaticPointerListener v-if=\"parentNodeFocused && selectable\"\n             @tap=\"tap\" @doubletap=\"doubleTap\" @panstart=\"panStart\" @pan=\"pan\"/>\n\n            <editor-node\n             v-for=\"(child, index) of nodeData.children\"\n             :key=\"index\"\n             :node=\"child\"\n             :parentNodeFocused=\"focused\"\n             :tool=\"tool\"\n             :colorPicked=\"colorPicked\"/>\n\n            <div class=\"" + css.selectionOverlay + "\" v-if=\"selected\"/>\n\n            <transform-overlay v-if=\"focused && nodesSelected.length > 0\" :tool=\"tool\"/>\n\n            <DrawableBox\n             :colorPicked=\"colorPicked\"\n             @push=\"nodeData.children.push($event)\"\n             v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n            </DrawableBox>\n\n            <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                <div class=\"" + css.selectionDrawableBox + "\"/>\n            </DrawableBox>\n        </div>\n    ",
     props: {
         node: Object,
         parentNodeFocused: Boolean,
@@ -60014,7 +60119,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
     data: function () {
         return {
             selectionPointer: selectionPointer,
-            selectedNodes: selectedNodes,
+            nodesSelected: nodesSelected,
             nodeInFocus: nodeInFocus,
             nodeFocusHierarchy: nodeFocusHierarchy,
             transformOverlay: transformOverlay,
@@ -60037,7 +60142,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
             });
         },
         selected: function () {
-            return this.parentNodeFocused && this.selectedNodes.indexOf(this) > -1;
+            return this.parentNodeFocused && this.nodesSelected.indexOf(this.nodeData) > -1;
         },
         selectable: function () {
             if (!this.parentNodeFocused || this.selectionPointer.down)
@@ -60053,6 +60158,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
     },
     mounted: function () {
         this.nodeData.el = this.$refs.el;
+        this.nodeData.vue = this;
         this.select();
     },
     methods: {
@@ -60065,12 +60171,10 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
                     this.select();
             }
             else
-                Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["pushOne"])(this.selectedNodes, this);
+                nodesSelectedPush(this.nodeData);
             this.$nextTick(function () {
-                for (var _i = 0, selectedNodes_1 = selectedNodes; _i < selectedNodes_1.length; _i++) {
-                    var node = selectedNodes_1[_i];
-                    node.startX = node.nodeData.x, node.startY = node.nodeData.y;
-                }
+                _this.startX = _this.nodeData.x;
+                _this.startY = _this.nodeData.y;
                 _this.transformOverlay.startX = _this.transformOverlay.x;
                 _this.transformOverlay.startY = _this.transformOverlay.y;
             });
@@ -60083,13 +60187,13 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
                 var ptStart = pTrans.solve(0, 0);
                 var ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
                 var dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
-                for (var _i = 0, _a = _this.selectedNodes; _i < _a.length; _i++) {
-                    var node = _a[_i];
-                    node.nodeData.x = node.startX + dx;
-                    node.nodeData.y = node.startY + dy;
-                }
                 _this.transformOverlay.x = _this.transformOverlay.startX + dx;
                 _this.transformOverlay.y = _this.transformOverlay.startY + dy;
+                for (var _i = 0, nodesSelected_1 = nodesSelected; _i < nodesSelected_1.length; _i++) {
+                    var node = nodesSelected_1[_i];
+                    node.x = node.vue.startX + dx;
+                    node.y = node.vue.startY + dy;
+                }
             });
         },
         tap: function (e) {
@@ -60100,20 +60204,20 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
         doubleTap: function (e) {
             if (!this.selectable)
                 return;
-            if (e.gesture.srcEvent.shiftKey)
+            if (e.shiftKey)
                 return;
             this.nodeInFocus.value = this.nodeData;
             this.nodeFocusHierarchy.push(this.nodeData);
-            this.selectedNodes.splice(0, this.selectedNodes.length);
+            nodesSelectedClear();
         },
         select: function (multiple) {
             if (multiple === void 0) { multiple = false; }
             if (!multiple)
-                this.selectedNodes.splice(0, this.selectedNodes.length);
+                nodesSelectedClear();
             if (!this.selected)
-                this.selectedNodes.push(this);
+                nodesSelectedPush(this.nodeData);
             else
-                Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["pullOne"])(this.selectedNodes, this);
+                nodesSelectedPull(this.nodeData);
         },
         panPointer: function (_a) {
             var _b = _a.gesture.center, x = _b.x, y = _b.y;
@@ -60134,26 +60238,17 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
         },
         tapPointer: function () {
             if (this.tool === 'cursor' || this.tool === 'transform')
-                this.selectedNodes.splice(0, this.selectedNodes.length);
+                nodesSelectedClear();
         },
         doubleTapPointer: function () {
             if (this.tool !== 'cursor' && this.tool !== 'transform')
                 return;
-            this.selectedNodes.splice(0, this.selectedNodes.length);
+            nodesSelectedClear();
             this.nodeFocusHierarchy.pop();
             this.nodeInFocus.value = this.nodeFocusHierarchy[this.nodeFocusHierarchy.length - 1];
         }
     }
 });
-var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"](), pTransReverse = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
-function vertices(el) {
-    var b = el.getBoundingClientRect();
-    return [
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
-    ];
-}
-var editorEventss = new eventss__WEBPACK_IMPORTED_MODULE_7__["Eventss"]().emitState('windowSize').from(window, 'resize', 'windowSize');
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
     template: "\n        <div\n         ref=\"canvasContainer\"\n         class=\"" + css.canvasContainer + "\">\n            <div ref=\"canvas\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
         width: 800,
@@ -60161,7 +60256,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         background: 'white',
         centerX: true,
         centerY: true
-    }) + "\">\n                <PointerListener v-if=\"focused\" @pan=\"pan\" @panstart=\"panStart\" @panend=\"panEnd\" @tap=\"tap\"/>\n\n                <editor-node\n                 v-for=\"(child, index) of children\"\n                 :key=\"index\"\n                 :node=\"child\"\n                 :parentNodeFocused=\"focused\"\n                 :tool=\"tool\"\n                 :colorPicked=\"colorPicked\"/>\n\n                <transform-overlay v-if=\"focused && selectedNodes.length > 0\"/>\n\n                <DrawableBox\n                 :colorPicked=\"colorPicked\"\n                 @push=\"children.push($event)\"\n                 v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                    <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n                </DrawableBox>\n\n                <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                    <div class=\"" + css.selectionDrawableBox + "\"/>\n                </DrawableBox>\n            </div>\n        </div>\n    ",
+    }) + "\">\n                <PointerListener v-if=\"focused\" @pan=\"pan\" @panstart=\"panStart\" @panend=\"panEnd\" @tap=\"tap\"/>\n\n                <editor-node\n                 v-for=\"(child, index) of children\"\n                 :key=\"index\"\n                 :node=\"child\"\n                 :parentNodeFocused=\"focused\"\n                 :tool=\"tool\"\n                 :colorPicked=\"colorPicked\"/>\n\n                <transform-overlay v-if=\"focused && nodesSelected.length > 0\" :tool=\"tool\"/>\n\n                <DrawableBox\n                 :colorPicked=\"colorPicked\"\n                 @push=\"children.push($event)\"\n                 v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                    <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n                </DrawableBox>\n\n                <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                    <div class=\"" + css.selectionDrawableBox + "\"/>\n                </DrawableBox>\n            </div>\n        </div>\n    ",
     computed: {
         focused: function () {
             return this.$refs.canvas === this.nodeInFocus.value.el;
@@ -60176,7 +60271,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
             sceneGraph: undefined,
             children: undefined,
             selectionPointer: selectionPointer,
-            selectedNodes: selectedNodes,
+            nodesSelected: nodesSelected,
             nodeInFocus: nodeInFocus,
             nodeFocusHierarchy: nodeFocusHierarchy
         };
@@ -60187,6 +60282,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         this.sceneGraph = new EditorNodeData({
             tagName: el.tagName.toLowerCase(),
             el: el,
+            vue: this,
             width: el.style.width,
             height: el.style.height,
             left: el.style.left,
@@ -60197,6 +60293,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         this.nodeInFocus.value = this.sceneGraph;
         this.nodeFocusHierarchy.push(this.sceneGraph);
         this.children = this.nodeInFocus.value.children;
+        editorEventss.emitState('mounted');
     },
     watch: {
         tool: function (tool) {
@@ -60204,11 +60301,9 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         },
         'nodeInFocus.value': function (p) {
             pTrans.setDestination(0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight);
-            pTransReverse.setSource(0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight);
             editorEventss.off('windowSize').on('windowSize', function () {
                 var v = vertices(p.el);
                 pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
-                pTransReverse.setDestination(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
             });
         }
     },
@@ -60232,7 +60327,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         },
         tap: function () {
             if (this.tool === 'cursor' || this.tool === 'transform')
-                this.selectedNodes.splice(0, this.selectedNodes.length);
+                nodesSelectedClear();
         }
     }
 });
@@ -60880,6 +60975,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/rotate.svg":
+/*!******************************!*\
+  !*** ./src/icons/rotate.svg ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" viewBox=\"0 0 50 50\" style=\"enable-background:new 0 0 50 50;\" xml:space=\"preserve\"><style type=\"text/css\"> .st0{fill:#5B5B5B;} </style><g id=\"surface1\"><path class=\"st0\" d=\"M17,14.8c-0.5,0-0.9,0.4-0.9,0.9v4.8h4.8c0.3,0,0.6-0.2,0.8-0.4c0.2-0.3,0.2-0.6,0-0.9 c-0.2-0.3-0.4-0.4-0.8-0.4h-1.7c1.5-1.3,3.4-2.2,5.6-2.2c4.6,0,8.3,3.7,8.3,8.3c0,4.6-3.7,8.3-8.3,8.3c-4.6,0-8.3-3.7-8.3-8.3 c0-0.3-0.2-0.6-0.4-0.8c-0.3-0.2-0.6-0.2-0.9,0c-0.3,0.2-0.4,0.4-0.4,0.8c0,5.5,4.5,10,10,10s10-4.5,10-10s-4.5-10-10-10 c-2.7,0-5.2,1.1-7,2.8v-1.9c0-0.2-0.1-0.5-0.3-0.6C17.4,14.9,17.2,14.8,17,14.8z\"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/smartphone.svg":
 /*!**********************************!*\
   !*** ./src/icons/smartphone.svg ***!
@@ -61238,7 +61344,7 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
         'modal': ambients_modal__WEBPACK_IMPORTED_MODULE_8__["default"],
         'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_9__["Sketch"]
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <menu-bar/>\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar\n                     v-model=\"tool\"\n                     @showColorPicker=\"showColorPicker\"\n                     :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><editor :tool=\"tool\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.modal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.modal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.modal + "\" v-if=\"showNewProject\" @close=\"showNewProject = false\">\n                <NewProject/>\n            </modal>\n        </div>\n    ",
+    template: "\n        <div class=\"" + css.stage + "\">\n            <menu-bar/>\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar\n                     v-model=\"tool\"\n                     @showColorPicker=\"showColorPicker\"\n                     :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><editor :tool=\"tool\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.modal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.modal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
     data: function () {
         return {
             colorPicker: colorPicker,
@@ -61751,7 +61857,8 @@ __webpack_require__.r(__webpack_exports__);
 function isDelimiter(str) {
     return str === ';' || str === ':' || Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["isQuote"])(str);
 }
-/* harmony default export */ __webpack_exports__["default"] = (function (html) {
+/* harmony default export */ __webpack_exports__["default"] = (function (html, replaceViewBox) {
+    if (replaceViewBox === void 0) { replaceViewBox = false; }
     var colors = [];
     for (var _i = 0, _a = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, '#'); _i < _a.length; _i++) {
         var index = _a[_i];
@@ -61765,7 +61872,7 @@ function isDelimiter(str) {
     for (var _b = 0, _c = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, 'rgba('); _b < _c.length; _b++) {
         var index = _c[_b];
         var indexEnd = -1;
-        for (var i = index; i < html.length; ++i)
+        for (var i = index + 5; i < html.length; ++i)
             if (html[i] === ')') {
                 indexEnd = i + 1;
                 break;
@@ -61776,7 +61883,7 @@ function isDelimiter(str) {
     for (var _d = 0, _e = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, 'rgb('); _d < _e.length; _d++) {
         var index = _e[_d];
         var indexEnd = -1;
-        for (var i = index; i < html.length; ++i)
+        for (var i = index + 4; i < html.length; ++i)
             if (html[i] === ')') {
                 indexEnd = i + 1;
                 break;
@@ -61784,12 +61891,25 @@ function isDelimiter(str) {
         if (indexEnd !== -1)
             Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["pushOne"])(colors, html.substring(index, indexEnd));
     }
-    var htmlNew = html;
     for (var _f = 0, _g = colors.sort(function (a, b) { return b.length - a.length; }); _f < _g.length; _f++) {
         var color = _g[_f];
-        htmlNew = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["replaceAll"])(htmlNew, color, 'currentColor');
+        html = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["replaceAll"])(html, color, 'currentColor');
     }
-    return htmlNew;
+    if (replaceViewBox) {
+        var index = html.indexOf('viewBox="');
+        var indexEnd = -1;
+        for (var i = index + 9; i < html.length; ++i)
+            if (html[i] === '"') {
+                indexEnd = i + 1;
+                break;
+            }
+        if (indexEnd !== -1) {
+            var viewBox = html.substring(index, indexEnd);
+            var parts = viewBox.split(' '), width = parts[2], height = parts[3].slice(0, -1);
+            html = html.replace(viewBox, "width=\"" + width + "\" height=\"" + height + "\"");
+        }
+    }
+    return html;
 });
 
 

@@ -141,9 +141,6 @@ new Vue({
              @close="textColorPicker.show=false">
                 <sketch-picker class="${ css.sketchPicker }" v-model="textColorPicker.color"/>
             </modal>
-            <modal class="${ css.modal }" v-if="showNewProject" @close="showNewProject = false">
-                <NewProject/>
-            </modal>
         </div>
     `,
     data() {

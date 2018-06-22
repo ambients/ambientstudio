@@ -8,9 +8,25 @@ import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
 import processSvg from "./processSvg";
 
+interface IEditorNodeData {
+    tagName: string;
+    el?: HTMLElement;
+    vue? : any;
+    children?: Array<IEditorNodeData>;
+    width: string | number;
+    height: string | number;
+    left: string | number;
+    top: string | number;
+    background: string;
+    position: string;
+    x?: number;
+    y?: number;
+}
+
 class EditorNodeData implements IEditorNodeData {
     public tagName: string;
     public el: HTMLElement;
+    public vue: any;
     public children: Array<IEditorNodeData> = [];
     public width: string | number;
     public height: string | number;
@@ -36,6 +52,7 @@ class EditorNodeData implements IEditorNodeData {
     constructor(o: IEditorNodeData) {
         this.tagName = o.tagName;
         this.el = o.el;
+        this.vue = o.vue;
         if (o.children != undefined) this.children = o.children;
         this.width = o.width;
         this.height = o.height;
@@ -90,9 +107,36 @@ const transformOverlay = {
     height: 0
 }
 
-const selectedNodes = [];
+const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
+
+const nodesSelected:Array<EditorNodeData> = [];
+
+function nodesSelectedPush(node:IEditorNodeData):void {
+    editorEventss.cancelState('nodesSelectedReady');
+    pushOne(nodesSelected, node);
+}
+
+function nodesSelectedPull(node: IEditorNodeData): void {
+    editorEventss.cancelState('nodesSelectedReady');
+    pullOne(nodesSelected, node);
+}
+
+function nodesSelectedClear():void {
+    editorEventss.cancelState('nodesSelectedReady');
+    nodesSelected.splice(0, nodesSelected.length);
+}
+
+window.addEventListener('keydown', e => {
+    if (e.key === 'a' && e.ctrlKey) {
+        e.preventDefault();
+        nodesSelectedClear();
+        for (const node of nodeFocusHierarchy[nodeFocusHierarchy.length - 1].children)
+            nodesSelectedPush(node);
+    }
+});
+
 const nodeInFocus = { value: EditorNodeData.default() };
-const nodeFocusHierarchy = [];
+const nodeFocusHierarchy:Array<EditorNodeData> = [];
 
 Vue.component('Hammer', {
     template: `
@@ -119,20 +163,6 @@ Vue.component('Hammer', {
         this.$emit('destroyHammer');
     }
 });
-
-interface IEditorNodeData {
-    tagName: string;
-    el?: HTMLElement;
-    children?: Array<IEditorNodeData>;
-    width: string | number;
-    height: string | number;
-    left: string | number;
-    top: string | number;
-    background: string;
-    position: string;
-    x?: number;
-    y?: number;
-}
 
 const selectionColor = color(theme.primary).alpha(0.3).darken(0.1).string();
 
@@ -193,8 +223,7 @@ Vue.component('DrawableBox', {
     },
     data() {
         return {
-            selectionPointer,
-            selectedNodes
+            selectionPointer
         };
     },
     computed: {
@@ -229,7 +258,7 @@ Vue.component('DrawableBox', {
         },
     },
     mounted() {
-        this.selectedNodes.splice(0, this.selectedNodes.length);
+        nodesSelectedClear();
     },
     beforeDestroy() {
         this.$emit('push', new EditorNodeData({
@@ -243,6 +272,16 @@ Vue.component('DrawableBox', {
         }));
     }
 });
+
+const pTrans = new PerspectiveTransform();
+
+function vertices(el: HTMLElement): Array<Point> {
+    const b = el.getBoundingClientRect();
+    return [
+        new Point(b.left, b.top), new Point(b.right, b.top),
+        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
+    ];
+}
 
 Vue.component('TransformHandle', {
     template: `
@@ -308,7 +347,7 @@ Vue.component('transform-overlay', {
     },
     data() {
         return {
-            selectedNodes,
+            nodesSelected,
             transformOverlay
         };
     },
@@ -324,12 +363,12 @@ Vue.component('transform-overlay', {
         }
     },
     watch: {
-        selectedNodes: {
+        nodesSelected: {
             immediate: true,
             handler(nodes) {
                 let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-                for (const node of this.selectedNodes) {
-                    const bounds = (node.$el as HTMLElement).getBoundingClientRect();
+                for (const node of this.nodesSelected) {
+                    const bounds = node.el.getBoundingClientRect();
                     if (bounds.left < xMin) xMin = bounds.left;
                     if (bounds.right > xMax) xMax = bounds.right;
                     if (bounds.top < yMin) yMin = bounds.top;
@@ -342,6 +381,7 @@ Vue.component('transform-overlay', {
                 this.transformOverlay.width = pt2.x - pt0.x;
                 this.transformOverlay.height = pt2.y - pt0.y;
                 this.transformOverlay.rotate = 0;
+                editorEventss.emitState('nodesSelectedReady');
             }
         }
     }
@@ -407,7 +447,7 @@ Vue.component('PointerListener', {
         };  
     },
     mounted() {
-        this.$nextTick(()=>{
+        editorEventss.once('mounted', ()=>{
             this.eventss.off('windowSize').on('windowSize', () => {
                 const vContainer = vertices(canvasContainer);
                 const vSelf = vertices(this.$el);
@@ -481,7 +521,7 @@ Vue.component('editor-node', {
 
             <div class="${ css.selectionOverlay }" v-if="selected"/>
 
-            <transform-overlay v-if="focused && selectedNodes.length > 0" :tool="tool"/>
+            <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
 
             <DrawableBox
              :colorPicked="colorPicked"
@@ -504,7 +544,7 @@ Vue.component('editor-node', {
     data() {
         return {
             selectionPointer,
-            selectedNodes,
+            nodesSelected,
             nodeInFocus,
             nodeFocusHierarchy,
             transformOverlay,
@@ -533,7 +573,7 @@ Vue.component('editor-node', {
             });
         },
         selected():boolean {
-            return this.parentNodeFocused && this.selectedNodes.indexOf(this) > -1;
+            return this.parentNodeFocused && this.nodesSelected.indexOf(this.nodeData) > -1;
         },
         selectable():boolean {
             if (!this.parentNodeFocused || this.selectionPointer.down) return false;
@@ -548,6 +588,7 @@ Vue.component('editor-node', {
     },
     mounted() {
         this.nodeData.el = this.$refs.el;
+        this.nodeData.vue = this;
         this.select();
     },
     methods: {
@@ -557,12 +598,11 @@ Vue.component('editor-node', {
             if (!e.gesture.srcEvent.shiftKey) {
                 if (!this.selected) this.select();
             }
-            else pushOne(this.selectedNodes, this);
+            else nodesSelectedPush(this.nodeData);
 
             this.$nextTick(()=>{
-                for (const node of selectedNodes)
-                    node.startX = node.nodeData.x, node.startY = node.nodeData.y;
-
+                this.startX = this.nodeData.x;
+                this.startY = this.nodeData.y;
                 this.transformOverlay.startX = this.transformOverlay.x;
                 this.transformOverlay.startY = this.transformOverlay.y;
             });
@@ -575,12 +615,13 @@ Vue.component('editor-node', {
                 const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
                 const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
 
-                for (const node of this.selectedNodes) {
-                    node.nodeData.x = node.startX + dx;
-                    node.nodeData.y = node.startY + dy;
-                }
                 this.transformOverlay.x = this.transformOverlay.startX + dx;
                 this.transformOverlay.y = this.transformOverlay.startY + dy;
+                
+                for (const node of nodesSelected) {
+                    node.x = node.vue.startX + dx;
+                    node.y = node.vue.startY + dy;
+                }
             });
         },
         tap(e) {
@@ -592,12 +633,12 @@ Vue.component('editor-node', {
             if (e.shiftKey) return;
             this.nodeInFocus.value = this.nodeData;
             this.nodeFocusHierarchy.push(this.nodeData);
-            this.selectedNodes.splice(0, this.selectedNodes.length);
+            nodesSelectedClear();
         },
         select(multiple = false) {
-            if (!multiple) this.selectedNodes.splice(0, this.selectedNodes.length);
-            if (!this.selected) this.selectedNodes.push(this);
-            else pullOne(this.selectedNodes, this);
+            if (!multiple) nodesSelectedClear();
+            if (!this.selected) nodesSelectedPush(this.nodeData);
+            else nodesSelectedPull(this.nodeData);
         },
         panPointer({ gesture: { center: { x, y } } }) {
             const pt = pTrans.solve(x, y);
@@ -616,28 +657,16 @@ Vue.component('editor-node', {
         },
         tapPointer() {
             if (this.tool === 'cursor' || this.tool === 'transform')
-                this.selectedNodes.splice(0, this.selectedNodes.length);
+                nodesSelectedClear();
         },
         doubleTapPointer() {
             if (this.tool !== 'cursor' && this.tool !== 'transform') return;
-            this.selectedNodes.splice(0, this.selectedNodes.length);
+            nodesSelectedClear();
             this.nodeFocusHierarchy.pop();
             this.nodeInFocus.value = this.nodeFocusHierarchy[this.nodeFocusHierarchy.length - 1];
         }
     }
 });
-
-const pTrans = new PerspectiveTransform(), pTransReverse = new PerspectiveTransform();
-
-function vertices(el: HTMLElement): Array<Point> {
-    const b = el.getBoundingClientRect();
-    return [
-        new Point(b.left, b.top), new Point(b.right, b.top),
-        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
-    ];
-}
-
-const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
 
 Vue.component('editor', {
     template:`
@@ -661,7 +690,7 @@ Vue.component('editor', {
                  :tool="tool"
                  :colorPicked="colorPicked"/>
 
-                <transform-overlay v-if="focused && selectedNodes.length > 0" :tool="tool"/>
+                <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
 
                 <DrawableBox
                  :colorPicked="colorPicked"
@@ -690,7 +719,7 @@ Vue.component('editor', {
             sceneGraph: undefined,
             children: undefined,
             selectionPointer,
-            selectedNodes,
+            nodesSelected,
             nodeInFocus,
             nodeFocusHierarchy
         }
@@ -702,6 +731,7 @@ Vue.component('editor', {
         this.sceneGraph = new EditorNodeData({
             tagName: el.tagName.toLowerCase(),
             el: el,
+            vue: this,
             width: el.style.width,
             height: el.style.height,
             left: el.style.left,
@@ -712,6 +742,8 @@ Vue.component('editor', {
         this.nodeInFocus.value = this.sceneGraph;
         this.nodeFocusHierarchy.push(this.sceneGraph);
         this.children = this.nodeInFocus.value.children;
+
+        editorEventss.emitState('mounted');
     },
     watch: {
         tool(tool) {
@@ -721,14 +753,9 @@ Vue.component('editor', {
             pTrans.setDestination(
                 0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
             );
-            pTransReverse.setSource(
-                0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
-            );
-
             editorEventss.off('windowSize').on('windowSize', ()=>{
                 const v = vertices(p.el);
                 pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
-                pTransReverse.setDestination(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
             });
         }
     },
@@ -750,7 +777,7 @@ Vue.component('editor', {
         },
         tap() {
             if (this.tool === 'cursor' || this.tool === 'transform')
-                this.selectedNodes.splice(0, this.selectedNodes.length);
+                nodesSelectedClear();
         }
     }
-}); 
+});
