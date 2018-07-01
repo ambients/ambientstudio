@@ -1,12 +1,13 @@
-import Vue, { VueConstructor } from "vue";
+import Vue from "vue";
 import rinss, { rss } from "rinss";
-import { quadrant, abs, PerspectiveTransform, Point, rad2Deg } from 'ambients-math';
+import { quadrant, abs, PerspectiveTransform, rad2Deg } from 'ambients-math';
 import theme from "./theme";
-import { Obj, pullOne, pushOne, identify } from "ambients-utils";
+import { pullOne, pushOne, identify, forOwn, randomColor, SimpleMap, SimpleWeakMap } from "ambients-utils";
 import color from 'color';
 import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
 import processSvg from "./processSvg";
+import { localToLocal, globalVertices, globalVertex } from "./editorMath";
 
 interface IEditorNodeData {
     tagName: string;
@@ -17,6 +18,8 @@ interface IEditorNodeData {
     height: string | number;
     left: string | number;
     top: string | number;
+    transformOrigin: string;
+    rotate: number,
     background: string;
     position: string;
     x?: number;
@@ -32,6 +35,8 @@ class EditorNodeData implements IEditorNodeData {
     public height: string | number;
     public left: string | number;
     public top: string | number;
+    public rotate: number;
+    public transformOrigin: string;
     public background: string;
     public position: string;
 
@@ -58,6 +63,8 @@ class EditorNodeData implements IEditorNodeData {
         this.height = o.height;
         this.left = o.left;
         this.top = o.top;
+        this.transformOrigin = o.transformOrigin;
+        this.rotate = o.rotate;
         this.background = o.background;
         this.position = o.position;
     }
@@ -69,6 +76,8 @@ class EditorNodeData implements IEditorNodeData {
             height: 0,
             left: 0,
             top: 0,
+            transformOrigin: 'center',
+            rotate: 0,
             background: '',
             position: ''
         });
@@ -79,6 +88,12 @@ class EditorNodeData implements IEditorNodeData {
         return style;
     }
 }
+
+class EditorNodeAdditionalData {
+    transformOriginOld: string;
+}
+
+const editorNodeDataMap = new SimpleWeakMap<EditorNodeData, EditorNodeAdditionalData>();
 
 let canvasContainer:HTMLElement;
 
@@ -95,6 +110,8 @@ const selectionPointer = {
 };
 
 const transformOverlay = {
+    el: undefined,
+    vue: undefined,
     startDeltaRotate: 0,
     deltaRotate: 0,
     startRotate: 0,
@@ -104,7 +121,12 @@ const transformOverlay = {
     x: 0,
     y: 0,
     width: 0,
-    height: 0
+    height: 0,
+    startAnchorX: 0,
+    startAnchorY: 0,
+    anchorX: 0,
+    anchorY: 0,
+    transformOrigin: 'center'
 }
 
 const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
@@ -112,17 +134,14 @@ const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize
 const nodesSelected:Array<EditorNodeData> = [];
 
 function nodesSelectedPush(node:IEditorNodeData):void {
-    editorEventss.cancelState('nodesSelectedReady');
     pushOne(nodesSelected, node);
 }
 
 function nodesSelectedPull(node: IEditorNodeData): void {
-    editorEventss.cancelState('nodesSelectedReady');
     pullOne(nodesSelected, node);
 }
 
 function nodesSelectedClear():void {
-    editorEventss.cancelState('nodesSelectedReady');
     nodesSelected.splice(0, nodesSelected.length);
 }
 
@@ -208,6 +227,17 @@ const css = rinss.create({
         pointerEvents: 'none',
         zIndex: 100
     },
+    transformAnchor: {
+        width: 10,
+        height: 10,
+        borderRadius: '100%',
+        border: '1px solid ' + theme.primary,
+        background: 'white',
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%',
+        zIndex: 101
+    },
     staticPointerListener: {
         fillParent: true,
         pointerEvents: 'auto'
@@ -267,25 +297,51 @@ Vue.component('DrawableBox', {
             height: this.$el.style.height,
             left: this.$el.style.left,
             top: this.$el.style.top,
+            transformOrigin: 'center',
+            rotate: 0,
             background: this.colorPicked,
             position: this.$el.style.position
         }));
     }
 });
 
-const pTrans = new PerspectiveTransform();
-
-function vertices(el: HTMLElement): Array<Point> {
-    const b = el.getBoundingClientRect();
-    return [
-        new Point(b.left, b.top), new Point(b.right, b.top),
-        new Point(b.right, b.bottom), new Point(b.left, b.bottom)
-    ];
+function reposition(data: { el: HTMLElement, vue: Vue, x: number, y: number }): void {
+    const centerOld = globalVertex(data.el);
+    data.vue.$nextTick(() => data.vue.$nextTick(() => {
+        const centerNew = globalVertex(data.el);
+        const deltaX = centerNew.x - centerOld.x, deltaY = centerNew.y - centerOld.y;
+        data.x -= deltaX, data.y -= deltaY;
+    }));
 }
+
+function unifyAnchors(cacheTransformOrigin = false): void {
+    for (const node of nodesSelected) {
+        const pt = localToLocal(
+            nodeInFocus.value.el, node.el,
+            transformOverlay.anchorX, transformOverlay.anchorY
+        );
+        reposition(node);
+        if (cacheTransformOrigin) {
+            const data = editorNodeDataMap.forceGet(node, ()=>new EditorNodeAdditionalData());
+            data.transformOriginOld = node.transformOrigin;
+        }
+        node.transformOrigin = `${pt.x}px ${pt.y}px`;
+    }
+    const pt = localToLocal(
+        nodeInFocus.value.el, transformOverlay.el,
+        transformOverlay.anchorX, transformOverlay.anchorY
+    );
+    reposition(transformOverlay);
+    transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
+}
+
+const pTrans = new PerspectiveTransform();
+let rotateInitiator:Vue;
 
 Vue.component('TransformHandle', {
     template: `
-        <Hammer class="${css.transformHandle}" :style="computedStyle" @panstart="rPanStart" @pan="rPan">
+        <Hammer class="${css.transformHandle}" :style="computedStyle"
+         @panstart="rPanStart" @pan="rPan" @panend="rPanEnd">
             <div class="${ css.transformHandleInner }"/>
         </Hammer>
     `,
@@ -306,7 +362,9 @@ Vue.component('TransformHandle', {
     },
     data() {
         return {
-            transformOverlay
+            transformOverlay,
+            nodesSelected,
+            nodeInFocus
         };
     },
     methods: {
@@ -317,6 +375,14 @@ Vue.component('TransformHandle', {
             const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
             this.transformOverlay.startDeltaRotate = angle;
             this.transformOverlay.startRotate = this.transformOverlay.rotate;
+
+            for (const node of this.nodesSelected) {
+                node.vue.startRotate = node.rotate;
+                node.vue.startX = node.x;
+                node.vue.startY = node.y;
+            }
+            unifyAnchors(this.$parent !== rotateInitiator);
+            rotateInitiator = this.$parent;
         },
         rPan({ gesture: { center: { x, y } } }) {
             const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
@@ -325,6 +391,18 @@ Vue.component('TransformHandle', {
             const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
             this.transformOverlay.deltaRotate = angle - this.transformOverlay.startDeltaRotate;
             this.transformOverlay.rotate = this.transformOverlay.startRotate + this.transformOverlay.deltaRotate;
+            
+            for (const node of this.nodesSelected)
+                node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
+        },
+        rPanEnd() {
+            this.$nextTick(()=>{
+                for (const node of nodesSelected) {
+                    if (!editorNodeDataMap.has(node)) continue;
+                    reposition(node);
+                    node.transformOrigin = editorNodeDataMap.get(node).transformOriginOld;
+                }
+            });
         }
     }
 });
@@ -348,7 +426,8 @@ Vue.component('transform-overlay', {
     data() {
         return {
             nodesSelected,
-            transformOverlay
+            transformOverlay,
+            nodeInFocus
         };
     },
     computed: {
@@ -358,16 +437,17 @@ Vue.component('transform-overlay', {
                 top: this.transformOverlay.y,
                 width: this.transformOverlay.width,
                 height: this.transformOverlay.height,
-                rotate: this.transformOverlay.rotate
+                rotate: this.transformOverlay.rotate,
+                transformOrigin: this.transformOverlay.transformOrigin
             });
         }
     },
     watch: {
         nodesSelected: {
             immediate: true,
-            handler(nodes) {
+            handler(nodes: Array<EditorNodeData>) {
                 let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-                for (const node of this.nodesSelected) {
+                for (const node of nodes) {
                     const bounds = node.el.getBoundingClientRect();
                     if (bounds.left < xMin) xMin = bounds.left;
                     if (bounds.right > xMax) xMax = bounds.right;
@@ -381,8 +461,80 @@ Vue.component('transform-overlay', {
                 this.transformOverlay.width = pt2.x - pt0.x;
                 this.transformOverlay.height = pt2.y - pt0.y;
                 this.transformOverlay.rotate = 0;
-                editorEventss.emitState('nodesSelectedReady');
+                this.transformOverlay.anchorX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+                this.transformOverlay.anchorY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+
+                this.$nextTick(()=>{
+                    if (nodes.length === 1) {
+                        const xy = getComputedStyle(nodes[0].el).transformOrigin.split(' ').map(parseFloat);
+                        const anchorXY = localToLocal(
+                            nodes[0].el, this.nodeInFocus.value.el, xy[0], xy[1]
+                        );
+                        this.transformOverlay.anchorX = anchorXY.x, this.transformOverlay.anchorY = anchorXY.y;
+
+                        const pt = localToLocal(
+                            this.nodeInFocus.value.el, this.transformOverlay.el,
+                            this.transformOverlay.anchorX, this.transformOverlay.anchorY
+                        );
+                        reposition(transformOverlay);
+                        this.transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
+                    }
+                    //mark
+                });
             }
+        }
+    },
+    mounted() {
+        this.transformOverlay.el = this.$el;
+        this.transformOverlay.vue = this;
+    }
+});
+
+function vis(el: HTMLElement, left: number, top: number):void {
+    rinss.inline(el.appendChild(document.createElement('div')), {
+        translateX: '-50%',
+        translateY: '-50%',
+        width: 5,
+        height: 5,
+        background: randomColor(),
+        absLeft: left,
+        absTop: top
+    });
+}
+
+Vue.component('TransformAnchor', {
+    template: `
+        <Hammer class="${ css.transformAnchor }" :style="computedStyle"
+         @panstart="panStart" @pan="pan" @panend="panEnd"/>
+    `,
+    computed: {
+        computedStyle():string {
+            return rinss.compile({
+                left: transformOverlay.anchorX,
+                top: transformOverlay.anchorY
+            });
+        }
+    },
+    data() {
+        return {
+            transformOverlay,
+            nodeInFocus
+        }
+    },
+    methods: {
+        panStart() {
+            this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+            this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
+        },
+        pan(e) {
+            const ptStart = pTrans.solve(0, 0);
+            const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
+            const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
+            this.transformOverlay.anchorX = this.transformOverlay.startAnchorX + dx;
+            this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
+        },
+        panEnd() {
+            unifyAnchors();
         }
     }
 });
@@ -449,8 +601,8 @@ Vue.component('PointerListener', {
     mounted() {
         editorEventss.once('mounted', ()=>{
             this.eventss.off('windowSize').on('windowSize', () => {
-                const vContainer = vertices(canvasContainer);
-                const vSelf = vertices(this.$el);
+                const vContainer = globalVertices(canvasContainer);
+                const vSelf = globalVertices(this.$el);
 
                 const xDiff = vContainer[0].x - vSelf[0].x, yDiff = vContainer[0].y - vSelf[0].y;
                 this.left += xDiff, this.top += yDiff;
@@ -506,7 +658,7 @@ Vue.component('editor-node', {
              @tap="tapPointer"
              @doubletap="doubleTapPointer"/>
 
-            <component :is="nodeData.tagName" :style="innerStyle" ref="el"/>
+            <component :is="nodeData.tagName" :style="innerStyle"/>
 
             <StaticPointerListener v-if="parentNodeFocused && selectable"
              @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan"/>
@@ -522,6 +674,7 @@ Vue.component('editor-node', {
             <div class="${ css.selectionOverlay }" v-if="selected"/>
 
             <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
+            <TransformAnchor v-if="focused && nodesSelected.length > 0 && tool === 'transform'"/>
 
             <DrawableBox
              :colorPicked="colorPicked"
@@ -550,7 +703,8 @@ Vue.component('editor-node', {
             transformOverlay,
             nodeData: this.node,
             startX: 0,
-            startY: 0
+            startY: 0,
+            startRotate: 0
         }
     },
     computed: {
@@ -560,14 +714,18 @@ Vue.component('editor-node', {
                 position: 'relative',
                 top: undefined,
                 left: undefined,
+                transformOrigin: undefined,
+                rotate: undefined,
                 pointerEvents: 'none'
             }));
         },
         outerStyle():string {
             return rss({
                 position: this.nodeData.position,
-                top: parseFloat(this.nodeData.top),
-                left: parseFloat(this.nodeData.left),
+                top: this.nodeData.top,
+                left: this.nodeData.left,
+                transformOrigin: this.nodeData.transformOrigin,
+                rotate: this.nodeData.rotate,
                 zIndex: this.inFocusHierarchy ? 1 : '',
                 pointerEvents: 'none'
             });
@@ -587,7 +745,7 @@ Vue.component('editor-node', {
         }
     },
     mounted() {
-        this.nodeData.el = this.$refs.el;
+        this.nodeData.el = this.$el;
         this.nodeData.vue = this;
         this.select();
     },
@@ -601,10 +759,16 @@ Vue.component('editor-node', {
             else nodesSelectedPush(this.nodeData);
 
             this.$nextTick(()=>{
-                this.startX = this.nodeData.x;
-                this.startY = this.nodeData.y;
                 this.transformOverlay.startX = this.transformOverlay.x;
                 this.transformOverlay.startY = this.transformOverlay.y;
+
+                this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+                this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
+
+                for (const node of nodesSelected) {
+                    node.vue.startX = node.x;
+                    node.vue.startY = node.y;
+                }
             });
         },
         pan(e) {
@@ -618,6 +782,9 @@ Vue.component('editor-node', {
                 this.transformOverlay.x = this.transformOverlay.startX + dx;
                 this.transformOverlay.y = this.transformOverlay.startY + dy;
                 
+                this.transformOverlay.anchorX = this.transformOverlay.startAnchorX + dx;
+                this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
+
                 for (const node of nodesSelected) {
                     node.x = node.vue.startX + dx;
                     node.y = node.vue.startY + dy;
@@ -691,6 +858,7 @@ Vue.component('editor', {
                  :colorPicked="colorPicked"/>
 
                 <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
+                <TransformAnchor v-if="focused && nodesSelected.length > 0 && tool === 'transform'"/>
 
                 <DrawableBox
                  :colorPicked="colorPicked"
@@ -736,6 +904,8 @@ Vue.component('editor', {
             height: el.style.height,
             left: el.style.left,
             top: el.style.top,
+            transformOrigin: 'center',
+            rotate: 0,
             background: el.style.background,
             position: el.style.position
         });
@@ -754,7 +924,7 @@ Vue.component('editor', {
                 0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
             );
             editorEventss.off('windowSize').on('windowSize', ()=>{
-                const v = vertices(p.el);
+                const v = globalVertices(p.el);
                 pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
             });
         }
