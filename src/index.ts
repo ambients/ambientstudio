@@ -54,6 +54,7 @@ import './borderPanel';
 import './outline';
 import './menu-bar';
 import './NewProject';
+import './libraries';
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -67,7 +68,9 @@ const css = rinss.create({
         width: '100vw',
         height: '100vh',
         top: 0,
-        left: 0
+        left: 0,
+        display: 'grid',
+        gridTemplateRows: '40px 1fr'
     },
     modal: {
         zIndex: 9999,
@@ -105,28 +108,30 @@ new Vue({
     template: `
         <div class="${ css.stage }">
             <menu-bar/>
-            <row stretch stretchy>
-                <cell shrink>
-                    <toolbar
-                     v-model="tool"
-                     @showColorPicker="showColorPicker"
-                     :colorPicked="colorPicker.color.hex"/>
-                </cell>
-                <cell shrink><outline/></cell>
-                <cell><editor :tool="tool" :colorPicked="colorPicker.color.hex"/></cell>
-                <cell shrink><panels>
-                    <properties-panel expanded/>
-                    <position-panel expanded/>
-                    <typography-panel
-                    @showColorPicker="showTextColorPicker"
-                    :colorPicked="textColorPicker.color.hex"
-                    expanded/>
-                    <panel title="Backgrounds"/>
-                    <panel title="Effects"/>
-                    <transform-panel/>
-                    <border-panel/>
-                </panels></cell>
-            </row>
+            <div>
+                <row stretch stretchy>
+                    <cell shrink>
+                        <toolbar
+                        v-model="tool"
+                        @showColorPicker="showColorPicker"
+                        :colorPicked="colorPicker.color.hex"/>
+                    </cell>
+                    <cell shrink><libraries/></cell>
+                    <cell><editor :tool="tool" :colorPicked="colorPicker.color.hex"/></cell>
+                    <cell shrink><panels>
+                        <properties-panel expanded/>
+                        <position-panel expanded/>
+                        <typography-panel
+                        @showColorPicker="showTextColorPicker"
+                        :colorPicked="textColorPicker.color.hex"
+                        expanded/>
+                        <panel title="Backgrounds"/>
+                        <panel title="Effects"/>
+                        <transform-panel/>
+                        <border-panel/>
+                    </panels></cell>
+                </row>
+            </div>
             <modal class="${ css.modal }"
              v-if="colorPicker.show"
              :left="colorPicker.left"

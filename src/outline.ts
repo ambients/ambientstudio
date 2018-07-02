@@ -16,8 +16,7 @@ const placeholderFilled = processSvg(require('./icons/placeholder-filled.svg'));
 const css=rinss.create({
     outline:{
         background: theme.white,
-        width: 200,
-        height:'100%',
+        width: '100%',
         paddingLeft:5,
         borderRight: '3px solid ' + theme.background,
         userSelect:'none'
