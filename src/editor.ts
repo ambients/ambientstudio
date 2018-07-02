@@ -335,6 +335,18 @@ function applyAnchors(): void {
     transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
 }
 
+function resetTransformOrigins():void {
+    requestAnimationFrame(() => {
+        for (const node of nodesSelected) {
+            const data = editorNodeDataMap.get(node);
+            if (data == undefined || data.transformOriginOld == undefined) continue;
+            reposition(node);
+            node.transformOrigin = data.transformOriginOld;
+            data.transformOriginOld = undefined;
+        }
+    });
+}
+
 const pTrans = new PerspectiveTransform();
 
 Vue.component('TransformHandle', {
@@ -394,15 +406,7 @@ Vue.component('TransformHandle', {
                 node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
         },
         rPanEnd() {
-            this.$nextTick(()=>{
-                for (const node of nodesSelected) {
-                    const data = editorNodeDataMap.get(node);
-                    if (data == undefined || data.transformOriginOld == undefined) continue;
-                    reposition(node);
-                    node.transformOrigin = data.transformOriginOld;
-                    data.transformOriginOld = undefined;
-                }
-            });
+            resetTransformOrigins();
         }
     }
 });
@@ -537,16 +541,8 @@ Vue.component('TransformAnchor', {
             this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
         },
         panEnd() {
-            applyAnchors();//mark
-            setTimeout(() => {
-                for (const node of nodesSelected) {
-                    const data = editorNodeDataMap.get(node);
-                    if (data == undefined || data.transformOriginOld == undefined) continue;
-                    reposition(node);
-                    node.transformOrigin = data.transformOriginOld;
-                    data.transformOriginOld = undefined;
-                }
-            });
+            applyAnchors();
+            resetTransformOrigins();
         }
     }
 });
