@@ -2,7 +2,7 @@ import Vue from "vue";
 import rinss, { rss } from "rinss";
 import { quadrant, abs, PerspectiveTransform, rad2Deg } from 'ambients-math';
 import theme from "./theme";
-import { pullOne, pushOne, identify, forOwn, randomColor, SimpleMap, SimpleWeakMap } from "ambients-utils";
+import { pullOne, pushOne, randomColor } from "ambients-utils";
 import color from 'color';
 import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
@@ -14,6 +14,9 @@ interface IEditorNodeData {
     el?: HTMLElement;
     vue? : any;
     children?: Array<IEditorNodeData>;
+    transformOriginOld?: string;
+    x?: number;
+    y?: number;
     width: string | number;
     height: string | number;
     left: string | number;
@@ -22,8 +25,6 @@ interface IEditorNodeData {
     rotate: number,
     background: string;
     position: string;
-    x?: number;
-    y?: number;
 }
 
 class EditorNodeData implements IEditorNodeData {
@@ -37,6 +38,7 @@ class EditorNodeData implements IEditorNodeData {
     public top: string | number;
     public rotate: number;
     public transformOrigin: string;
+    public transformOriginOld: string;
     public background: string;
     public position: string;
 
@@ -84,16 +86,10 @@ class EditorNodeData implements IEditorNodeData {
     }
 
     public static getStyle(child: IEditorNodeData) {
-        const { el, children, tagName, ...style } = child;
+        const { tagName, el, vue, children, transformOriginOld, x, y, ...style } = child;
         return style;
     }
 }
-
-class EditorNodeAdditionalData {
-    transformOriginOld: string;
-}
-
-const editorNodeDataMap = new SimpleWeakMap<EditorNodeData, EditorNodeAdditionalData>();
 
 let canvasContainer:HTMLElement;
 
@@ -321,10 +317,7 @@ function applyAnchors(): void {
             transformOverlay.anchorX, transformOverlay.anchorY
         );
         reposition(node);
-        if (nodesSelected.length > 1) {
-            const data = editorNodeDataMap.forceGet(node, ()=>new EditorNodeAdditionalData());
-            data.transformOriginOld = node.transformOrigin;
-        }
+        if (nodesSelected.length > 1) node.transformOriginOld = node.transformOrigin;
         node.transformOrigin = `${pt.x}px ${pt.y}px`;
     }
     const pt = localToLocal(
@@ -336,15 +329,12 @@ function applyAnchors(): void {
 }
 
 function resetTransformOrigins():void {
-    requestAnimationFrame(() => {
-        for (const node of nodesSelected) {
-            const data = editorNodeDataMap.get(node);
-            if (data == undefined || data.transformOriginOld == undefined) continue;
-            reposition(node);
-            node.transformOrigin = data.transformOriginOld;
-            data.transformOriginOld = undefined;
-        }
-    });
+    for (const node of nodesSelected) {
+        if (node.transformOriginOld == undefined) continue;
+        reposition(node);
+        node.transformOrigin = node.transformOriginOld;
+        node.transformOriginOld = undefined;
+    }
 }
 
 const pTrans = new PerspectiveTransform();
@@ -406,7 +396,7 @@ Vue.component('TransformHandle', {
                 node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
         },
         rPanEnd() {
-            resetTransformOrigins();
+            this.$nextTick(()=>resetTransformOrigins());
         }
     }
 });
@@ -542,7 +532,7 @@ Vue.component('TransformAnchor', {
         },
         panEnd() {
             applyAnchors();
-            resetTransformOrigins();
+            requestAnimationFrame(()=>resetTransformOrigins());
         }
     }
 });
