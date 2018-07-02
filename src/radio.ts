@@ -23,8 +23,11 @@ export default Vue.extend({
         'checkedMap.id'(id) {
             this.isChecked = id === identify(this);
         },
-        isChecked(val) {
-            this.$emit(val ? 'check' : 'uncheck');
+        isChecked: {
+            immediate: true,
+            handler(val) {
+                this.$emit(val ? 'check' : 'uncheck');
+            }
         }
     }
 });
