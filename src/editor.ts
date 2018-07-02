@@ -314,14 +314,14 @@ function reposition(data: { el: HTMLElement, vue: Vue, x: number, y: number }): 
     }));
 }
 
-function unifyAnchors(cacheTransformOrigin = false): void {
+function applyAnchors(): void {
     for (const node of nodesSelected) {
         const pt = localToLocal(
             nodeInFocus.value.el, node.el,
             transformOverlay.anchorX, transformOverlay.anchorY
         );
         reposition(node);
-        if (cacheTransformOrigin) {
+        if (nodesSelected.length > 1) {
             const data = editorNodeDataMap.forceGet(node, ()=>new EditorNodeAdditionalData());
             data.transformOriginOld = node.transformOrigin;
         }
@@ -336,7 +336,6 @@ function unifyAnchors(cacheTransformOrigin = false): void {
 }
 
 const pTrans = new PerspectiveTransform();
-let rotateInitiator:Vue;
 
 Vue.component('TransformHandle', {
     template: `
@@ -381,8 +380,7 @@ Vue.component('TransformHandle', {
                 node.vue.startX = node.x;
                 node.vue.startY = node.y;
             }
-            unifyAnchors(this.$parent !== rotateInitiator);
-            rotateInitiator = this.$parent;
+            applyAnchors();
         },
         rPan({ gesture: { center: { x, y } } }) {
             const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
@@ -398,9 +396,11 @@ Vue.component('TransformHandle', {
         rPanEnd() {
             this.$nextTick(()=>{
                 for (const node of nodesSelected) {
-                    if (!editorNodeDataMap.has(node)) continue;
+                    const data = editorNodeDataMap.get(node);
+                    if (data == undefined || data.transformOriginOld == undefined) continue;
                     reposition(node);
-                    node.transformOrigin = editorNodeDataMap.get(node).transformOriginOld;
+                    node.transformOrigin = data.transformOriginOld;
+                    data.transformOriginOld = undefined;
                 }
             });
         }
@@ -463,23 +463,26 @@ Vue.component('transform-overlay', {
                 this.transformOverlay.rotate = 0;
                 this.transformOverlay.anchorX = this.transformOverlay.x + (this.transformOverlay.width / 2);
                 this.transformOverlay.anchorY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+                this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+                this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
 
                 this.$nextTick(()=>{
-                    if (nodes.length === 1) {
-                        const xy = getComputedStyle(nodes[0].el).transformOrigin.split(' ').map(parseFloat);
-                        const anchorXY = localToLocal(
-                            nodes[0].el, this.nodeInFocus.value.el, xy[0], xy[1]
-                        );
-                        this.transformOverlay.anchorX = anchorXY.x, this.transformOverlay.anchorY = anchorXY.y;
+                    if (nodes.length != 1) return;
+                    
+                    const xy = getComputedStyle(nodes[0].el).transformOrigin.split(' ').map(parseFloat);
+                    const anchorXY = localToLocal(
+                        nodes[0].el, this.nodeInFocus.value.el, xy[0], xy[1]
+                    );
+                    this.transformOverlay.anchorX = anchorXY.x, this.transformOverlay.anchorY = anchorXY.y;
+                    this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+                    this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
 
-                        const pt = localToLocal(
-                            this.nodeInFocus.value.el, this.transformOverlay.el,
-                            this.transformOverlay.anchorX, this.transformOverlay.anchorY
-                        );
-                        reposition(transformOverlay);
-                        this.transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
-                    }
-                    //mark
+                    const pt = localToLocal(
+                        this.nodeInFocus.value.el, this.transformOverlay.el,
+                        this.transformOverlay.anchorX, this.transformOverlay.anchorY
+                    );
+                    reposition(transformOverlay);
+                    this.transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
                 });
             }
         }
@@ -534,7 +537,16 @@ Vue.component('TransformAnchor', {
             this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
         },
         panEnd() {
-            unifyAnchors();
+            applyAnchors();//mark
+            setTimeout(() => {
+                for (const node of nodesSelected) {
+                    const data = editorNodeDataMap.get(node);
+                    if (data == undefined || data.transformOriginOld == undefined) continue;
+                    reposition(node);
+                    node.transformOrigin = data.transformOriginOld;
+                    data.transformOriginOld = undefined;
+                }
+            });
         }
     }
 });
