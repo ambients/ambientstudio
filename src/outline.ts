@@ -4,7 +4,7 @@ import rinss from "rinss";
 import processSvg from "./processSvg";
 import theme from "./theme";
 import './row';
-import Radio from "./radio";
+import Checkbox from "./checkbox";
 
 const visibility= processSvg(require('./icons/visibility.svg'));
 const visibilityFilled=processSvg(require('./icons/visibility-filled.svg'));
@@ -34,14 +34,14 @@ const css=rinss.create({
 });
 
 Vue.component('outline-row',{
-    mixins: [Radio],
+    mixins: [Checkbox],
     template:`
         <row stretch style="${ rss({floatTop:0})}">
-            <cell shrink><icon @click.native="check" name="visibility" :active="isChecked" style="cursor:pointer">
+            <cell shrink><icon name="visibility" :active="isChecked" style="cursor:pointer">
                 ${visibility}
                 ${visibilityFilled}
             </icon></cell>
-            <cell shrink><icon @click.native="check" name="lock" :active="isChecked" style="cursor:pointer">
+            <cell shrink><icon name="lock" :active="isChecked" style="cursor:pointer">
                 ${lock}
                 ${lockFilled}
             </icon></cell>

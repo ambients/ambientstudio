@@ -43,7 +43,7 @@ Vue.component('alignment-button', {
 Vue.component('position-button', {
     mixins: [Radio],
     template: `
-        <icon-slot @click.native="check" :style="computedStyle">
+        <icon-slot :style="computedStyle">
             <icon slot="icon" :active="isChecked"><slot/></icon>
             {{text}}
         </icon-slot>
@@ -52,7 +52,7 @@ Vue.component('position-button', {
         text: String
     },
     computed: {
-        computedStyle() {
+        computedStyle():string {
             return rss({
                 color: (this as any).isChecked ? theme.primary : theme.textPrimary,
                 cursor: 'pointer'

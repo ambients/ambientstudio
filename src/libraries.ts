@@ -32,10 +32,10 @@ const css = rinss.create({
 Vue.component ('libraryMenuTitle', {
     mixins: [Radio],
     template:`
-        <div class="${css.libraryMenuTitles}" @click="check" :style="computedStyle" :active="isChecked"><slot/></div>
+        <div class="${css.libraryMenuTitles}" :style="computedStyle"><slot/></div>
     `,
     computed:{
-        computedStyle(){
+        computedStyle():string {
             return rss({
                 color:(this as any).isChecked? theme.primary : theme.textPrimary,
             })
@@ -47,20 +47,29 @@ Vue.component('libraries', {
     template: `
         <div class="${ css.container }">
             <div class="${css.libraryMenu}">
-                <libraryMenuTitle name="test" checked @check="titleChecked = 'outline'">Outline</libraryMenuTitle>
-                <libraryMenuTitle name="test" @check="titleChecked = 'library'">Library</libraryMenuTitle>
-                <libraryMenuTitle name="test" @check="titleChecked = 'components'">Components</libraryMenuTitle>
+                <libraryMenuTitle
+                 name="libraryMenuTitle" @check="selected = 'outline'" checked>
+                    Outline
+                </libraryMenuTitle>
+                <libraryMenuTitle
+                 name="libraryMenuTitle" @check="selected = 'library'">
+                    Library
+                </libraryMenuTitle>
+                <libraryMenuTitle
+                 name="libraryMenuTitle" @check="selected = 'components'">
+                    Components
+                </libraryMenuTitle>
             </div>
             <div>
-                <outline v-if="titleChecked === 'outline'"/>
-                <library v-if="titleChecked === 'library'"/>
-                <library v-if="titleChecked === 'components'"/>
+                <outline v-if="selected === 'outline'"/>
+                <library v-if="selected === 'library'"/>
+                <library v-if="selected === 'components'"/>
             </div>
         </div>
     `,
     data() {
         return {
-            titleChecked: ''
+            selected: ''
         };
     }
 });

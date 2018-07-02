@@ -36,7 +36,7 @@ const css = rinss.create({
 Vue.component('border-type',{
     mixins:[Radio],
     template:`
-        <icon style="cursor:pointer" @click.native="check" :active="isChecked"><slot/></icon>
+        <icon style="cursor:pointer" :active="isChecked"><slot/></icon>
     `
 });
 

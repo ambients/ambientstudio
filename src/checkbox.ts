@@ -1,7 +1,4 @@
 import Vue from 'vue';
-import { identify, Obj } from 'ambients-utils';
-
-const checkedMap:Obj<Obj<any>> = {};
 
 export default Vue.extend({
     props: {
@@ -10,14 +7,10 @@ export default Vue.extend({
     },
     data() {
         return {
-            checkedMap: checkedMap[this.name] || (checkedMap[this.name] = { id: '' }),
             isChecked: this.checked
         };
     },
     watch: {
-        'checkedMap.id'(id) {
-            this.isChecked = id === identify(this);
-        },
         isChecked: {
             immediate: true,
             handler(val) {
@@ -26,6 +19,6 @@ export default Vue.extend({
         }
     },
     mounted() {
-        this.$el.addEventListener('click', () => this.checkedMap.id = identify(this));
+        this.$el.addEventListener('click', () => this.isChecked = !this.isChecked);
     }
 });

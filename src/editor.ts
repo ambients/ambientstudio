@@ -7,7 +7,7 @@ import color from 'color';
 import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
 import processSvg from "./processSvg";
-import { localToLocal, globalVertices, globalVertex } from "./editorMath";
+import { localToLocal, globalVertices, globalVertex, globalCenter, globalToLocal } from "./editorMath";
 
 interface IEditorNodeData {
     tagName: string;
@@ -91,7 +91,7 @@ class EditorNodeData implements IEditorNodeData {
     }
 }
 
-let canvasContainer:HTMLElement;
+let canvasContainer:HTMLElement, canvas:HTMLElement;
 
 const selectionPointer = {
     startX: 0,
@@ -487,7 +487,7 @@ Vue.component('transform-overlay', {
     }
 });
 
-function vis(el: HTMLElement, left: number, top: number):void {
+function viz(el: HTMLElement, left: number, top: number):void {
     rinss.inline(el.appendChild(document.createElement('div')), {
         translateX: '-50%',
         translateY: '-50%',
@@ -495,7 +495,8 @@ function vis(el: HTMLElement, left: number, top: number):void {
         height: 5,
         background: randomColor(),
         absLeft: left,
-        absTop: top
+        absTop: top,
+        zIndex: 9999
     });
 }
 
@@ -892,20 +893,20 @@ Vue.component('editor', {
     },
     mounted() {
         canvasContainer = this.$refs.canvasContainer as any;
-
-        const el:HTMLElement = this.$refs.canvas as any;
+        canvas = this.$refs.canvas as any;
+        
         this.sceneGraph = new EditorNodeData({
-            tagName: el.tagName.toLowerCase(),
-            el: el,
+            tagName: canvas.tagName.toLowerCase(),
+            el: canvas,
             vue: this,
-            width: el.style.width,
-            height: el.style.height,
-            left: el.style.left,
-            top: el.style.top,
+            width: canvas.style.width,
+            height: canvas.style.height,
+            left: canvas.style.left,
+            top: canvas.style.top,
             transformOrigin: 'center',
             rotate: 0,
-            background: el.style.background,
-            position: el.style.position
+            background: canvas.style.background,
+            position: canvas.style.position
         });
         this.nodeInFocus.value = this.sceneGraph;
         this.nodeFocusHierarchy.push(this.sceneGraph);
@@ -916,6 +917,17 @@ Vue.component('editor', {
     watch: {
         tool(tool) {
             selectionPointer.tool = tool;
+        },
+        nodeFocusHierarchy(arr: Array<EditorNodeData>) {
+            const node = arr[arr.length - 1];
+            const center = globalCenter(node.el);
+            const pt = globalToLocal(canvas, center.x, center.y);
+            rinss.inline(canvas, {
+                transformOrigin: `${pt.x}px ${pt.y}px`,
+                centerX: true,
+                centerY: true,
+                rotate: -(node.rotate)
+            });
         },
         'nodeInFocus.value'(p:IEditorNodeData) {
             pTrans.setDestination(
@@ -932,7 +944,9 @@ Vue.component('editor', {
             const pt = pTrans.solve(x, y);
             this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
             this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
-            this.selectionPointer.quadrant = quadrant(this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0);
+            this.selectionPointer.quadrant = quadrant(
+                this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0
+            );
         },
         panStart({ gesture: { center: { x, y } } }) {
             this.selectionPointer.down = true;
