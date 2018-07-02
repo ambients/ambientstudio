@@ -8,8 +8,6 @@ import theme from './theme';
 
 const css = rinss.create({
     toolbar: {
-        width: 50,
-        height: '100%',
         background: theme.white,
         overflow: "hidden",
         userSelect: 'none',

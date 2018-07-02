@@ -890,6 +890,14 @@ var SimpleMap = (function () {
     SimpleMap.prototype.set = function (name, value) {
         this.map.set(name, value);
     };
+    SimpleMap.prototype.forceGet = function (name, factory) {
+        var item = this.get(name);
+        if (item == undefined) {
+            item = factory();
+            this.set(name, item);
+        }
+        return item;
+    };
     return SimpleMap;
 }());
 
@@ -928,6 +936,14 @@ var SimpleWeakMap = (function () {
     };
     SimpleWeakMap.prototype.set = function (obj, value) {
         this.weak.set(obj, value);
+    };
+    SimpleWeakMap.prototype.forceGet = function (obj, factory) {
+        var item = this.get(obj);
+        if (item == undefined) {
+            item = factory();
+            this.set(obj, item);
+        }
+        return item;
     };
     return SimpleWeakMap;
 }());
@@ -18251,6 +18267,7 @@ var Rinss = (function () {
                 _this.setStyle(el, _this.standardize(flatten(d, undefined, undefined, el)));
             });
         }
+        return el;
     };
     Rinss.prototype.number = function (el, name) {
         if (inlineMap.has(el)) {
@@ -59466,12 +59483,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var smartphone = __webpack_require__(/*! ./icons/smartphone.svg */ "./src/icons/smartphone.svg");
-var tablet = __webpack_require__(/*! ./icons/tablet.svg */ "./src/icons/tablet.svg");
-var television = __webpack_require__(/*! ./icons/television.svg */ "./src/icons/television.svg");
-var webpage = __webpack_require__(/*! ./icons/webpage.svg */ "./src/icons/webpage.svg");
-var customWebpage = __webpack_require__(/*! ./icons/custom-webpage.svg */ "./src/icons/custom-webpage.svg");
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const smartphone = __webpack_require__(/*! ./icons/smartphone.svg */ "./src/icons/smartphone.svg");
+const tablet = __webpack_require__(/*! ./icons/tablet.svg */ "./src/icons/tablet.svg");
+const television = __webpack_require__(/*! ./icons/television.svg */ "./src/icons/television.svg");
+const webpage = __webpack_require__(/*! ./icons/webpage.svg */ "./src/icons/webpage.svg");
+const customWebpage = __webpack_require__(/*! ./icons/custom-webpage.svg */ "./src/icons/custom-webpage.svg");
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     newPageStyle: {
         width: 500,
         height: 300,
@@ -59512,7 +59529,44 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     },
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('NewProject', {
-    template: "\n        <div class=\"" + css.newPageStyle + "\">\n            <div class=\"" + css.newProjectTitle + "\">Select Project format</div>\n            <div class=\"" + css.newProjectFormat + "\">\n                <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 }) + "\">\n                    <div class=\"" + css.newProjectIcons + "\">" + smartphone + "</div>\n                    <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background }) + "\">\n                    </select>\n                </div>\n                <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 }) + "\">\n                    <div class=\"" + css.newProjectIcons + "\">" + tablet + "</div>\n                    <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background }) + "\">\n                    </select>\n                </div>\n                <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 }) + "\">\n                    <div class=\"" + css.newProjectIcons + "\">" + television + "</div>\n                    <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background }) + "\">\n                    </select>\n                </div>\n                <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 }) + "\">\n                    <div class=\"" + css.newProjectIcons + "\">" + webpage + "</div>\n                    <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background }) + "\">\n                    </select>\n                </div>\n                <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 }) + "\">\n                    <div class=\"" + css.newProjectIcons + "\">" + customWebpage + "</div>\n                    <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ display: 'flex', floatTop: 0, centerX: true }) + "\">\n                        <input style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: 25, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background, placeholder: 'w', color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary, fontSize: 10 }) + "\">\n                        </input>\n                        <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fontColor: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary, fontSize: 10 }) + "\">x</div>\n                        <input style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: 25, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background, placeholder: 'h', color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary, fontSize: 10 }) + "\">\n                        </input>\n                    </div>\n                </div>\n            </div>\n            <button class=\"" + css.newProjectButton + "\">Start Project</button>\n        </div>            \n    "
+    template: `
+        <div class="${css.newPageStyle}">
+            <div class="${css.newProjectTitle}">Select Project format</div>
+            <div class="${css.newProjectFormat}">
+                <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 })}">
+                    <div class="${css.newProjectIcons}">${smartphone}</div>
+                    <select style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background })}">
+                    </select>
+                </div>
+                <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 })}">
+                    <div class="${css.newProjectIcons}">${tablet}</div>
+                    <select style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background })}">
+                    </select>
+                </div>
+                <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 })}">
+                    <div class="${css.newProjectIcons}">${television}</div>
+                    <select style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background })}">
+                    </select>
+                </div>
+                <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 })}">
+                    <div class="${css.newProjectIcons}">${webpage}</div>
+                    <select style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, centerX: true, width: 60, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background })}">
+                    </select>
+                </div>
+                <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatLeft: 0, margin: 20 })}">
+                    <div class="${css.newProjectIcons}">${customWebpage}</div>
+                    <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ display: 'flex', floatTop: 0, centerX: true })}">
+                        <input style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: 25, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background, placeholder: 'w', color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary, fontSize: 10 })}">
+                        </input>
+                        <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fontColor: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary, fontSize: 10 })}">x</div>
+                        <input style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: 25, background: 'none', border: 'none', borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background, placeholder: 'h', color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary, fontSize: 10 })}">
+                        </input>
+                    </div>
+                </div>
+            </div>
+            <button class="${css.newProjectButton}">Start Project</button>
+        </div>            
+    `
 });
 
 
@@ -59545,15 +59599,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
-var borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
-var borderLeft = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-left.svg */ "./src/icons/border-left.svg"));
-var borderRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-right.svg */ "./src/icons/border-right.svg"));
-var borderBottom = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-bottom.svg */ "./src/icons/border-bottom.svg"));
-var colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icons/font-color.svg");
-var borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
-var borderLine = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"));
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const borderTopRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top-right.svg */ "./src/icons/border-top-right.svg"));
+const borderTop = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-top.svg */ "./src/icons/border-top.svg"));
+const borderLeft = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-left.svg */ "./src/icons/border-left.svg"));
+const borderRight = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-right.svg */ "./src/icons/border-right.svg"));
+const borderBottom = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/border-bottom.svg */ "./src/icons/border-bottom.svg"));
+const colorPalette = __webpack_require__(/*! ./icons/font-color.svg */ "./src/icons/font-color.svg");
+const borderThickness = __webpack_require__(/*! ./icons/thickness.svg */ "./src/icons/thickness.svg");
+const borderLine = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     borderColorInput: {
         background: 'none',
         border: 'none',
@@ -59569,10 +59623,159 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-type', {
     mixins: [_radio__WEBPACK_IMPORTED_MODULE_5__["default"]],
-    template: "\n        <icon style=\"cursor:pointer\" @click.native=\"check\" :active=\"isChecked\"><slot/></icon>\n    "
+    template: `
+        <icon style="cursor:pointer" @click.native="check" :active="isChecked"><slot/></icon>
+    `
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('border-panel', {
-    template: "\n    <panel title=\"Border\" expanded>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderTop + "\n            </border-type></cell>\n            <gap/>\n            <cell>\n                <material-input placeholder=\"Top thickness\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker color=\"red\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\"/></cell>\n            <gap/>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>" + borderBottom + "</border-type></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Bottom thickness\"/></cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker color=\"red\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\"/></cell>\n            <gap/>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"bottomBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderLeft + "\n            </border-type></cell>\n            <gap/>\n            <cell>\n                <material-input placeholder=\"Left thickness\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker color=\"red\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\"/></cell>\n            <gap/>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderRight + "\n            </border-type></cell>\n            <gap/>\n            <cell>\n                <material-input placeholder=\"Right thickness\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 }) + "\">\n            <cell shrink><color-picker color=\"red\"/></cell>\n            <gap/>\n            <cell><input class=\"" + css.borderColorInput + "\" placeholder=\"Color\"/></cell>\n            <gap/>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <cell><border-type name=\"topBorder\">\n                " + borderLine + "\n            </border-type></cell>\n            <gap/>\n        </row>\n\n        <div class=\"" + css.separator + "\"></div>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type>\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Top right size\"/>\n            </cell>\n            <gap/>\n            <cell shrink><border-type style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: -90 }) + "\">\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Top left size\"/>\n            </cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><border-type style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: 90 }) + "\">\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Bottom right size\"/>\n            </cell>\n            <gap/>\n            <cell shrink><border-type style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: 180 }) + "\">\n                " + borderTopRight + "\n            </border-type></cell>\n            <cell>\n                <material-input placeholder=\"Bottom left size\"/>\n            </cell>\n        </row>\n    </panel>\n    ",
+    template: `
+    <panel title="Border" expanded>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><border-type>
+                ${borderTop}
+            </border-type></cell>
+            <gap/>
+            <cell>
+                <material-input placeholder="Top thickness"/>
+            </cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 })}">
+            <cell shrink><color-picker color="red"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
+            <gap/>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><border-type>${borderBottom}</border-type></cell>
+            <gap/>
+            <cell><material-input placeholder="Bottom thickness"/></cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 })}">
+            <cell shrink><color-picker color="red"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
+            <gap/>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="bottomBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><border-type>
+                ${borderLeft}
+            </border-type></cell>
+            <gap/>
+            <cell>
+                <material-input placeholder="Left thickness"/>
+            </cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 })}">
+            <cell shrink><color-picker color="red"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
+            <gap/>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><border-type>
+                ${borderRight}
+            </border-type></cell>
+            <gap/>
+            <cell>
+                <material-input placeholder="Right thickness"/>
+            </cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0, marginBottom: 10 })}">
+            <cell shrink><color-picker color="red"/></cell>
+            <gap/>
+            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
+            <gap/>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <cell><border-type name="topBorder">
+                ${borderLine}
+            </border-type></cell>
+            <gap/>
+        </row>
+
+        <div class="${css.separator}"></div>
+
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><border-type>
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Top right size"/>
+            </cell>
+            <gap/>
+            <cell shrink><border-type style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: -90 })}">
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Top left size"/>
+            </cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><border-type style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: 90 })}">
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Bottom right size"/>
+            </cell>
+            <gap/>
+            <cell shrink><border-type style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ rotate: 180 })}">
+                ${borderTopRight}
+            </border-type></cell>
+            <cell>
+                <material-input placeholder="Bottom left size"/>
+            </cell>
+        </row>
+    </panel>
+    `,
     props: {
         colorPicked: String
     },
@@ -59596,7 +59799,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     colorPicker: {
         borderRadius: 3,
         border: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary,
@@ -59612,7 +59815,11 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('color-picker', {
-    template: "\n        <div class=\"" + css.colorPicker + "\" :style=\"outerStyle\">\n            <div :style=\"innerStyle\"/>\n        </div>\n    ",
+    template: `
+        <div class="${css.colorPicker}" :style="outerStyle">
+            <div :style="innerStyle"/>
+        </div>
+    `,
     props: {
         color: String,
         size: {
@@ -59621,10 +59828,10 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('color-picker', {
         }
     },
     computed: {
-        outerStyle: function () {
+        outerStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: this.size, height: this.size });
         },
-        innerStyle: function () {
+        innerStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ background: this.color });
         }
     }
@@ -59653,14 +59860,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(hammerjs__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var eventss__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! eventss */ "./node_modules/eventss/lib-esm/index.js");
 /* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
-var __assign = (undefined && undefined.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
+/* harmony import */ var _editorMath__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./editorMath */ "./src/editorMath.ts");
 var __rest = (undefined && undefined.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -59679,8 +59879,9 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
 
 
 
-var EditorNodeData = (function () {
-    function EditorNodeData(o) {
+
+class EditorNodeData {
+    constructor(o) {
         this.children = [];
         this.tagName = o.tagName;
         this.el = o.el;
@@ -59691,48 +59892,43 @@ var EditorNodeData = (function () {
         this.height = o.height;
         this.left = o.left;
         this.top = o.top;
+        this.transformOrigin = o.transformOrigin;
+        this.rotate = o.rotate;
         this.background = o.background;
         this.position = o.position;
     }
-    Object.defineProperty(EditorNodeData.prototype, "x", {
-        get: function () {
-            return parseFloat(this.left);
-        },
-        set: function (val) {
-            this.left = val;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(EditorNodeData.prototype, "y", {
-        get: function () {
-            return parseFloat(this.top);
-        },
-        set: function (val) {
-            this.top = val;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    EditorNodeData.default = function () {
+    get x() {
+        return parseFloat(this.left);
+    }
+    set x(val) {
+        this.left = val;
+    }
+    get y() {
+        return parseFloat(this.top);
+    }
+    set y(val) {
+        this.top = val;
+    }
+    static default() {
         return new EditorNodeData({
             tagName: '',
             width: 0,
             height: 0,
             left: 0,
             top: 0,
+            transformOrigin: 'center',
+            rotate: 0,
             background: '',
             position: ''
         });
-    };
-    EditorNodeData.getStyle = function (child) {
-        var el = child.el, children = child.children, tagName = child.tagName, style = __rest(child, ["el", "children", "tagName"]);
+    }
+    static getStyle(child) {
+        const { tagName, el, vue, children, transformOriginOld, x, y } = child, style = __rest(child, ["tagName", "el", "vue", "children", "transformOriginOld", "x", "y"]);
         return style;
-    };
-    return EditorNodeData;
-}());
-var canvasContainer;
-var selectionPointer = {
+    }
+}
+let canvasContainer;
+const selectionPointer = {
     startX: 0,
     startY: 0,
     x: 0,
@@ -59743,7 +59939,9 @@ var selectionPointer = {
     down: false,
     tool: ''
 };
-var transformOverlay = {
+const transformOverlay = {
+    el: undefined,
+    vue: undefined,
     startDeltaRotate: 0,
     deltaRotate: 0,
     startRotate: 0,
@@ -59753,52 +59951,61 @@ var transformOverlay = {
     x: 0,
     y: 0,
     width: 0,
-    height: 0
+    height: 0,
+    startAnchorX: 0,
+    startAnchorY: 0,
+    anchorX: 0,
+    anchorY: 0,
+    transformOrigin: 'center'
 };
-var editorEventss = new eventss__WEBPACK_IMPORTED_MODULE_7__["Eventss"]().emitState('windowSize').from(window, 'resize', 'windowSize');
-var nodesSelected = [];
+const editorEventss = new eventss__WEBPACK_IMPORTED_MODULE_7__["Eventss"]().emitState('windowSize').from(window, 'resize', 'windowSize');
+const nodesSelected = [];
 function nodesSelectedPush(node) {
-    editorEventss.cancelState('nodesSelectedReady');
     Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["pushOne"])(nodesSelected, node);
 }
 function nodesSelectedPull(node) {
-    editorEventss.cancelState('nodesSelectedReady');
     Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["pullOne"])(nodesSelected, node);
 }
 function nodesSelectedClear() {
-    editorEventss.cancelState('nodesSelectedReady');
     nodesSelected.splice(0, nodesSelected.length);
 }
-window.addEventListener('keydown', function (e) {
+window.addEventListener('keydown', e => {
     if (e.key === 'a' && e.ctrlKey) {
         e.preventDefault();
         nodesSelectedClear();
-        for (var _i = 0, _a = nodeFocusHierarchy[nodeFocusHierarchy.length - 1].children; _i < _a.length; _i++) {
-            var node = _a[_i];
+        for (const node of nodeFocusHierarchy[nodeFocusHierarchy.length - 1].children)
             nodesSelectedPush(node);
-        }
     }
 });
-var nodeInFocus = { value: EditorNodeData.default() };
-var nodeFocusHierarchy = [];
+const nodeInFocus = { value: EditorNodeData.default() };
+const nodeFocusHierarchy = [];
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('Hammer', {
-    template: "\n        <div\n         @panstart=\"$emit('panstart', $event)\"\n         @pan=\"$emit('pan', $event)\"\n         @panend=\"$emit('panend', $event)\"\n         @tap=\"$emit('tap', $event)\"\n         @dblclick=\"$emit('doubletap', $event)\">\n            <slot/>\n        </div>\n    ",
-    mounted: function () {
-        var mc = new hammerjs__WEBPACK_IMPORTED_MODULE_6__["Manager"](this.$el, {
+    template: `
+        <div
+         @panstart="$emit('panstart', $event)"
+         @pan="$emit('pan', $event)"
+         @panend="$emit('panend', $event)"
+         @tap="$emit('tap', $event)"
+         @dblclick="$emit('doubletap', $event)">
+            <slot/>
+        </div>
+    `,
+    mounted() {
+        const mc = new hammerjs__WEBPACK_IMPORTED_MODULE_6__["Manager"](this.$el, {
             domEvents: true,
             recognizers: [
                 [hammerjs__WEBPACK_IMPORTED_MODULE_6__["Pan"], { direction: hammerjs__WEBPACK_IMPORTED_MODULE_6__["DIRECTION_ALL"], threshold: 0 }],
                 [hammerjs__WEBPACK_IMPORTED_MODULE_6__["Tap"], { event: 'tap', interval: 0, threshold: 10 }]
             ]
         });
-        this.$on('destroyHammer', function () { return mc.destroy(); });
+        this.$on('destroyHammer', () => mc.destroy());
     },
-    beforeDestroy: function () {
+    beforeDestroy() {
         this.$emit('destroyHammer');
     }
 });
-var selectionColor = color__WEBPACK_IMPORTED_MODULE_5___default()(_theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary).alpha(0.3).darken(0.1).string();
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const selectionColor = color__WEBPACK_IMPORTED_MODULE_5___default()(_theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary).alpha(0.3).darken(0.1).string();
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     canvasContainer: {
         width: '100%',
         height: '100%',
@@ -59823,7 +60030,7 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         position: 'absolute',
         translateX: '-50%',
         translateY: '-50%',
-        cursor: "url('data:image/svg+xml;utf8," + Object(_processSvg__WEBPACK_IMPORTED_MODULE_8__["default"])(__webpack_require__(/*! ./icons/rotate.svg */ "./src/icons/rotate.svg"), true) + "') 25 25, auto",
+        cursor: `url('data:image/svg+xml;utf8,${Object(_processSvg__WEBPACK_IMPORTED_MODULE_8__["default"])(__webpack_require__(/*! ./icons/rotate.svg */ "./src/icons/rotate.svg"), true)}') 25 25, auto`,
         pointerEvents: 'auto'
     },
     transformHandleInner: {
@@ -59840,25 +60047,38 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         pointerEvents: 'none',
         zIndex: 100
     },
+    transformAnchor: {
+        width: 10,
+        height: 10,
+        borderRadius: '100%',
+        border: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].primary,
+        background: 'white',
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%',
+        zIndex: 101
+    },
     staticPointerListener: {
         fillParent: true,
         pointerEvents: 'auto'
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('DrawableBox', {
-    template: "\n        <div :style=\"computedStyle\"><slot/></div>\n    ",
+    template: `
+        <div :style="computedStyle"><slot/></div>
+    `,
     props: {
         colorPicked: String
     },
-    data: function () {
+    data() {
         return {
-            selectionPointer: selectionPointer
+            selectionPointer
         };
     },
     computed: {
-        computedStyle: function () {
-            var width = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.selectionPointer.deltaX), height = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.selectionPointer.deltaY);
-            var x, y;
+        computedStyle() {
+            const width = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.selectionPointer.deltaX), height = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["abs"])(this.selectionPointer.deltaY);
+            let x, y;
             switch (this.selectionPointer.quadrant) {
                 case 1:
                     x = this.selectionPointer.startX;
@@ -59885,36 +60105,65 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('DrawableBox', {
             });
         },
     },
-    mounted: function () {
+    mounted() {
         nodesSelectedClear();
     },
-    beforeDestroy: function () {
+    beforeDestroy() {
         this.$emit('push', new EditorNodeData({
             tagName: 'div',
             width: this.$el.style.width,
             height: this.$el.style.height,
             left: this.$el.style.left,
             top: this.$el.style.top,
+            transformOrigin: 'center',
+            rotate: 0,
             background: this.colorPicked,
             position: this.$el.style.position
         }));
     }
 });
-var pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
-function vertices(el) {
-    var b = el.getBoundingClientRect();
-    return [
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.top), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.top),
-        new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.right, b.bottom), new ambients_math__WEBPACK_IMPORTED_MODULE_2__["Point"](b.left, b.bottom)
-    ];
+function reposition(data) {
+    const centerOld = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["globalVertex"])(data.el);
+    data.vue.$nextTick(() => data.vue.$nextTick(() => {
+        const centerNew = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["globalVertex"])(data.el);
+        const deltaX = centerNew.x - centerOld.x, deltaY = centerNew.y - centerOld.y;
+        data.x -= deltaX, data.y -= deltaY;
+    }));
 }
+function applyAnchors() {
+    for (const node of nodesSelected) {
+        const pt = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["localToLocal"])(nodeInFocus.value.el, node.el, transformOverlay.anchorX, transformOverlay.anchorY);
+        reposition(node);
+        if (nodesSelected.length > 1)
+            node.transformOriginOld = node.transformOrigin;
+        node.transformOrigin = `${pt.x}px ${pt.y}px`;
+    }
+    const pt = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["localToLocal"])(nodeInFocus.value.el, transformOverlay.el, transformOverlay.anchorX, transformOverlay.anchorY);
+    reposition(transformOverlay);
+    transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
+}
+function resetTransformOrigins() {
+    for (const node of nodesSelected) {
+        if (node.transformOriginOld == undefined)
+            continue;
+        reposition(node);
+        node.transformOrigin = node.transformOriginOld;
+        node.transformOriginOld = undefined;
+    }
+}
+const pTrans = new ambients_math__WEBPACK_IMPORTED_MODULE_2__["PerspectiveTransform"]();
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('TransformHandle', {
-    template: "\n        <Hammer class=\"" + css.transformHandle + "\" :style=\"computedStyle\" @panstart=\"rPanStart\" @pan=\"rPan\">\n            <div class=\"" + css.transformHandleInner + "\"/>\n        </Hammer>\n    ",
+    template: `
+        <Hammer class="${css.transformHandle}" :style="computedStyle"
+         @panstart="rPanStart" @pan="rPan" @panend="rPanEnd">
+            <div class="${css.transformHandleInner}"/>
+        </Hammer>
+    `,
     props: {
         index: Number
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             if (this.index === 0)
                 return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: 0, top: 0 });
             else if (this.index === 1)
@@ -59933,62 +60182,85 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('TransformHandle', {
                 return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ left: '100%', top: '100%' });
         }
     },
-    data: function () {
+    data() {
         return {
-            transformOverlay: transformOverlay
+            transformOverlay,
+            nodesSelected,
+            nodeInFocus
         };
     },
     methods: {
-        rPanStart: function (_a) {
-            var _b = _a.gesture.center, x = _b.x, y = _b.y;
-            var centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
-            var centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
-            var pt = pTrans.solve(x, y);
-            var angle = Math.atan2(centerY - pt.y, centerX - pt.x) * ambients_math__WEBPACK_IMPORTED_MODULE_2__["rad2Deg"];
+        rPanStart({ gesture: { center: { x, y } } }) {
+            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            const pt = pTrans.solve(x, y);
+            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * ambients_math__WEBPACK_IMPORTED_MODULE_2__["rad2Deg"];
             this.transformOverlay.startDeltaRotate = angle;
             this.transformOverlay.startRotate = this.transformOverlay.rotate;
+            for (const node of this.nodesSelected) {
+                node.vue.startRotate = node.rotate;
+                node.vue.startX = node.x;
+                node.vue.startY = node.y;
+            }
+            applyAnchors();
         },
-        rPan: function (_a) {
-            var _b = _a.gesture.center, x = _b.x, y = _b.y;
-            var centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
-            var centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
-            var pt = pTrans.solve(x, y);
-            var angle = Math.atan2(centerY - pt.y, centerX - pt.x) * ambients_math__WEBPACK_IMPORTED_MODULE_2__["rad2Deg"];
+        rPan({ gesture: { center: { x, y } } }) {
+            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            const pt = pTrans.solve(x, y);
+            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * ambients_math__WEBPACK_IMPORTED_MODULE_2__["rad2Deg"];
             this.transformOverlay.deltaRotate = angle - this.transformOverlay.startDeltaRotate;
             this.transformOverlay.rotate = this.transformOverlay.startRotate + this.transformOverlay.deltaRotate;
+            for (const node of this.nodesSelected)
+                node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
+        },
+        rPanEnd() {
+            this.$nextTick(() => resetTransformOrigins());
         }
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-overlay', {
-    template: "\n        <div class=\"" + css.transformOverlay + "\" :style=\"computedStyle\">\n            <TransformHandle :index=\"0\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"1\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"2\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"3\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"4\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"5\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"6\" v-if=\"tool === 'transform'\"/>\n            <TransformHandle :index=\"7\" v-if=\"tool === 'transform'\"/>\n        </div>\n    ",
+    template: `
+        <div class="${css.transformOverlay}" :style="computedStyle">
+            <TransformHandle :index="0" v-if="tool === 'transform'"/>
+            <TransformHandle :index="1" v-if="tool === 'transform'"/>
+            <TransformHandle :index="2" v-if="tool === 'transform'"/>
+            <TransformHandle :index="3" v-if="tool === 'transform'"/>
+            <TransformHandle :index="4" v-if="tool === 'transform'"/>
+            <TransformHandle :index="5" v-if="tool === 'transform'"/>
+            <TransformHandle :index="6" v-if="tool === 'transform'"/>
+            <TransformHandle :index="7" v-if="tool === 'transform'"/>
+        </div>
+    `,
     props: {
         tool: String
     },
-    data: function () {
+    data() {
         return {
-            nodesSelected: nodesSelected,
-            transformOverlay: transformOverlay
+            nodesSelected,
+            transformOverlay,
+            nodeInFocus
         };
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 left: this.transformOverlay.x,
                 top: this.transformOverlay.y,
                 width: this.transformOverlay.width,
                 height: this.transformOverlay.height,
-                rotate: this.transformOverlay.rotate
+                rotate: this.transformOverlay.rotate,
+                transformOrigin: this.transformOverlay.transformOrigin
             });
         }
     },
     watch: {
         nodesSelected: {
             immediate: true,
-            handler: function (nodes) {
-                var xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-                for (var _i = 0, _a = this.nodesSelected; _i < _a.length; _i++) {
-                    var node = _a[_i];
-                    var bounds = node.el.getBoundingClientRect();
+            handler(nodes) {
+                let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+                for (const node of nodes) {
+                    const bounds = node.el.getBoundingClientRect();
                     if (bounds.left < xMin)
                         xMin = bounds.left;
                     if (bounds.right > xMax)
@@ -59998,26 +60270,95 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-overlay', {
                     if (bounds.bottom > yMax)
                         yMax = bounds.bottom;
                 }
-                var pt0 = pTrans.solve(xMin, yMin);
-                var pt2 = pTrans.solve(xMax, yMax);
+                const pt0 = pTrans.solve(xMin, yMin);
+                const pt2 = pTrans.solve(xMax, yMax);
                 this.transformOverlay.x = pt0.x;
                 this.transformOverlay.y = pt0.y;
                 this.transformOverlay.width = pt2.x - pt0.x;
                 this.transformOverlay.height = pt2.y - pt0.y;
                 this.transformOverlay.rotate = 0;
-                editorEventss.emitState('nodesSelectedReady');
+                this.transformOverlay.anchorX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+                this.transformOverlay.anchorY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+                this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+                this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
+                this.$nextTick(() => {
+                    if (nodes.length != 1)
+                        return;
+                    const xy = getComputedStyle(nodes[0].el).transformOrigin.split(' ').map(parseFloat);
+                    const anchorXY = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["localToLocal"])(nodes[0].el, this.nodeInFocus.value.el, xy[0], xy[1]);
+                    this.transformOverlay.anchorX = anchorXY.x, this.transformOverlay.anchorY = anchorXY.y;
+                    this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+                    this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
+                    const pt = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["localToLocal"])(this.nodeInFocus.value.el, this.transformOverlay.el, this.transformOverlay.anchorX, this.transformOverlay.anchorY);
+                    reposition(transformOverlay);
+                    this.transformOverlay.transformOrigin = `${pt.x + 1}px ${pt.y + 1}px`;
+                });
             }
+        }
+    },
+    mounted() {
+        this.transformOverlay.el = this.$el;
+        this.transformOverlay.vue = this;
+    }
+});
+function vis(el, left, top) {
+    rinss__WEBPACK_IMPORTED_MODULE_1__["default"].inline(el.appendChild(document.createElement('div')), {
+        translateX: '-50%',
+        translateY: '-50%',
+        width: 5,
+        height: 5,
+        background: Object(ambients_utils__WEBPACK_IMPORTED_MODULE_4__["randomColor"])(),
+        absLeft: left,
+        absTop: top
+    });
+}
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('TransformAnchor', {
+    template: `
+        <Hammer class="${css.transformAnchor}" :style="computedStyle"
+         @panstart="panStart" @pan="pan" @panend="panEnd"/>
+    `,
+    computed: {
+        computedStyle() {
+            return rinss__WEBPACK_IMPORTED_MODULE_1__["default"].compile({
+                left: transformOverlay.anchorX,
+                top: transformOverlay.anchorY
+            });
+        }
+    },
+    data() {
+        return {
+            transformOverlay,
+            nodeInFocus
+        };
+    },
+    methods: {
+        panStart() {
+            this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+            this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
+        },
+        pan(e) {
+            const ptStart = pTrans.solve(0, 0);
+            const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
+            const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
+            this.transformOverlay.anchorX = this.transformOverlay.startAnchorX + dx;
+            this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
+        },
+        panEnd() {
+            applyAnchors();
+            requestAnimationFrame(() => resetTransformOrigins());
         }
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('EditorBoxInner', {
-    template: "\n        <component :is=\"tagName\" :style=\"computedStyle\"/>\n    ",
+    template: `
+        <component :is="tagName" :style="computedStyle"/>
+    `,
     props: {
         tagName: String,
         background: String
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 fillParent: true,
                 background: this.background
@@ -60026,55 +60367,60 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('EditorBoxInner', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('StaticPointerListener', {
-    template: "\n        <Hammer class=\"" + css.staticPointerListener + "\"\n         @panstart=\"panStart\" @pan=\"pan\" @panend=\"panEnd\" @tap=\"tap\" @doubletap=\"doubleTap\"/>\n    ",
+    template: `
+        <Hammer class="${css.staticPointerListener}"
+         @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
+    `,
     methods: {
-        panStart: function (e) {
+        panStart(e) {
             e.stopPropagation();
             this.$emit('panstart', e);
         },
-        pan: function (e) {
+        pan(e) {
             e.stopPropagation();
             this.$emit('pan', e);
         },
-        panEnd: function (e) {
+        panEnd(e) {
             e.stopPropagation();
             this.$emit('panend', e);
         },
-        tap: function (e) {
+        tap(e) {
             e.stopPropagation();
             this.$emit('tap', e);
         },
-        doubleTap: function (e) {
+        doubleTap(e) {
             e.stopPropagation();
             this.$emit('doubletap', e);
         }
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('PointerListener', {
-    template: "\n        <Hammer :style=\"computedStyle\"\n         @panstart=\"panStart\" @pan=\"pan\" @panend=\"panEnd\" @tap=\"tap\" @doubletap=\"doubleTap\"/>\n    ",
-    data: function () {
+    template: `
+        <Hammer :style="computedStyle"
+         @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
+    `,
+    data() {
         return {
             left: 0,
             top: 0,
             eventss: new eventss__WEBPACK_IMPORTED_MODULE_7__["Eventss"]().emitState('windowSize').from(window, 'resize', 'windowSize')
         };
     },
-    mounted: function () {
-        var _this = this;
-        editorEventss.once('mounted', function () {
-            _this.eventss.off('windowSize').on('windowSize', function () {
-                var vContainer = vertices(canvasContainer);
-                var vSelf = vertices(_this.$el);
-                var xDiff = vContainer[0].x - vSelf[0].x, yDiff = vContainer[0].y - vSelf[0].y;
-                _this.left += xDiff, _this.top += yDiff;
+    mounted() {
+        editorEventss.once('mounted', () => {
+            this.eventss.off('windowSize').on('windowSize', () => {
+                const vContainer = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["globalVertices"])(canvasContainer);
+                const vSelf = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["globalVertices"])(this.$el);
+                const xDiff = vContainer[0].x - vSelf[0].x, yDiff = vContainer[0].y - vSelf[0].y;
+                this.left += xDiff, this.top += yDiff;
             });
         });
     },
-    beforeDestroy: function () {
+    beforeDestroy() {
         this.eventss.reset();
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 width: '100vw',
                 height: '100vh',
@@ -60086,84 +60432,124 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('PointerListener', {
         }
     },
     methods: {
-        panStart: function (e) {
+        panStart(e) {
             e.stopPropagation();
             this.$emit('panstart', e);
         },
-        pan: function (e) {
+        pan(e) {
             e.stopPropagation();
             this.$emit('pan', e);
         },
-        panEnd: function (e) {
+        panEnd(e) {
             e.stopPropagation();
             this.$emit('panend', e);
         },
-        tap: function (e) {
+        tap(e) {
             e.stopPropagation();
             this.$emit('tap', e);
         },
-        doubleTap: function (e) {
+        doubleTap(e) {
             e.stopPropagation();
             this.$emit('doubletap', e);
         }
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
-    template: "\n        <div :style=\"outerStyle\">\n            <PointerListener v-if=\"focused\" style=\"background:rgba(255, 255, 255, 0.5)\"\n             @pan=\"panPointer\"\n             @panstart=\"panPointerStart\"\n             @panend=\"panPointerEnd\"\n             @tap=\"tapPointer\"\n             @doubletap=\"doubleTapPointer\"/>\n\n            <component :is=\"nodeData.tagName\" :style=\"innerStyle\" ref=\"el\"/>\n\n            <StaticPointerListener v-if=\"parentNodeFocused && selectable\"\n             @tap=\"tap\" @doubletap=\"doubleTap\" @panstart=\"panStart\" @pan=\"pan\"/>\n\n            <editor-node\n             v-for=\"(child, index) of nodeData.children\"\n             :key=\"index\"\n             :node=\"child\"\n             :parentNodeFocused=\"focused\"\n             :tool=\"tool\"\n             :colorPicked=\"colorPicked\"/>\n\n            <div class=\"" + css.selectionOverlay + "\" v-if=\"selected\"/>\n\n            <transform-overlay v-if=\"focused && nodesSelected.length > 0\" :tool=\"tool\"/>\n\n            <DrawableBox\n             :colorPicked=\"colorPicked\"\n             @push=\"nodeData.children.push($event)\"\n             v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n            </DrawableBox>\n\n            <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                <div class=\"" + css.selectionDrawableBox + "\"/>\n            </DrawableBox>\n        </div>\n    ",
+    template: `
+        <div :style="outerStyle">
+            <PointerListener v-if="focused" style="background:rgba(255, 255, 255, 0.5)"
+             @pan="panPointer"
+             @panstart="panPointerStart"
+             @panend="panPointerEnd"
+             @tap="tapPointer"
+             @doubletap="doubleTapPointer"/>
+
+            <component :is="nodeData.tagName" :style="innerStyle"/>
+
+            <StaticPointerListener v-if="parentNodeFocused && selectable"
+             @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan"/>
+
+            <editor-node
+             v-for="(child, index) of nodeData.children"
+             :key="index"
+             :node="child"
+             :parentNodeFocused="focused"
+             :tool="tool"
+             :colorPicked="colorPicked"/>
+
+            <div class="${css.selectionOverlay}" v-if="selected"/>
+
+            <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
+            <TransformAnchor v-if="focused && nodesSelected.length > 0 && tool === 'transform'"/>
+
+            <DrawableBox
+             :colorPicked="colorPicked"
+             @push="nodeData.children.push($event)"
+             v-if="focused && tool === 'rectangle' && selectionPointer.down">
+                <EditorBoxInner tagName="div" :background="colorPicked"/>
+            </DrawableBox>
+
+            <DrawableBox v-if="focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down">
+                <div class="${css.selectionDrawableBox}"/>
+            </DrawableBox>
+        </div>
+    `,
     props: {
         node: Object,
         parentNodeFocused: Boolean,
         tool: String,
         colorPicked: String
     },
-    data: function () {
+    data() {
         return {
-            selectionPointer: selectionPointer,
-            nodesSelected: nodesSelected,
-            nodeInFocus: nodeInFocus,
-            nodeFocusHierarchy: nodeFocusHierarchy,
-            transformOverlay: transformOverlay,
+            selectionPointer,
+            nodesSelected,
+            nodeInFocus,
+            nodeFocusHierarchy,
+            transformOverlay,
             nodeData: this.node,
             startX: 0,
-            startY: 0
+            startY: 0,
+            startRotate: 0
         };
     },
     computed: {
-        innerStyle: function () {
-            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])(EditorNodeData.getStyle(__assign({}, this.nodeData, { position: 'relative', top: undefined, left: undefined, pointerEvents: 'none' })));
+        innerStyle() {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])(EditorNodeData.getStyle(Object.assign({}, this.nodeData, { position: 'relative', top: undefined, left: undefined, transformOrigin: undefined, rotate: undefined, pointerEvents: 'none' })));
         },
-        outerStyle: function () {
+        outerStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 position: this.nodeData.position,
-                top: parseFloat(this.nodeData.top),
-                left: parseFloat(this.nodeData.left),
+                top: this.nodeData.top,
+                left: this.nodeData.left,
+                transformOrigin: this.nodeData.transformOrigin,
+                rotate: this.nodeData.rotate,
                 zIndex: this.inFocusHierarchy ? 1 : '',
                 pointerEvents: 'none'
             });
         },
-        selected: function () {
+        selected() {
             return this.parentNodeFocused && this.nodesSelected.indexOf(this.nodeData) > -1;
         },
-        selectable: function () {
+        selectable() {
             if (!this.parentNodeFocused || this.selectionPointer.down)
                 return false;
             return this.selectionPointer.tool === 'cursor' || this.selectionPointer.tool === 'transform';
         },
-        focused: function () {
+        focused() {
             return this.nodeData === this.nodeInFocus.value;
         },
-        inFocusHierarchy: function () {
+        inFocusHierarchy() {
             return this.nodeFocusHierarchy.indexOf(this.nodeData) > -1;
         }
     },
-    mounted: function () {
-        this.nodeData.el = this.$refs.el;
+    mounted() {
+        this.nodeData.el = this.$el;
         this.nodeData.vue = this;
         this.select();
     },
     methods: {
-        panStart: function (e) {
-            var _this = this;
+        panStart(e) {
             if (!this.selectable)
                 return;
             if (!e.gesture.srcEvent.shiftKey) {
@@ -60172,36 +60558,40 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
             }
             else
                 nodesSelectedPush(this.nodeData);
-            this.$nextTick(function () {
-                _this.startX = _this.nodeData.x;
-                _this.startY = _this.nodeData.y;
-                _this.transformOverlay.startX = _this.transformOverlay.x;
-                _this.transformOverlay.startY = _this.transformOverlay.y;
+            this.$nextTick(() => {
+                this.transformOverlay.startX = this.transformOverlay.x;
+                this.transformOverlay.startY = this.transformOverlay.y;
+                this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
+                this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
+                for (const node of nodesSelected) {
+                    node.vue.startX = node.x;
+                    node.vue.startY = node.y;
+                }
             });
         },
-        pan: function (e) {
-            var _this = this;
+        pan(e) {
             if (!this.selectable)
                 return;
-            this.$nextTick(function () {
-                var ptStart = pTrans.solve(0, 0);
-                var ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
-                var dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
-                _this.transformOverlay.x = _this.transformOverlay.startX + dx;
-                _this.transformOverlay.y = _this.transformOverlay.startY + dy;
-                for (var _i = 0, nodesSelected_1 = nodesSelected; _i < nodesSelected_1.length; _i++) {
-                    var node = nodesSelected_1[_i];
+            this.$nextTick(() => {
+                const ptStart = pTrans.solve(0, 0);
+                const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
+                const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
+                this.transformOverlay.x = this.transformOverlay.startX + dx;
+                this.transformOverlay.y = this.transformOverlay.startY + dy;
+                this.transformOverlay.anchorX = this.transformOverlay.startAnchorX + dx;
+                this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
+                for (const node of nodesSelected) {
                     node.x = node.vue.startX + dx;
                     node.y = node.vue.startY + dy;
                 }
             });
         },
-        tap: function (e) {
+        tap(e) {
             if (!this.selectable)
                 return;
             this.select(e.gesture.srcEvent.shiftKey);
         },
-        doubleTap: function (e) {
+        doubleTap(e) {
             if (!this.selectable)
                 return;
             if (e.shiftKey)
@@ -60210,8 +60600,7 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
             this.nodeFocusHierarchy.push(this.nodeData);
             nodesSelectedClear();
         },
-        select: function (multiple) {
-            if (multiple === void 0) { multiple = false; }
+        select(multiple = false) {
             if (!multiple)
                 nodesSelectedClear();
             if (!this.selected)
@@ -60219,28 +60608,26 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
             else
                 nodesSelectedPull(this.nodeData);
         },
-        panPointer: function (_a) {
-            var _b = _a.gesture.center, x = _b.x, y = _b.y;
-            var pt = pTrans.solve(x, y);
+        panPointer({ gesture: { center: { x, y } } }) {
+            const pt = pTrans.solve(x, y);
             this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
             this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
             this.selectionPointer.quadrant = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["quadrant"])(this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0);
         },
-        panPointerStart: function (_a) {
-            var _b = _a.gesture.center, x = _b.x, y = _b.y;
+        panPointerStart({ gesture: { center: { x, y } } }) {
             this.selectionPointer.down = true;
-            var pt = pTrans.solve(x, y);
+            const pt = pTrans.solve(x, y);
             this.selectionPointer.startX = pt.x;
             this.selectionPointer.startY = pt.y;
         },
-        panPointerEnd: function () {
+        panPointerEnd() {
             this.selectionPointer.down = false;
         },
-        tapPointer: function () {
+        tapPointer() {
             if (this.tool === 'cursor' || this.tool === 'transform')
                 nodesSelectedClear();
         },
-        doubleTapPointer: function () {
+        doubleTapPointer() {
             if (this.tool !== 'cursor' && this.tool !== 'transform')
                 return;
             nodesSelectedClear();
@@ -60250,15 +60637,45 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor-node', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
-    template: "\n        <div\n         ref=\"canvasContainer\"\n         class=\"" + css.canvasContainer + "\">\n            <div ref=\"canvas\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+    template: `
+        <div
+         ref="canvasContainer"
+         class="${css.canvasContainer}">
+            <div ref="canvas" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
         width: 800,
         height: 600,
         background: 'white',
         centerX: true,
         centerY: true
-    }) + "\">\n                <PointerListener v-if=\"focused\" @pan=\"pan\" @panstart=\"panStart\" @panend=\"panEnd\" @tap=\"tap\"/>\n\n                <editor-node\n                 v-for=\"(child, index) of children\"\n                 :key=\"index\"\n                 :node=\"child\"\n                 :parentNodeFocused=\"focused\"\n                 :tool=\"tool\"\n                 :colorPicked=\"colorPicked\"/>\n\n                <transform-overlay v-if=\"focused && nodesSelected.length > 0\" :tool=\"tool\"/>\n\n                <DrawableBox\n                 :colorPicked=\"colorPicked\"\n                 @push=\"children.push($event)\"\n                 v-if=\"focused && tool === 'rectangle' && selectionPointer.down\">\n                    <EditorBoxInner tagName=\"div\" :background=\"colorPicked\"/>\n                </DrawableBox>\n\n                <DrawableBox v-if=\"focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down\">\n                    <div class=\"" + css.selectionDrawableBox + "\"/>\n                </DrawableBox>\n            </div>\n        </div>\n    ",
+    })}">
+                <PointerListener v-if="focused" @pan="pan" @panstart="panStart" @panend="panEnd" @tap="tap"/>
+
+                <editor-node
+                 v-for="(child, index) of children"
+                 :key="index"
+                 :node="child"
+                 :parentNodeFocused="focused"
+                 :tool="tool"
+                 :colorPicked="colorPicked"/>
+
+                <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
+                <TransformAnchor v-if="focused && nodesSelected.length > 0 && tool === 'transform'"/>
+
+                <DrawableBox
+                 :colorPicked="colorPicked"
+                 @push="children.push($event)"
+                 v-if="focused && tool === 'rectangle' && selectionPointer.down">
+                    <EditorBoxInner tagName="div" :background="colorPicked"/>
+                </DrawableBox>
+
+                <DrawableBox v-if="focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down">
+                    <div class="${css.selectionDrawableBox}"/>
+                </DrawableBox>
+            </div>
+        </div>
+    `,
     computed: {
-        focused: function () {
+        focused() {
             return this.$refs.canvas === this.nodeInFocus.value.el;
         }
     },
@@ -60266,19 +60683,19 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         colorPicked: String,
         tool: String
     },
-    data: function () {
+    data() {
         return {
             sceneGraph: undefined,
             children: undefined,
-            selectionPointer: selectionPointer,
-            nodesSelected: nodesSelected,
-            nodeInFocus: nodeInFocus,
-            nodeFocusHierarchy: nodeFocusHierarchy
+            selectionPointer,
+            nodesSelected,
+            nodeInFocus,
+            nodeFocusHierarchy
         };
     },
-    mounted: function () {
+    mounted() {
         canvasContainer = this.$refs.canvasContainer;
-        var el = this.$refs.canvas;
+        const el = this.$refs.canvas;
         this.sceneGraph = new EditorNodeData({
             tagName: el.tagName.toLowerCase(),
             el: el,
@@ -60287,6 +60704,8 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
             height: el.style.height,
             left: el.style.left,
             top: el.style.top,
+            transformOrigin: 'center',
+            rotate: 0,
             background: el.style.background,
             position: el.style.position
         });
@@ -60296,41 +60715,103 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('editor', {
         editorEventss.emitState('mounted');
     },
     watch: {
-        tool: function (tool) {
+        tool(tool) {
             selectionPointer.tool = tool;
         },
-        'nodeInFocus.value': function (p) {
+        'nodeInFocus.value'(p) {
             pTrans.setDestination(0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight);
-            editorEventss.off('windowSize').on('windowSize', function () {
-                var v = vertices(p.el);
+            editorEventss.off('windowSize').on('windowSize', () => {
+                const v = Object(_editorMath__WEBPACK_IMPORTED_MODULE_9__["globalVertices"])(p.el);
                 pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
             });
         }
     },
     methods: {
-        pan: function (_a) {
-            var _b = _a.gesture.center, x = _b.x, y = _b.y;
-            var pt = pTrans.solve(x, y);
+        pan({ gesture: { center: { x, y } } }) {
+            const pt = pTrans.solve(x, y);
             this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
             this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
             this.selectionPointer.quadrant = Object(ambients_math__WEBPACK_IMPORTED_MODULE_2__["quadrant"])(this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0);
         },
-        panStart: function (_a) {
-            var _b = _a.gesture.center, x = _b.x, y = _b.y;
+        panStart({ gesture: { center: { x, y } } }) {
             this.selectionPointer.down = true;
-            var pt = pTrans.solve(x, y);
+            const pt = pTrans.solve(x, y);
             this.selectionPointer.startX = pt.x;
             this.selectionPointer.startY = pt.y;
         },
-        panEnd: function () {
+        panEnd() {
             this.selectionPointer.down = false;
         },
-        tap: function () {
+        tap() {
             if (this.tool === 'cursor' || this.tool === 'transform')
                 nodesSelectedClear();
         }
     }
 });
+
+
+/***/ }),
+
+/***/ "./src/editorMath.ts":
+/*!***************************!*\
+  !*** ./src/editorMath.ts ***!
+  \***************************/
+/*! exports provided: globalVertex, globalVertices, globalCenter, localToGlobal, globalToLocal, localToLocal */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "globalVertex", function() { return globalVertex; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "globalVertices", function() { return globalVertices; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "globalCenter", function() { return globalCenter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "localToGlobal", function() { return localToGlobal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "globalToLocal", function() { return globalToLocal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "localToLocal", function() { return localToLocal; });
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var ambients_math__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ambients-math */ "./node_modules/ambients-math/index.js");
+/* harmony import */ var ambients_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ambients-utils */ "./node_modules/ambients-utils/index.js");
+
+
+
+const vertexMap = new ambients_utils__WEBPACK_IMPORTED_MODULE_2__["SimpleWeakMap"]();
+function globalVertex(el, left = '0px', top = '0px') {
+    const map = vertexMap.forceGet(el, () => new ambients_utils__WEBPACK_IMPORTED_MODULE_2__["SimpleMap"]());
+    const v = map.forceGet(left + top, () => el.appendChild(rinss__WEBPACK_IMPORTED_MODULE_0__["default"].inline(document.createElement('div'), {
+        absLeft: left, absTop: top
+    })));
+    const rect0 = v.getBoundingClientRect();
+    return new ambients_math__WEBPACK_IMPORTED_MODULE_1__["Point"](rect0.left, rect0.top);
+}
+function globalVertices(el) {
+    return [
+        globalVertex(el, '0px', '0px'),
+        globalVertex(el, '100%', '0px'),
+        globalVertex(el, '100%', '100%'),
+        globalVertex(el, '0px', '100%')
+    ];
+}
+function globalCenter(el) {
+    const r = el.getBoundingClientRect();
+    return new ambients_math__WEBPACK_IMPORTED_MODULE_1__["Point"]((r.left + r.right) / 2, (r.top + r.bottom) / 2);
+}
+const pTransLocalToGlobal = new ambients_math__WEBPACK_IMPORTED_MODULE_1__["PerspectiveTransform"]();
+function localToGlobal(el, x, y) {
+    pTransLocalToGlobal.setSource(0, 0, el.clientWidth, 0, el.clientWidth, el.clientHeight, 0, el.clientHeight);
+    const v = globalVertices(el);
+    pTransLocalToGlobal.setDestination(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+    return pTransLocalToGlobal.solve(x, y);
+}
+const pTransGlobalToLocal = new ambients_math__WEBPACK_IMPORTED_MODULE_1__["PerspectiveTransform"]();
+function globalToLocal(el, x, y) {
+    const v = globalVertices(el);
+    pTransGlobalToLocal.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+    pTransGlobalToLocal.setDestination(0, 0, el.clientWidth, 0, el.clientWidth, el.clientHeight, 0, el.clientHeight);
+    return pTransGlobalToLocal.solve(x, y);
+}
+function localToLocal(el0, el1, x0, y0) {
+    const ptGlobal = localToGlobal(el0, x0, y0);
+    return globalToLocal(el1, ptGlobal.x, ptGlobal.y);
+}
 
 
 /***/ }),
@@ -60350,7 +60831,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     hideFirstChild: {
         svg: {
             ':first-child:not(:last-child)': {
@@ -60367,7 +60848,9 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('icon', {
-    template: "\n        <div :class=\"computedClass\" :style=\"computedStyle\"><slot/></div>\n    ",
+    template: `
+        <div :class="computedClass" :style="computedStyle"><slot/></div>
+    `,
     props: {
         size: {
             type: String,
@@ -60376,10 +60859,10 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('icon', {
         active: Boolean
     },
     computed: {
-        computedClass: function () {
+        computedClass() {
             return this.active ? css.hideFirstChild : css.hideLastChild;
         },
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 width: this.size,
                 height: this.size,
@@ -60408,7 +60891,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('icon-slot', {
-    template: "\n        <div><row>\n            <cell shrink><slot name=\"icon\"/></cell>\n            <gap size=\"2px\"/>\n            <cell align=\"left\"><slot/></cell>\n        </row></div>\n    "
+    template: `
+        <div><row>
+            <cell shrink><slot name="icon"/></cell>
+            <gap size="2px"/>
+            <cell align="left"><slot/></cell>
+        </row></div>
+    `
 });
 
 
@@ -60942,6 +61431,17 @@ module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http:/
 
 /***/ }),
 
+/***/ "./src/icons/plus.svg":
+/*!****************************!*\
+  !*** ./src/icons/plus.svg ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 50 50\" version=\"1.1\"><g id=\"surface1\"><path style=\" stroke:none;fill-rule:nonzero;fill:#5B5B5B;fill-opacity:1;\" d=\"M 23 9 L 23 23 L 9 23 L 9 27 L 23 27 L 23 41 L 27 41 L 27 27 L 41 27 L 41 23 L 27 23 L 27 9 Z \"></path></g></svg>"
+
+/***/ }),
+
 /***/ "./src/icons/rectangle-filled.svg":
 /*!****************************************!*\
   !*** ./src/icons/rectangle-filled.svg ***!
@@ -61276,6 +61776,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
 /* harmony import */ var _menu_bar__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./menu-bar */ "./src/menu-bar.ts");
 /* harmony import */ var _NewProject__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./NewProject */ "./src/NewProject.ts");
+/* harmony import */ var _libraries__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./libraries */ "./src/libraries.ts");
 
 
 
@@ -61301,18 +61802,19 @@ rinss__WEBPACK_IMPORTED_MODULE_7__["default"].config({ duration: 250 });
 
 
 
-var container = document.createElement('div');
+
+const container = document.createElement('div');
 document.body.appendChild(container);
 rinss__WEBPACK_IMPORTED_MODULE_7__["default"].inline(document.body, {
     overflow: 'hidden',
     fontFamily: '"Arial", "sans-serif"'
 });
-var css = rinss__WEBPACK_IMPORTED_MODULE_7__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_7__["default"].create({
     stage: {
         width: '100vw',
         height: '100vh',
-        top: 0,
-        left: 0
+        absTop: 0,
+        absLeft: 0
     },
     modal: {
         zIndex: 9999,
@@ -61320,9 +61822,23 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_7__["default"].create({
     },
     sketchPicker: {
         userSelect: 'none'
+    },
+    gridContainer: {
+        width: '100vw',
+        height: '100vh',
+        display: 'grid',
+        gridTemplateColumns: '50px 200px 1fr 300px',
+        gridTemplateRows: '40px 1fr',
+        gridTemplateAreas: `
+            'header header header header'
+            'toolbar libraries editor panels'
+        `
+    },
+    test: {
+        border: '1px solid black'
     }
 });
-var colorPicker = {
+const colorPicker = {
     show: false,
     color: {
         hex: '#ff0000'
@@ -61330,7 +61846,7 @@ var colorPicker = {
     left: 0,
     top: 0
 };
-var textColorPicker = {
+const textColorPicker = {
     show: false,
     color: {
         hex: '#000000'
@@ -61344,27 +61860,223 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
         'modal': ambients_modal__WEBPACK_IMPORTED_MODULE_8__["default"],
         'sketch-picker': vue_color__WEBPACK_IMPORTED_MODULE_9__["Sketch"]
     },
-    template: "\n        <div class=\"" + css.stage + "\">\n            <menu-bar/>\n            <row stretch stretchy>\n                <cell shrink>\n                    <toolbar\n                     v-model=\"tool\"\n                     @showColorPicker=\"showColorPicker\"\n                     :colorPicked=\"colorPicker.color.hex\"/>\n                </cell>\n                <cell shrink><outline/></cell>\n                <cell><editor :tool=\"tool\" :colorPicked=\"colorPicker.color.hex\"/></cell>\n                <cell shrink><panels>\n                    <properties-panel expanded/>\n                    <position-panel expanded/>\n                    <typography-panel\n                    @showColorPicker=\"showTextColorPicker\"\n                    :colorPicked=\"textColorPicker.color.hex\"\n                    expanded/>\n                    <panel title=\"Backgrounds\"/>\n                    <panel title=\"Effects\"/>\n                    <transform-panel/>\n                    <border-panel/>\n                </panels></cell>\n            </row>\n            <modal class=\"" + css.modal + "\"\n             v-if=\"colorPicker.show\"\n             :left=\"colorPicker.left\"\n             :top=\"colorPicker.top\"\n             @close=\"colorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"colorPicker.color\"/>\n            </modal>\n            <modal class=\"" + css.modal + "\"\n             v-if=\"textColorPicker.show\"\n             :left=\"textColorPicker.left\"\n             :top=\"textColorPicker.top\"\n             @close=\"textColorPicker.show=false\">\n                <sketch-picker class=\"" + css.sketchPicker + "\" v-model=\"textColorPicker.color\"/>\n            </modal>\n        </div>\n    ",
-    data: function () {
+    template: `
+        <div class="${css.stage}">
+
+            <div class="${css.gridContainer}">
+                <menu-bar style="grid-area:header"/>
+
+                <toolbar
+                 style="grid-area:toolbar"
+                 v-model="tool"
+                 @showColorPicker="showColorPicker"
+                 :colorPicked="colorPicker.color.hex"/>
+
+                <libraries style="grid-area:libraries"/>
+
+                <editor :tool="tool" :colorPicked="colorPicker.color.hex" style="grid-area:editor"/>
+
+                <panels style="grid-area:panels">
+                    <properties-panel expanded/>
+                    <position-panel expanded/>
+                    <typography-panel
+                    @showColorPicker="showTextColorPicker"
+                    :colorPicked="textColorPicker.color.hex"
+                    expanded/>
+                    <panel title="Backgrounds"/>
+                    <panel title="Effects"/>
+                    <transform-panel/>
+                    <border-panel/>
+                </panels>
+            </div>
+
+            <modal class="${css.modal}"
+             v-if="colorPicker.show"
+             :left="colorPicker.left"
+             :top="colorPicker.top"
+             @close="colorPicker.show=false">
+                <sketch-picker class="${css.sketchPicker}" v-model="colorPicker.color"/>
+            </modal>
+            <modal class="${css.modal}"
+             v-if="textColorPicker.show"
+             :left="textColorPicker.left"
+             :top="textColorPicker.top"
+             @close="textColorPicker.show=false">
+                <sketch-picker class="${css.sketchPicker}" v-model="textColorPicker.color"/>
+            </modal>
+        </div>
+    `,
+    data() {
         return {
-            colorPicker: colorPicker,
-            textColorPicker: textColorPicker,
+            colorPicker,
+            textColorPicker,
             tool: 'cursor',
             showNewProject: true
         };
     },
     methods: {
-        showColorPicker: function (e) {
+        showColorPicker(e) {
             this.colorPicker.left = e.clientX;
             this.colorPicker.top = e.clientY;
             this.colorPicker.show = true;
         },
-        showTextColorPicker: function (e) {
+        showTextColorPicker(e) {
             this.textColorPicker.left = e.clientX;
             this.textColorPicker.top = e.clientY;
             this.textColorPicker.show = true;
         }
     }
+});
+
+
+/***/ }),
+
+/***/ "./src/libraries.ts":
+/*!**************************!*\
+  !*** ./src/libraries.ts ***!
+  \**************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _outline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./outline */ "./src/outline.ts");
+/* harmony import */ var _radio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./radio */ "./src/radio.ts");
+/* harmony import */ var _library__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./library */ "./src/library.ts");
+
+
+
+
+
+
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    container: {
+        background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].white,
+        userSelect: 'none',
+        display: 'grid',
+        gridTemplateRows: '40px 1fr',
+    },
+    libraryMenu: {
+        width: 200,
+        background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].white,
+        borderBottom: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_2__["default"].background,
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    libraryMenuTitles: {
+        cursor: 'pointer',
+        fontSize: 13,
+        verticalAlign: 'middle',
+        lineHeight: 40
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('libraryMenuTitle', {
+    mixins: [_radio__WEBPACK_IMPORTED_MODULE_4__["default"]],
+    template: `
+        <div class="${css.libraryMenuTitles}" @click="check" :style="computedStyle" :active="isChecked"><slot/></div>
+    `,
+    computed: {
+        computedStyle() {
+            return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
+                color: this.isChecked ? _theme__WEBPACK_IMPORTED_MODULE_2__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary,
+            });
+        }
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('libraries', {
+    template: `
+        <div class="${css.container}">
+            <div class="${css.libraryMenu}">
+                <libraryMenuTitle name="test" checked @check="titleChecked = 'outline'">Outline</libraryMenuTitle>
+                <libraryMenuTitle name="test" @check="titleChecked = 'library'">Library</libraryMenuTitle>
+                <libraryMenuTitle name="test" @check="titleChecked = 'components'">Components</libraryMenuTitle>
+            </div>
+            <div>
+                <outline v-if="titleChecked === 'outline'"/>
+                <library v-if="titleChecked === 'library'"/>
+                <library v-if="titleChecked === 'components'"/>
+            </div>
+        </div>
+    `,
+    data() {
+        return {
+            titleChecked: ''
+        };
+    }
+});
+
+
+/***/ }),
+
+/***/ "./src/library.ts":
+/*!************************!*\
+  !*** ./src/library.ts ***!
+  \************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
+/* harmony import */ var _processSvg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./processSvg */ "./src/processSvg.ts");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./theme */ "./src/theme.ts");
+/* harmony import */ var _row__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./row */ "./src/row.ts");
+
+
+
+
+
+
+const plus = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/plus.svg */ "./src/icons/plus.svg"));
+const placeholder = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+    outline: {
+        background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].white,
+        width: '100%',
+        padding: 5,
+        userSelect: 'none'
+    },
+    elementName: {
+        floatLeft: 0,
+    },
+    separator: {
+        width: '100%',
+        height: 0,
+        borderBottom: '1px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
+        floatTop: 0,
+        marginTop: 10,
+    },
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('LibraryRow', {
+    template: `
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink style="cursor:pointer"><icon>
+                <slot name="icons"/>
+            </icon></cell>
+            <cell align = "left"><div style="floatLeft:0">
+                <slot/>
+            </div></cell>
+        </row>
+    `
+});
+vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('library', {
+    template: `
+        <div class="${css.outline}">
+            <LibraryRow><div slot="icons">
+                ${plus}
+            </div></LibraryRow>
+            <div class="${css.separator}" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginBottom: 10 })}"></div>
+            <LibraryRow><div slot="icons">
+                ${placeholder}
+            </div>my component</LibraryRow>
+        </div>
+    `
 });
 
 
@@ -61390,8 +62102,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var forward = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/forward.svg */ "./src/icons/forward.svg"));
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const forward = Object(_processSvg__WEBPACK_IMPORTED_MODULE_4__["default"])(__webpack_require__(/*! ./icons/forward.svg */ "./src/icons/forward.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     menu: {
         width: 250,
         height: '100vh',
@@ -61417,10 +62129,17 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
         marginTop: 5
     },
 });
-var count = -1;
-var nameFocused = { value: '' };
+let count = -1;
+let nameFocused = { value: '' };
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('MenuRow', {
-    template: "\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\" class=\"" + css.menuStyle + "\" @mouseenter.native=\"changeName\">\n            <gap/>\n            <cell shrink align=\"left\"><slot name=\"ops\"/></cell>\n            <cell align=\"right\"><slot/></cell>\n            <gap/>\n        </row>\n    ",
+    template: `
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 })}" class="${css.menuStyle}" @mouseenter.native="changeName">
+            <gap/>
+            <cell shrink align="left"><slot name="ops"/></cell>
+            <cell align="right"><slot/></cell>
+            <gap/>
+        </row>
+    `,
     props: {
         name: {
             type: String,
@@ -61428,26 +62147,90 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('MenuRow', {
         },
         unnamed: Boolean
     },
-    data: function () {
+    data() {
         return {
-            nameFocused: nameFocused
+            nameFocused
         };
     },
     methods: {
-        changeName: function () {
+        changeName() {
             if (!this.unnamed)
                 this.nameFocused.value = this.name;
         }
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('main-menu', {
-    template: "\n        <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ absLeft: 0, absTop: 40, userSelect: 'none', }) + "\">\n            <div class=\"" + css.menu + "\">\n                <MenuRow><div slot=\"ops\">New</div>Ctrl + N</MenuRow>\n                <MenuRow><div slot=\"ops\">Open</div>Ctrl + O</MenuRow>\n                <MenuRow name=\"openRecent\"><div slot=\"ops\">Open recent</div><icon>" + forward + "</icon></MenuRow>\n                <MenuRow name=\"getUIKit\"><div slot=\"ops\">Get UI kit</div><icon>" + forward + "</icon></MenuRow>\n                <MenuRow><div slot=\"ops\">Open CC Libraries</div>Shift + Ctrl + L</MenuRow>\n                <MenuRow><div slot=\"ops\">Open CC Libraries</div>Shift + Ctrl + L</MenuRow>\n                <div class=\"" + css.separator + "\"></div>\n                <MenuRow><div slot=\"ops\">Save</div>Ctrl + S</MenuRow>\n                <MenuRow><div slot=\"ops\">Save As</div>Shift + Ctrl + S</MenuRow>\n                <MenuRow><div slot=\"ops\">Revert to Saved</div></MenuRow>\n                <div class=\"" + css.separator + "\"></div>\n                <MenuRow name=\"export\"><div slot=\"ops\">Export</div><icon>" + forward + "</icon></MenuRow>\n                <MenuRow><div slot=\"ops\">Import</div>Shift + Ctrl + I</MenuRow>\n                <MenuRow><div slot=\"ops\">Share</div></MenuRow>\n                <MenuRow><div slot=\"ops\">Manage published links</div></MenuRow>\n                <div class=\"" + css.separator + "\"></div>\n                <MenuRow name=\"help\"><div slot=\"ops\">Help</div><icon>" + forward + "</icon></MenuRow>\n            </div>\n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"nameFocused.value === 'openRecent'\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Recent files</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Delete files</div></MenuRow>\n            </div>\n            \n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"nameFocused.value === 'getUIKit'\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Apple IOS</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Google materials</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Microsoft windows</div></MenuRow>\n                \n                <div class=\"" + css.separator + "\"></div>\n\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Wireframe</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Other UI libraries</div></MenuRow>\n            </div>\n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"nameFocused.value === 'export'\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Export all</div>Shift + Ctrl + E</MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Export selected</div>Ctrl + E</MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">All art boards</div></MenuRow>\n            </div>\n\n\n\n\n            <div class=\"" + css.menu + "\" v-if=\"nameFocused.value === 'help'\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 }) + "\">\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Patch notes</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Tutorials and resources</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Feedback</div></MenuRow>\n                <MenuRow unnamed style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 }) + "\"><div slot=\"ops\">Future release</div></MenuRow>\n            </div>\n        </div>\n    ",
-    data: function () {
+    template: `
+        <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ absLeft: 0, absTop: 40, userSelect: 'none', })}">
+            <div class="${css.menu}">
+                <MenuRow><div slot="ops">New</div>Ctrl + N</MenuRow>
+                <MenuRow><div slot="ops">Open</div>Ctrl + O</MenuRow>
+                <MenuRow name="openRecent"><div slot="ops">Open recent</div><icon>${forward}</icon></MenuRow>
+                <MenuRow name="getUIKit"><div slot="ops">Get UI kit</div><icon>${forward}</icon></MenuRow>
+                <MenuRow><div slot="ops">Open CC Libraries</div>Shift + Ctrl + L</MenuRow>
+                <MenuRow><div slot="ops">Open CC Libraries</div>Shift + Ctrl + L</MenuRow>
+                <div class="${css.separator}"></div>
+                <MenuRow><div slot="ops">Save</div>Ctrl + S</MenuRow>
+                <MenuRow><div slot="ops">Save As</div>Shift + Ctrl + S</MenuRow>
+                <MenuRow><div slot="ops">Revert to Saved</div></MenuRow>
+                <div class="${css.separator}"></div>
+                <MenuRow name="export"><div slot="ops">Export</div><icon>${forward}</icon></MenuRow>
+                <MenuRow><div slot="ops">Import</div>Shift + Ctrl + I</MenuRow>
+                <MenuRow><div slot="ops">Share</div></MenuRow>
+                <MenuRow><div slot="ops">Manage published links</div></MenuRow>
+                <div class="${css.separator}"></div>
+                <MenuRow name="help"><div slot="ops">Help</div><icon>${forward}</icon></MenuRow>
+            </div>
+
+
+
+
+            <div class="${css.menu}" v-if="nameFocused.value === 'openRecent'" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 })}">
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Recent files</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Delete files</div></MenuRow>
+            </div>
+            
+
+
+
+
+            <div class="${css.menu}" v-if="nameFocused.value === 'getUIKit'" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 })}">
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Apple IOS</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Google materials</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Microsoft windows</div></MenuRow>
+                
+                <div class="${css.separator}"></div>
+
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Wireframe</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Other UI libraries</div></MenuRow>
+            </div>
+
+
+
+
+            <div class="${css.menu}" v-if="nameFocused.value === 'export'" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 })}">
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Export all</div>Shift + Ctrl + E</MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Export selected</div>Ctrl + E</MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">All art boards</div></MenuRow>
+            </div>
+
+
+
+
+            <div class="${css.menu}" v-if="nameFocused.value === 'help'" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ paddingTop: 20 })}">
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Patch notes</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Tutorials and resources</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Feedback</div></MenuRow>
+                <MenuRow unnamed style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 30 })}"><div slot="ops">Future release</div></MenuRow>
+            </div>
+        </div>
+    `,
+    data() {
         return {
-            nameFocused: nameFocused
+            nameFocused
         };
     },
-    mounted: function () {
+    mounted() {
         this.nameFocused.value = '';
     }
 });
@@ -61468,7 +62251,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     label: {
         fontSize: 13,
         important: true
@@ -61486,21 +62269,30 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-input', {
-    template: "\n        <div class=\"" + css.wrapper + "\" :style=\"computedStyle\">\n            <md-field class=\"" + css.field + "\">\n                <label class=\"" + css.label + "\">{{placeholder}}</label>\n                <md-input class=\"" + css.input + "\"\n                 :value=\"value\"\n                 @change.native=\"$emit('input', $event.target.value)\"/>\n            </md-field>\n        </div>\n    ",
+    template: `
+        <div class="${css.wrapper}" :style="computedStyle">
+            <md-field class="${css.field}">
+                <label class="${css.label}">{{placeholder}}</label>
+                <md-input class="${css.input}"
+                 :value="value"
+                 @change.native="$emit('input', $event.target.value)"/>
+            </md-field>
+        </div>
+    `,
     props: {
         placeholder: String,
         value: String
     },
-    data: function () {
+    data() {
         return {
             width: ''
         };
     },
-    mounted: function () {
+    mounted() {
         this.width = this.$el.clientWidth + 'px';
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: this.width });
         }
     }
@@ -61522,7 +62314,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     label: {
         fontSize: 13,
         important: true
@@ -61542,12 +62334,24 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('material-select', {
-    template: "\n        <div class=\"" + css.wrapper + "\">\n            <md-field class=\"" + css.field + "\">\n                <label class=\"" + css.label + "\">{{placeholder}}</label>\n                <md-select class=\"" + css.select + "\" v-model=\"selected\">\n                    <md-option v-for=\"(o, index) of options\" :value=\"o\" :key=\"index\">{{o}}</md-option>\n                </md-select>\n                <select style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fillParent: true, opacity: 0, cursor: 'pointer' }) + "\" v-model=\"selected\">\n                    <option v-for=\"o of options\" :value=\"o\">{{o}}</option>\n                </select>\n            </md-field>\n        </div>\n    ",
+    template: `
+        <div class="${css.wrapper}">
+            <md-field class="${css.field}">
+                <label class="${css.label}">{{placeholder}}</label>
+                <md-select class="${css.select}" v-model="selected">
+                    <md-option v-for="(o, index) of options" :value="o" :key="index">{{o}}</md-option>
+                </md-select>
+                <select style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fillParent: true, opacity: 0, cursor: 'pointer' })}" v-model="selected">
+                    <option v-for="o of options" :value="o">{{o}}</option>
+                </select>
+            </md-field>
+        </div>
+    `,
     props: {
         placeholder: String,
         options: Array,
     },
-    data: function () {
+    data() {
         return {
             selected: ''
         };
@@ -61581,11 +62385,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var menuicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/hamburger.svg */ "./src/icons/hamburger.svg"));
-var mobileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/display-size.svg */ "./src/icons/display-size.svg"));
-var compileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/right-triangle.svg */ "./src/icons/right-triangle.svg"));
-var exporticon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/export.svg */ "./src/icons/export.svg"));
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const menuicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/hamburger.svg */ "./src/icons/hamburger.svg"));
+const mobileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/display-size.svg */ "./src/icons/display-size.svg"));
+const compileicon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/right-triangle.svg */ "./src/icons/right-triangle.svg"));
+const exporticon = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/export.svg */ "./src/icons/export.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     menuBarTitle: {
         color: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary,
     },
@@ -61596,19 +62400,44 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     },
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('menu-bar', {
-    template: "\n        <div style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ userSelect: 'none' }) + "\">\n            <main-menu v-if=\"showMenu\"/>\n            <row stretch class=\"" + css.menuBar + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 }) + "\">\n                <gap/>\n                <cell shrink><icon @click.native=\"buttonClick\" :style=\"buttonStyle\">\n                    " + menuicon + "\n                </icon></cell>\n                <cell><div class=\"" + css.menuBarTitle + "\">hello</div></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + mobileicon + "\n                </icon></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + compileicon + "\n                </icon></cell>\n                <gap/>\n                <cell shrink><icon>\n                    " + exporticon + "\n                </icon></cell>\n                <gap/>\n            </row>\n        </div>   \n        \n    ",
-    data: function () {
+    template: `
+        <div style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ userSelect: 'none' })}">
+            <main-menu v-if="showMenu"/>
+            <row stretch class="${css.menuBar}" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ height: 40 })}">
+                <gap/>
+                <cell shrink><icon @click.native="buttonClick" :style="buttonStyle">
+                    ${menuicon}
+                </icon></cell>
+                <cell><div class="${css.menuBarTitle}">hello</div></cell>
+                <gap/>
+                <cell shrink><icon>
+                    ${mobileicon}
+                </icon></cell>
+                <gap/>
+                <cell shrink><icon>
+                    ${compileicon}
+                </icon></cell>
+                <gap/>
+                <cell shrink><icon>
+                    ${exporticon}
+                </icon></cell>
+                <gap/>
+            </row>
+        </div>   
+        
+    `,
+    data() {
         return {
             showMenu: false
         };
     },
     methods: {
-        buttonClick: function () {
+        buttonClick() {
             this.showMenu = !this.showMenu;
         },
     },
     computed: {
-        buttonStyle: function () {
+        buttonStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 cursor: 'pointer',
                 color: this.showMenu ? _theme__WEBPACK_IMPORTED_MODULE_2__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_2__["default"].textPrimary
@@ -61642,17 +62471,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var visibility = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility.svg */ "./src/icons/visibility.svg"));
-var visibilityFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility-filled.svg */ "./src/icons/visibility-filled.svg"));
-var lock = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock.svg */ "./src/icons/lock.svg"));
-var lockFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock-filled.svg */ "./src/icons/lock-filled.svg"));
-var placeholder = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
-var placeholderFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder-filled.svg */ "./src/icons/placeholder-filled.svg"));
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const visibility = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility.svg */ "./src/icons/visibility.svg"));
+const visibilityFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/visibility-filled.svg */ "./src/icons/visibility-filled.svg"));
+const lock = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock.svg */ "./src/icons/lock.svg"));
+const lockFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/lock-filled.svg */ "./src/icons/lock-filled.svg"));
+const placeholder = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg"));
+const placeholderFilled = Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/placeholder-filled.svg */ "./src/icons/placeholder-filled.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     outline: {
         background: _theme__WEBPACK_IMPORTED_MODULE_3__["default"].white,
-        width: 200,
-        height: '100%',
+        width: '100%',
         paddingLeft: 5,
         borderRight: '3px solid ' + _theme__WEBPACK_IMPORTED_MODULE_3__["default"].background,
         userSelect: 'none'
@@ -61670,10 +62498,34 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline-row', {
     mixins: [_radio__WEBPACK_IMPORTED_MODULE_5__["default"]],
-    template: "\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell shrink><icon @click.native=\"check\" name=\"visibility\" :active=\"isChecked\" style=\"cursor:pointer\">\n                " + visibility + "\n                " + visibilityFilled + "\n            </icon></cell>\n            <cell shrink><icon @click.native=\"check\" name=\"lock\" :active=\"isChecked\" style=\"cursor:pointer\">\n                " + lock + "\n                " + lockFilled + "\n            </icon></cell>\n            <cell shrink><icon style=\"cursor:pointer;\">\n                " + placeholder + "\n                " + placeholderFilled + "\n            </icon></cell>\n            <cell align=\"left\"> <div class=\"" + css.elementName + "\"><slot></slot></div></cell>\n        </row>\n    "
+    template: `
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell shrink><icon @click.native="check" name="visibility" :active="isChecked" style="cursor:pointer">
+                ${visibility}
+                ${visibilityFilled}
+            </icon></cell>
+            <cell shrink><icon @click.native="check" name="lock" :active="isChecked" style="cursor:pointer">
+                ${lock}
+                ${lockFilled}
+            </icon></cell>
+            <cell shrink><icon style="cursor:pointer;">
+                ${placeholder}
+                ${placeholderFilled}
+            </icon></cell>
+            <cell align="left"> <div class="${css.elementName}"><slot></slot></div></cell>
+        </row>
+    `
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('outline', {
-    template: "\n        <div class=\"" + css.outline + "\">\n            <outline-row style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginTop: 10 }) + "\"></outline-row>\n            <div class=\"" + css.separator + "\" style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginBottom: 10 }) + "\"></div>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n            <outline-row>whatever</outline-row>\n        </div>\n    "
+    template: `
+        <div class="${css.outline}">
+            <outline-row style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginTop: 10 })}"></outline-row>
+            <div class="${css.separator}" style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ marginBottom: 10 })}"></div>
+            <outline-row>whatever</outline-row>
+            <outline-row>whatever</outline-row>
+            <outline-row>whatever</outline-row>
+        </div>
+    `
 });
 
 
@@ -61694,10 +62546,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     panels: {
-        width: 300,
-        height: '100vh',
         background: _theme__WEBPACK_IMPORTED_MODULE_2__["default"].white,
         overflowY: 'scroll',
         userSelect: 'none',
@@ -61727,31 +62577,37 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panels', {
-    template: "\n        <div class=\"" + css.panels + "\"><slot/></div>\n    "
+    template: `
+        <div class="${css.panels}"><slot/></div>
+    `
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('panel', {
-    template: "\n        <div class=" + css.panel + ">\n            <div class=" + css.title + " @click=\"collapsed=!collapsed\">{{title}}</div>\n            <div ref=\"container\" class=" + css.container + "><slot/></div>\n        </div>\n    ",
+    template: `
+        <div class=${css.panel}>
+            <div class=${css.title} @click="collapsed=!collapsed">{{title}}</div>
+            <div ref="container" class=${css.container}><slot/></div>
+        </div>
+    `,
     props: {
         title: String,
         expanded: Boolean
     },
-    data: function () {
+    data() {
         return {
             collapsed: true,
         };
     },
-    mounted: function () {
+    mounted() {
         if (this.expanded)
             this.collapsed = false;
     },
     watch: {
-        collapsed: function (collapsed) {
-            var _this = this;
+        collapsed(collapsed) {
             rinss__WEBPACK_IMPORTED_MODULE_1__["default"].inline(this.$refs.container, {
                 height: { to: collapsed ? 0 : 'auto' },
                 floatTop: { to: collapsed ? 0 : 10 },
-                opacity: { to: collapsed ? 0 : 1, then: function () {
-                        rinss__WEBPACK_IMPORTED_MODULE_1__["default"].inline(_this.$refs.container, {
+                opacity: { to: collapsed ? 0 : 1, then: () => {
+                        rinss__WEBPACK_IMPORTED_MODULE_1__["default"].inline(this.$refs.container, {
                             pointerEvents: collapsed ? 'none' : 'auto'
                         });
                     } }
@@ -61792,12 +62648,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var topSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/align-top.svg */ "./src/icons/align-top.svg"));
-var middleSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/align-middle.svg */ "./src/icons/align-middle.svg"));
-var bottomSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/align-bottom.svg */ "./src/icons/align-bottom.svg"));
-var minSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/min.svg */ "./src/icons/min.svg"));
-var maxSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/max.svg */ "./src/icons/max.svg"));
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const topSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/align-top.svg */ "./src/icons/align-top.svg"));
+const middleSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/align-middle.svg */ "./src/icons/align-middle.svg"));
+const bottomSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/align-bottom.svg */ "./src/icons/align-bottom.svg"));
+const minSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/min.svg */ "./src/icons/min.svg"));
+const maxSVG = Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/max.svg */ "./src/icons/max.svg"));
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     minMaxInput: {
         background: 'transparent',
         border: 'none',
@@ -61805,12 +62661,14 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('alignment-button', {
-    template: "\n        <icon :style=\"computedStyle\"><slot/></icon>\n    ",
+    template: `
+        <icon :style="computedStyle"><slot/></icon>
+    `,
     props: {
         rotated: Boolean
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 rotate: this.rotated ? -90 : 0,
                 cursor: 'pointer'
@@ -61820,12 +62678,17 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('alignment-button', {
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-button', {
     mixins: [_radio__WEBPACK_IMPORTED_MODULE_9__["default"]],
-    template: "\n        <icon-slot @click.native=\"check\" :style=\"computedStyle\">\n            <icon slot=\"icon\" :active=\"isChecked\"><slot/></icon>\n            {{text}}\n        </icon-slot>\n    ",
+    template: `
+        <icon-slot @click.native="check" :style="computedStyle">
+            <icon slot="icon" :active="isChecked"><slot/></icon>
+            {{text}}
+        </icon-slot>
+    `,
     props: {
         text: String
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 color: this.isChecked ? _theme__WEBPACK_IMPORTED_MODULE_4__["default"].primary : _theme__WEBPACK_IMPORTED_MODULE_4__["default"].textPrimary,
                 cursor: 'pointer'
@@ -61834,7 +62697,61 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-button', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('position-panel', {
-    template: "\n        <panel title=\"Position\" :expanded=\"expanded\">\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 10 }) + "\">\n                <cell><alignment-button>" + topSVG + "</alignment-button></cell>\n                <cell><alignment-button>" + middleSVG + "</alignment-button></cell>\n                <cell><alignment-button>" + bottomSVG + "</alignment-button></cell>\n                <cell><alignment-button rotated>" + topSVG + "</alignment-button></cell>\n                <cell><alignment-button rotated>" + middleSVG + "</alignment-button></cell>\n                <cell><alignment-button rotated>" + bottomSVG + "</alignment-button></cell>\n            </row>\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fontSize: 10, floatTop: 25 }) + "\">\n                <cell><position-button name=\"position\" text=\"Relative\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/waves.svg */ "./src/icons/waves.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/waves-filled.svg */ "./src/icons/waves-filled.svg")) + "\n                </position-button></cell>\n                <cell><position-button name=\"position\" text=\"Absolute\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/target.svg */ "./src/icons/target.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/target-filled.svg */ "./src/icons/target-filled.svg")) + "\n                </position-button></cell>\n                <cell><position-button name=\"position\" text=\"Fixed\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/pin.svg */ "./src/icons/pin.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/pin-filled.svg */ "./src/icons/pin-filled.svg")) + "\n                </position-button></cell>\n            </row>\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 15 }) + "\">\n                <cell><material-input placeholder=\"Left\"/></cell>\n                <gap/>\n                <cell><material-input placeholder=\"Top\"/></cell>\n            </row>\n            <row stretch>\n                <cell><material-input placeholder=\"Width\"/></cell>\n                <gap/>\n                <cell><material-input placeholder=\"Height\"/></cell>\n            </row>\n            <row stretch>\n                <cell><row stretch>\n                    <cell shrink><icon size=\"10px\">" + minSVG + "</icon></cell>\n                    <cell><input class=\"" + css.minMaxInput + "\" placeholder=\"min\"/></cell>\n                </row></cell>\n                <cell><row stretch>\n                    <cell shrink><icon size=\"10px\">" + maxSVG + "</icon></cell>\n                    <cell><input class=\"" + css.minMaxInput + "\" placeholder=\"max\"/></cell>\n                </row></cell>\n                <gap/>\n                <cell><row stretch>\n                    <cell shrink><icon size=\"10px\">" + minSVG + "</icon></cell>\n                    <cell><input class=\"" + css.minMaxInput + "\" placeholder=\"min\"/></cell>\n                </row></cell>\n                <cell><row stretch>\n                    <cell shrink><icon size=\"10px\">" + maxSVG + "</icon></cell>\n                    <cell><input class=\"" + css.minMaxInput + "\" placeholder=\"max\"/></cell>\n                </row></cell>\n            </row>\n        </panel>\n    ",
+    template: `
+        <panel title="Position" :expanded="expanded">
+            <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 10 })}">
+                <cell><alignment-button>${topSVG}</alignment-button></cell>
+                <cell><alignment-button>${middleSVG}</alignment-button></cell>
+                <cell><alignment-button>${bottomSVG}</alignment-button></cell>
+                <cell><alignment-button rotated>${topSVG}</alignment-button></cell>
+                <cell><alignment-button rotated>${middleSVG}</alignment-button></cell>
+                <cell><alignment-button rotated>${bottomSVG}</alignment-button></cell>
+            </row>
+            <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ fontSize: 10, floatTop: 25 })}">
+                <cell><position-button name="position" text="Relative">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/waves.svg */ "./src/icons/waves.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/waves-filled.svg */ "./src/icons/waves-filled.svg"))}
+                </position-button></cell>
+                <cell><position-button name="position" text="Absolute">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/target.svg */ "./src/icons/target.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/target-filled.svg */ "./src/icons/target-filled.svg"))}
+                </position-button></cell>
+                <cell><position-button name="position" text="Fixed">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/pin.svg */ "./src/icons/pin.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_5__["default"])(__webpack_require__(/*! ./icons/pin-filled.svg */ "./src/icons/pin-filled.svg"))}
+                </position-button></cell>
+            </row>
+            <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 15 })}">
+                <cell><material-input placeholder="Left"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Top"/></cell>
+            </row>
+            <row stretch>
+                <cell><material-input placeholder="Width"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Height"/></cell>
+            </row>
+            <row stretch>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${minSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="min"/></cell>
+                </row></cell>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${maxSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="max"/></cell>
+                </row></cell>
+                <gap/>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${minSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="min"/></cell>
+                </row></cell>
+                <cell><row stretch>
+                    <cell shrink><icon size="10px">${maxSVG}</icon></cell>
+                    <cell><input class="${css.minMaxInput}" placeholder="max"/></cell>
+                </row></cell>
+            </row>
+        </panel>
+    `,
     props: {
         expanded: Boolean
     }
@@ -61857,11 +62774,9 @@ __webpack_require__.r(__webpack_exports__);
 function isDelimiter(str) {
     return str === ';' || str === ':' || Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["isQuote"])(str);
 }
-/* harmony default export */ __webpack_exports__["default"] = (function (html, replaceViewBox) {
-    if (replaceViewBox === void 0) { replaceViewBox = false; }
-    var colors = [];
-    for (var _i = 0, _a = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, '#'); _i < _a.length; _i++) {
-        var index = _a[_i];
+/* harmony default export */ __webpack_exports__["default"] = (function (html, replaceViewBox = false) {
+    const colors = [];
+    for (const index of Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, '#')) {
         if (isDelimiter(html[index - 1])) {
             if (isDelimiter(html[index + 7]))
                 Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["pushOne"])(colors, html.substring(index, index + 7));
@@ -61869,10 +62784,9 @@ function isDelimiter(str) {
                 Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["pushOne"])(colors, html.substring(index, index + 4));
         }
     }
-    for (var _b = 0, _c = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, 'rgba('); _b < _c.length; _b++) {
-        var index = _c[_b];
-        var indexEnd = -1;
-        for (var i = index + 5; i < html.length; ++i)
+    for (const index of Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, 'rgba(')) {
+        let indexEnd = -1;
+        for (let i = index + 5; i < html.length; ++i)
             if (html[i] === ')') {
                 indexEnd = i + 1;
                 break;
@@ -61880,10 +62794,9 @@ function isDelimiter(str) {
         if (indexEnd !== -1)
             Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["pushOne"])(colors, html.substring(index, indexEnd));
     }
-    for (var _d = 0, _e = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, 'rgb('); _d < _e.length; _d++) {
-        var index = _e[_d];
-        var indexEnd = -1;
-        for (var i = index + 4; i < html.length; ++i)
+    for (const index of Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["indexesOf"])(html, 'rgb(')) {
+        let indexEnd = -1;
+        for (let i = index + 4; i < html.length; ++i)
             if (html[i] === ')') {
                 indexEnd = i + 1;
                 break;
@@ -61891,22 +62804,21 @@ function isDelimiter(str) {
         if (indexEnd !== -1)
             Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["pushOne"])(colors, html.substring(index, indexEnd));
     }
-    for (var _f = 0, _g = colors.sort(function (a, b) { return b.length - a.length; }); _f < _g.length; _f++) {
-        var color = _g[_f];
+    for (const color of colors.sort((a, b) => { return b.length - a.length; })) {
         html = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_0__["replaceAll"])(html, color, 'currentColor');
     }
     if (replaceViewBox) {
-        var index = html.indexOf('viewBox="');
-        var indexEnd = -1;
-        for (var i = index + 9; i < html.length; ++i)
+        const index = html.indexOf('viewBox="');
+        let indexEnd = -1;
+        for (let i = index + 9; i < html.length; ++i)
             if (html[i] === '"') {
                 indexEnd = i + 1;
                 break;
             }
         if (indexEnd !== -1) {
-            var viewBox = html.substring(index, indexEnd);
-            var parts = viewBox.split(' '), width = parts[2], height = parts[3].slice(0, -1);
-            html = html.replace(viewBox, "width=\"" + width + "\" height=\"" + height + "\"");
+            const viewBox = html.substring(index, indexEnd);
+            const parts = viewBox.split(' '), width = parts[2], height = parts[3].slice(0, -1);
+            html = html.replace(viewBox, `width="${width}" height="${height}"`);
         }
     }
     return html;
@@ -61931,7 +62843,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('properties-panel', {
-    template: "\n        <panel title=\"Properties\" :expanded=\"expanded\">\n            <material-input placeholder=\"Element id\"/>\n            <material-input placeholder=\"Element class\"/>\n        </panel>\n    ",
+    template: `
+        <panel title="Properties" :expanded="expanded">
+            <material-input placeholder="Element id"/>
+            <material-input placeholder="Element class"/>
+        </panel>
+    `,
     props: {
         expanded: Boolean
     }
@@ -61953,29 +62870,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var ambients_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ambients-utils */ "./node_modules/ambients-utils/index.js");
 
 
-var checkedMap = {};
+const checkedMap = {};
 /* harmony default export */ __webpack_exports__["default"] = (vue__WEBPACK_IMPORTED_MODULE_0__["default"].extend({
     props: {
         name: String,
         checked: Boolean
     },
-    data: function () {
+    data() {
         return {
             checkedMap: checkedMap[this.name] || (checkedMap[this.name] = { id: '' }),
             isChecked: this.checked
         };
     },
     methods: {
-        check: function () {
+        check() {
             this.checkedMap.id = Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["identify"])(this);
         }
     },
     watch: {
-        'checkedMap.id': function (id) {
+        'checkedMap.id'(id) {
             this.isChecked = id === Object(ambients_utils__WEBPACK_IMPORTED_MODULE_1__["identify"])(this);
         },
-        isChecked: function (val) {
-            this.$emit(val ? 'check' : 'uncheck');
+        isChecked: {
+            immediate: true,
+            handler(val) {
+                this.$emit(val ? 'check' : 'uncheck');
+            }
         }
     }
 }));
@@ -61996,7 +62916,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var rinss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rinss */ "./node_modules/rinss/lib-esm/index.js");
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     shrink: {
         whiteSpace: 'nowrap',
         width: 1,
@@ -62015,7 +62935,9 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('cell', {
-    template: "\n        <td align=\"center\" :class=\"computedClass\" :style=\"computedStyle\"><slot/></td>\n    ",
+    template: `
+        <td align="center" :class="computedClass" :style="computedStyle"><slot/></td>
+    `,
     inject: {
         stretch: { default: false },
         stretchy: { default: false }
@@ -62024,10 +62946,10 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('cell', {
         shrink: Boolean
     },
     computed: {
-        computedClass: function () {
+        computedClass() {
             return this.shrink ? css.shrink : (this.stretch ? css.grow : css.auto);
         },
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 height: this.stretchy ? '100%' : 'auto'
             });
@@ -62035,7 +62957,9 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('cell', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('gap', {
-    template: "\n        <td align=\"center\" class=\"" + css.shrink + "\"><div :style=\"computedStyle\"/></td>\n    ",
+    template: `
+        <td align="center" class="${css.shrink}"><div :style="computedStyle"/></td>
+    `,
     props: {
         size: {
             type: String,
@@ -62043,25 +62967,27 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('gap', {
         }
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ width: this.size, height: '100%' });
         }
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('row', {
-    template: "\n        <table :style=\"computedStyle\"><tr><slot/></tr></table>\n    ",
+    template: `
+        <table :style="computedStyle"><tr><slot/></tr></table>
+    `,
     props: {
         stretch: Boolean,
         stretchy: Boolean
     },
-    provide: function () {
+    provide() {
         return {
             stretch: this.stretch,
             stretchy: this.stretchy
         };
     },
     computed: {
-        computedStyle: function () {
+        computedStyle() {
             return Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({
                 width: this.stretch ? '100%' : 'auto',
                 height: this.stretchy ? '100%' : 'auto',
@@ -62116,10 +63042,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     toolbar: {
-        width: 50,
-        height: '100%',
         background: _theme__WEBPACK_IMPORTED_MODULE_6__["default"].white,
         overflow: "hidden",
         userSelect: 'none',
@@ -62140,7 +63064,11 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
     mixins: [_radio__WEBPACK_IMPORTED_MODULE_4__["default"]],
-    template: "\n        <div class=\"" + css.toolbarButton + "\" @click=\"check\">\n            <icon style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true }) + "\" :active=\"isChecked\"><slot/></icon>\n        </div>\n    ",
+    template: `
+        <div class="${css.toolbarButton}" @click="check">
+            <icon style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true })}" :active="isChecked"><slot/></icon>
+        </div>
+    `,
     props: {
         name: {
             type: String,
@@ -62149,10 +63077,74 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-button', {
     }
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar-section', {
-    template: "\n        <div class=\"" + css.toolbarSection + "\"><slot/></div>\n    "
+    template: `
+        <div class="${css.toolbarSection}"><slot/></div>
+    `
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('toolbar', {
-    template: "\n        <div class=\"" + css.toolbar + "\">\n            <toolbar-section>\n                <toolbar-button :checked=\"value === 'cursor'\" @check=\"$emit('input', 'cursor')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor.svg */ "./src/icons/cursor.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor-filled.svg */ "./src/icons/cursor-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'transform'\" @check=\"$emit('input', 'transform')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform.svg */ "./src/icons/transform.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform-filled.svg */ "./src/icons/transform-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button :checked=\"value === 'rectangle'\" @check=\"$emit('input', 'rectangle')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle.svg */ "./src/icons/rectangle.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle-filled.svg */ "./src/icons/rectangle-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'circle'\" @check=\"$emit('input', 'circle')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle.svg */ "./src/icons/circle.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle-filled.svg */ "./src/icons/circle-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'line'\" @check=\"$emit('input', 'line')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line-filled.svg */ "./src/icons/line-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'textarea'\" @check=\"$emit('input', 'textarea')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea.svg */ "./src/icons/textarea.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea-filled.svg */ "./src/icons/textarea-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'textfield'\" @check=\"$emit('input', 'textfield')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield.svg */ "./src/icons/textfield.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield-filled.svg */ "./src/icons/textfield-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'type'\" @check=\"$emit('input', 'type')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type.svg */ "./src/icons/type.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type-filled.svg */ "./src/icons/type-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'checkbox'\" @check=\"$emit('input', 'checkbox')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox.svg */ "./src/icons/checkbox.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox-filled.svg */ "./src/icons/checkbox-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button :checked=\"value === 'dropper'\" @check=\"$emit('input', 'dropper')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper.svg */ "./src/icons/dropper.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper-filled.svg */ "./src/icons/dropper-filled.svg")) + "\n                </toolbar-button>\n                <toolbar-button :checked=\"value === 'paint'\" @check=\"$emit('input', 'paint')\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint.svg */ "./src/icons/paint.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint-filled.svg */ "./src/icons/paint-filled.svg")) + "\n                </toolbar-button>\n                <div class=\"" + css.toolbarButton + "\" @click=\"$emit('showColorPicker', $event)\">\n                    <color-picker style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true }) + "\" :color=\"colorPicked\"/>\n                </div>\n            </toolbar-section>\n            <toolbar-section>\n                <toolbar-button name=\"magnet\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet.svg */ "./src/icons/magnet.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet-filled.svg */ "./src/icons/magnet-filled.svg")) + "\n                </toolbar-button>\n            </toolbar-section>\n        </div>\n    ",
+    template: `
+        <div class="${css.toolbar}">
+            <toolbar-section>
+                <toolbar-button :checked="value === 'cursor'" @check="$emit('input', 'cursor')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor.svg */ "./src/icons/cursor.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/cursor-filled.svg */ "./src/icons/cursor-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'transform'" @check="$emit('input', 'transform')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform.svg */ "./src/icons/transform.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/transform-filled.svg */ "./src/icons/transform-filled.svg"))}
+                </toolbar-button>
+            </toolbar-section>
+            <toolbar-section>
+                <toolbar-button :checked="value === 'rectangle'" @check="$emit('input', 'rectangle')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle.svg */ "./src/icons/rectangle.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/rectangle-filled.svg */ "./src/icons/rectangle-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'circle'" @check="$emit('input', 'circle')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle.svg */ "./src/icons/circle.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/circle-filled.svg */ "./src/icons/circle-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'line'" @check="$emit('input', 'line')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line.svg */ "./src/icons/line.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/line-filled.svg */ "./src/icons/line-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'textarea'" @check="$emit('input', 'textarea')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea.svg */ "./src/icons/textarea.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textarea-filled.svg */ "./src/icons/textarea-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'textfield'" @check="$emit('input', 'textfield')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield.svg */ "./src/icons/textfield.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/textfield-filled.svg */ "./src/icons/textfield-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'type'" @check="$emit('input', 'type')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type.svg */ "./src/icons/type.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/type-filled.svg */ "./src/icons/type-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'checkbox'" @check="$emit('input', 'checkbox')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox.svg */ "./src/icons/checkbox.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/checkbox-filled.svg */ "./src/icons/checkbox-filled.svg"))}
+                </toolbar-button>
+            </toolbar-section>
+            <toolbar-section>
+                <toolbar-button :checked="value === 'dropper'" @check="$emit('input', 'dropper')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper.svg */ "./src/icons/dropper.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/dropper-filled.svg */ "./src/icons/dropper-filled.svg"))}
+                </toolbar-button>
+                <toolbar-button :checked="value === 'paint'" @check="$emit('input', 'paint')">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint.svg */ "./src/icons/paint.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/paint-filled.svg */ "./src/icons/paint-filled.svg"))}
+                </toolbar-button>
+                <div class="${css.toolbarButton}" @click="$emit('showColorPicker', $event)">
+                    <color-picker style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ centerX: true, centerY: true })}" :color="colorPicked"/>
+                </div>
+            </toolbar-section>
+            <toolbar-section>
+                <toolbar-button name="magnet">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet.svg */ "./src/icons/magnet.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_2__["default"])(__webpack_require__(/*! ./icons/magnet-filled.svg */ "./src/icons/magnet-filled.svg"))}
+                </toolbar-button>
+            </toolbar-section>
+        </div>
+    `,
     props: {
         colorPicked: String,
         value: String
@@ -62182,8 +63174,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var iconholder = __webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg");
-var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
+const iconholder = __webpack_require__(/*! ./icons/placeholder.svg */ "./src/icons/placeholder.svg");
+const css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     separator: {
         width: '100%',
         height: 0,
@@ -62194,7 +63186,37 @@ var css = rinss__WEBPACK_IMPORTED_MODULE_1__["default"].create({
     },
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('transform-panel', {
-    template: "\n    <panel title=\"Transform\" expanded>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Trans. X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Trans. Y\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Trans. Z\"/></cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Scale X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Scale Y\"/></cell>\n        </row>\n\n        <div class=\"" + css.separator + "\"></div>\n\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Rotate X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Rotate Y\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Rotate Z\"/></cell>\n        </row>\n        <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 }) + "\">\n            <cell><material-input placeholder=\"Skew X\"/></cell>\n            <gap/>\n            <cell><material-input placeholder=\"Skew Y\"/></cell>\n        </row>\n    </panel>\n    "
+    template: `
+    <panel title="Transform" expanded>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell><material-input placeholder="Trans. X"/></cell>
+            <gap/>
+            <cell><material-input placeholder="Trans. Y"/></cell>
+            <gap/>
+            <cell><material-input placeholder="Trans. Z"/></cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell><material-input placeholder="Scale X"/></cell>
+            <gap/>
+            <cell><material-input placeholder="Scale Y"/></cell>
+        </row>
+
+        <div class="${css.separator}"></div>
+
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell><material-input placeholder="Rotate X"/></cell>
+            <gap/>
+            <cell><material-input placeholder="Rotate Y"/></cell>
+            <gap/>
+            <cell><material-input placeholder="Rotate Z"/></cell>
+        </row>
+        <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 0 })}">
+            <cell><material-input placeholder="Skew X"/></cell>
+            <gap/>
+            <cell><material-input placeholder="Skew Y"/></cell>
+        </row>
+    </panel>
+    `
 });
 
 
@@ -62227,10 +63249,84 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-button', {
     mixins: [_radio__WEBPACK_IMPORTED_MODULE_7__["default"]],
-    template: "\n        <icon style=\"cursor:pointer\" @click.native=\"check\" :active=\"isChecked\"><slot/></icon>\n    "
+    template: `
+        <icon style="cursor:pointer" @click.native="check" :active="isChecked"><slot/></icon>
+    `
 });
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].component('typography-panel', {
-    template: "\n        <panel title=\"Typography\" :expanded=\"expanded\">\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 10 }) + "\">\n                <cell><typography-button name=\"fontStyle\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/bold.svg */ "./src/icons/bold.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/bold-filled.svg */ "./src/icons/bold-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"fontStyle\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/italic.svg */ "./src/icons/italic.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/italic-filled.svg */ "./src/icons/italic-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"fontStyle\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/underline.svg */ "./src/icons/underline.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/underline-filled.svg */ "./src/icons/underline-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"fontStyle\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/strikethrough.svg */ "./src/icons/strikethrough.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/strikethrough-filled.svg */ "./src/icons/strikethrough-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"textAlign\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-left.svg */ "./src/icons/align-left.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-left-filled.svg */ "./src/icons/align-left-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"textAlign\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-center.svg */ "./src/icons/align-center.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-center-filled.svg */ "./src/icons/align-center-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"textAlign\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-right.svg */ "./src/icons/align-right.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-right-filled.svg */ "./src/icons/align-right-filled.svg")) + "\n                </typography-button></cell>\n                <cell><typography-button name=\"textAlign\">\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-justify.svg */ "./src/icons/align-justify.svg")) + "\n                    " + Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-justify-filled.svg */ "./src/icons/align-justify-filled.svg")) + "\n                </typography-button></cell>\n            </row>\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 15 }) + "\">\n                <cell>\n                    <material-select\n                     placeholder=\"Font family\"\n                     :options=\"['Arial', 'Helvetica']\"/>\n                </cell>\n                <gap/>\n                <cell>\n                    <material-select\n                     placeholder=\"Font weight\"\n                     :options=\"['Bold', 'Bolder', 'Normal', 'Lighter', 'Light']\"/>\n                </cell>\n            </row>\n            <row stretch>\n                <cell><material-input placeholder=\"Font size\"/></cell>\n                <gap/>\n                <cell><material-input placeholder=\"Line height\"/></cell>\n            </row>\n            <row stretch style=\"" + Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 10 }) + "\">\n                <cell shrink>\n                    <color-picker size=\"30px\" :color=\"colorPicked\" @click.native=\"$emit('showColorPicker', $event)\"/>\n                </cell>\n                <gap/>\n                <cell><material-input placeholder=\"Color\" v-model=\"colorPicked\"/></cell>\n            </row>\n            <row stretch>\n                <cell><material-input placeholder=\"Letter spacing\"/></cell>\n                <gap/>\n                <cell><material-input placeholder=\"Word spacing\"/></cell>\n            </row>\n            <row stretch>\n                <cell><material-input placeholder=\"Text indent\"/></cell>\n                <gap/>\n                <cell><material-input placeholder=\"Paragraph spacing\"/></cell>\n            </row>\n        </panel>\n    ",
+    template: `
+        <panel title="Typography" :expanded="expanded">
+            <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 10 })}">
+                <cell><typography-button name="fontStyle">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/bold.svg */ "./src/icons/bold.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/bold-filled.svg */ "./src/icons/bold-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="fontStyle">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/italic.svg */ "./src/icons/italic.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/italic-filled.svg */ "./src/icons/italic-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="fontStyle">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/underline.svg */ "./src/icons/underline.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/underline-filled.svg */ "./src/icons/underline-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="fontStyle">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/strikethrough.svg */ "./src/icons/strikethrough.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/strikethrough-filled.svg */ "./src/icons/strikethrough-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="textAlign">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-left.svg */ "./src/icons/align-left.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-left-filled.svg */ "./src/icons/align-left-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="textAlign">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-center.svg */ "./src/icons/align-center.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-center-filled.svg */ "./src/icons/align-center-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="textAlign">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-right.svg */ "./src/icons/align-right.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-right-filled.svg */ "./src/icons/align-right-filled.svg"))}
+                </typography-button></cell>
+                <cell><typography-button name="textAlign">
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-justify.svg */ "./src/icons/align-justify.svg"))}
+                    ${Object(_processSvg__WEBPACK_IMPORTED_MODULE_6__["default"])(__webpack_require__(/*! ./icons/align-justify-filled.svg */ "./src/icons/align-justify-filled.svg"))}
+                </typography-button></cell>
+            </row>
+            <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 15 })}">
+                <cell>
+                    <material-select
+                     placeholder="Font family"
+                     :options="['Arial', 'Helvetica']"/>
+                </cell>
+                <gap/>
+                <cell>
+                    <material-select
+                     placeholder="Font weight"
+                     :options="['Bold', 'Bolder', 'Normal', 'Lighter', 'Light']"/>
+                </cell>
+            </row>
+            <row stretch>
+                <cell><material-input placeholder="Font size"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Line height"/></cell>
+            </row>
+            <row stretch style="${Object(rinss__WEBPACK_IMPORTED_MODULE_1__["rss"])({ floatTop: 10 })}">
+                <cell shrink>
+                    <color-picker size="30px" :color="colorPicked" @click.native="$emit('showColorPicker', $event)"/>
+                </cell>
+                <gap/>
+                <cell><material-input placeholder="Color" v-model="colorPicked"/></cell>
+            </row>
+            <row stretch>
+                <cell><material-input placeholder="Letter spacing"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Word spacing"/></cell>
+            </row>
+            <row stretch>
+                <cell><material-input placeholder="Text indent"/></cell>
+                <gap/>
+                <cell><material-input placeholder="Paragraph spacing"/></cell>
+            </row>
+        </panel>
+    `,
     props: {
         expanded: Boolean,
         colorPicked: String

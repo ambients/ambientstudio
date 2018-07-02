@@ -67,10 +67,8 @@ const css = rinss.create({
     stage: {
         width: '100vw',
         height: '100vh',
-        top: 0,
-        left: 0,
-        display: 'grid',
-        gridTemplateRows: '40px 1fr'
+        absTop: 0,
+        absLeft: 0
     },
     modal: {
         zIndex: 9999,
@@ -78,6 +76,20 @@ const css = rinss.create({
     },
     sketchPicker: {
         userSelect: 'none'
+    },
+    gridContainer: {
+        width: '100vw',
+        height: '100vh',
+        display: 'grid',
+        gridTemplateColumns: '50px 200px 1fr 300px',
+        gridTemplateRows: '40px 1fr',
+        gridTemplateAreas: `
+            'header header header header'
+            'toolbar libraries editor panels'
+        `
+    },
+    test: {
+        border: '1px solid black'
     }
 });
 
@@ -107,31 +119,34 @@ new Vue({
     },
     template: `
         <div class="${ css.stage }">
-            <menu-bar/>
-            <div>
-                <row stretch stretchy>
-                    <cell shrink>
-                        <toolbar
-                        v-model="tool"
-                        @showColorPicker="showColorPicker"
-                        :colorPicked="colorPicker.color.hex"/>
-                    </cell>
-                    <cell shrink><libraries/></cell>
-                    <cell><editor :tool="tool" :colorPicked="colorPicker.color.hex"/></cell>
-                    <cell shrink><panels>
-                        <properties-panel expanded/>
-                        <position-panel expanded/>
-                        <typography-panel
-                        @showColorPicker="showTextColorPicker"
-                        :colorPicked="textColorPicker.color.hex"
-                        expanded/>
-                        <panel title="Backgrounds"/>
-                        <panel title="Effects"/>
-                        <transform-panel/>
-                        <border-panel/>
-                    </panels></cell>
-                </row>
+
+            <div class="${ css.gridContainer }">
+                <menu-bar style="grid-area:header"/>
+
+                <toolbar
+                 style="grid-area:toolbar"
+                 v-model="tool"
+                 @showColorPicker="showColorPicker"
+                 :colorPicked="colorPicker.color.hex"/>
+
+                <libraries style="grid-area:libraries"/>
+
+                <editor :tool="tool" :colorPicked="colorPicker.color.hex" style="grid-area:editor"/>
+
+                <panels style="grid-area:panels">
+                    <properties-panel expanded/>
+                    <position-panel expanded/>
+                    <typography-panel
+                    @showColorPicker="showTextColorPicker"
+                    :colorPicked="textColorPicker.color.hex"
+                    expanded/>
+                    <panel title="Backgrounds"/>
+                    <panel title="Effects"/>
+                    <transform-panel/>
+                    <border-panel/>
+                </panels>
             </div>
+
             <modal class="${ css.modal }"
              v-if="colorPicker.show"
              :left="colorPicker.left"

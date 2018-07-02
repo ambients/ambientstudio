@@ -4,8 +4,6 @@ import theme from "./theme";
 
 const css = rinss.create({
     panels: {
-        width: 300,
-        height: '100%',
         background: theme.white,
         overflowY: 'scroll',
         userSelect: 'none',

@@ -13,7 +13,6 @@ const css=rinss.create({
         background: theme.white,
         width: '100%',
         padding:5,
-        borderRight: '3px solid ' + theme.background,
         userSelect:'none'
     },
     elementName:{

@@ -8,26 +8,24 @@ import './library';
 const css = rinss.create({
     container: {
         background: theme.white,
-        width: 200,
-        height:'100%',
         userSelect:'none',
         display:'grid',
-        gridTemplateRows: '60px 1fr',
+        gridTemplateRows: '40px 1fr',
     },
     libraryMenu:{
         width:200,
         background: theme.white,
-        borderRight: '3px solid ' + theme.background,
         borderBottom: '3px solid ' + theme.background,
-        overflowX: 'scroll',
-        overflowY: 'hidden',
-        whiteSpace: 'nowrap',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        paddingLeft: 10,
+        paddingRight: 10
     },
     libraryMenuTitles:{
-        display: 'inline-block',
-        position: 'relative',
-        margin: 10,
         cursor: 'pointer',
+        fontSize: 13,
+        verticalAlign: 'middle',
+        lineHeight: 40
     },
 });
 
