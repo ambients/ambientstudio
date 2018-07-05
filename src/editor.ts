@@ -1,13 +1,13 @@
 import Vue from "vue";
 import rinss, { rss } from "rinss";
-import { quadrant, abs, PerspectiveTransform, rad2Deg } from 'ambients-math';
+import { quadrant, abs, PerspectiveTransform, rad2Deg, Point } from 'ambients-math';
 import theme from "./theme";
-import { pullOne, pushOne, randomColor } from "ambients-utils";
+import { pullOne, pushOne, randomColor, clear } from "ambients-utils";
 import color from 'color';
 import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
 import processSvg from "./processSvg";
-import { localToLocal, globalVertices, globalVertex, globalCenter, globalToLocal } from "./editorMath";
+import { localToLocal, globalVertices, globalVertex, globalCenter, globalRotation } from "./editorMath";
 
 interface IEditorNodeData {
     tagName: string;
@@ -91,7 +91,7 @@ class EditorNodeData implements IEditorNodeData {
     }
 }
 
-let canvasContainer:HTMLElement, canvas:HTMLElement;
+let canvasContainer:HTMLElement, canvas:HTMLElement, canvasParent:HTMLElement;
 
 const selectionPointer = {
     startX: 0,
@@ -125,33 +125,17 @@ const transformOverlay = {
     transformOrigin: 'center'
 }
 
-const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
-
 const nodesSelected:Array<EditorNodeData> = [];
-
-function nodesSelectedPush(node:IEditorNodeData):void {
-    pushOne(nodesSelected, node);
-}
-
-function nodesSelectedPull(node: IEditorNodeData): void {
-    pullOne(nodesSelected, node);
-}
-
-function nodesSelectedClear():void {
-    nodesSelected.splice(0, nodesSelected.length);
-}
+const nodeInFocus = { value: EditorNodeData.default() };
+const nodeFocusHierarchy: Array<EditorNodeData> = [];
 
 window.addEventListener('keydown', e => {
     if (e.key === 'a' && e.ctrlKey) {
         e.preventDefault();
-        nodesSelectedClear();
-        for (const node of nodeFocusHierarchy[nodeFocusHierarchy.length - 1].children)
-            nodesSelectedPush(node);
+        clear(nodesSelected);
+        for (const node of nodeInFocus.value.children) pushOne(nodesSelected, node);
     }
 });
-
-const nodeInFocus = { value: EditorNodeData.default() };
-const nodeFocusHierarchy:Array<EditorNodeData> = [];
 
 Vue.component('Hammer', {
     template: `
@@ -180,13 +164,17 @@ Vue.component('Hammer', {
 });
 
 const selectionColor = color(theme.primary).alpha(0.3).darken(0.1).string();
+const canvasParentSize = 5000;
 
 const css = rinss.create({
     canvasContainer: {
-        width: '100%',
-        height: '100%',
         background: theme.background,
         position: 'relative',
+        overflow: 'scroll'
+    },
+    canvasParent: {
+        width: canvasParentSize,
+        height: canvasParentSize,
         overflow: 'hidden'
     },
     selectionDrawableBox: {
@@ -234,7 +222,7 @@ const css = rinss.create({
         translateY: '-50%',
         zIndex: 101
     },
-    staticPointerListener: {
+    nodePointerListener: {
         fillParent: true,
         pointerEvents: 'auto'
     }
@@ -249,7 +237,8 @@ Vue.component('DrawableBox', {
     },
     data() {
         return {
-            selectionPointer
+            selectionPointer,
+            nodesSelected
         };
     },
     computed: {
@@ -284,7 +273,7 @@ Vue.component('DrawableBox', {
         },
     },
     mounted() {
-        nodesSelectedClear();
+        clear(this.nodesSelected);
     },
     beforeDestroy() {
         this.$emit('push', new EditorNodeData({
@@ -556,9 +545,9 @@ Vue.component('EditorBoxInner', {
     }
 });
 
-Vue.component('StaticPointerListener', {
+Vue.component('NodePointerListener', {
     template: `
-        <Hammer class="${ css.staticPointerListener }"
+        <Hammer class="${ css.nodePointerListener }"
          @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
     `,
     methods: {
@@ -585,7 +574,11 @@ Vue.component('StaticPointerListener', {
     }
 });
 
-Vue.component('PointerListener', {
+const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
+editorEventss.once('mounted', ()=>editorEventss.from(canvasContainer, 'scroll', 'windowSize'));
+editorEventss.debounce('windowSize', 100);
+
+Vue.component('BackgroundPointerListener', {
     template: `
         <Hammer :style="computedStyle"
          @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
@@ -594,17 +587,28 @@ Vue.component('PointerListener', {
         return {
             left: 0,
             top: 0,
-            eventss: new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize')
+            width: 0,
+            height: 0,
+            eventss: new Eventss()
         };  
     },
     mounted() {
-        editorEventss.once('mounted', ()=>{
-            this.eventss.off('windowSize').on('windowSize', () => {
-                const vContainer = globalVertices(canvasContainer);
-                const vSelf = globalVertices(this.$el);
+        this.eventss.emitState('windowSize').from(window, 'resize', 'windowSize').debounce('windowSize', 100);
 
-                const xDiff = vContainer[0].x - vSelf[0].x, yDiff = vContainer[0].y - vSelf[0].y;
-                this.left += xDiff, this.top += yDiff;
+        editorEventss.once('mounted', ()=>{
+            this.eventss.from(canvasContainer, 'scroll', 'windowSize');
+
+            this.eventss.off('windowSize').on('windowSize', () => {
+                this.width = canvasContainer.clientWidth;
+                this.height = canvasContainer.clientHeight;
+
+                this.$nextTick(()=>{
+                    const centerContainer = globalCenter(canvasContainer);
+                    const centerSelf = globalCenter(this.$el);
+                    const xDiff = centerContainer.x - centerSelf.x;
+                    const yDiff = centerContainer.y - centerSelf.y;
+                    this.left += xDiff - 10, this.top += yDiff - 10;
+                });
             });
         });
     },
@@ -614,11 +618,10 @@ Vue.component('PointerListener', {
     computed: {
         computedStyle():string {
             return rss({
-                width: '100vw',
-                height: '100vh',
-                position: 'fixed',
-                left: this.left,
-                top: this.top,
+                width: this.width,
+                height: this.height,
+                absLeft: this.left,
+                absTop: this.top,
                 pointerEvents: 'auto'
             });
         }
@@ -650,7 +653,7 @@ Vue.component('PointerListener', {
 Vue.component('editor-node', {
     template: `
         <div :style="outerStyle">
-            <PointerListener v-if="focused" style="background:rgba(255, 255, 255, 0.5)"
+            <BackgroundPointerListener v-if="focused" style="background:rgba(255, 255, 255, 0.5)"
              @pan="panPointer"
              @panstart="panPointerStart"
              @panend="panPointerEnd"
@@ -659,7 +662,7 @@ Vue.component('editor-node', {
 
             <component :is="nodeData.tagName" :style="innerStyle"/>
 
-            <StaticPointerListener v-if="parentNodeFocused && selectable"
+            <NodePointerListener v-if="parentNodeFocused && selectable"
              @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan"/>
 
             <editor-node
@@ -755,7 +758,7 @@ Vue.component('editor-node', {
             if (!e.gesture.srcEvent.shiftKey) {
                 if (!this.selected) this.select();
             }
-            else nodesSelectedPush(this.nodeData);
+            else pushOne(this.nodesSelected, this.nodeData);
 
             this.$nextTick(()=>{
                 this.transformOverlay.startX = this.transformOverlay.x;
@@ -797,20 +800,21 @@ Vue.component('editor-node', {
         doubleTap(e) {
             if (!this.selectable) return;
             if (e.shiftKey) return;
-            this.nodeInFocus.value = this.nodeData;
             this.nodeFocusHierarchy.push(this.nodeData);
-            nodesSelectedClear();
+            clear(this.nodesSelected);
         },
         select(multiple = false) {
-            if (!multiple) nodesSelectedClear();
-            if (!this.selected) nodesSelectedPush(this.nodeData);
-            else nodesSelectedPull(this.nodeData);
+            if (!multiple) clear(this.nodesSelected);
+            if (!this.selected) pushOne(this.nodesSelected, this.nodeData);
+            else pullOne(this.nodesSelected, this.nodeData);
         },
         panPointer({ gesture: { center: { x, y } } }) {
             const pt = pTrans.solve(x, y);
             this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
             this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
-            this.selectionPointer.quadrant = quadrant(this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0);
+            this.selectionPointer.quadrant = quadrant(
+                this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0
+            );
         },
         panPointerStart({ gesture: { center: { x, y } } }) {
             this.selectionPointer.down = true;
@@ -823,52 +827,51 @@ Vue.component('editor-node', {
         },
         tapPointer() {
             if (this.tool === 'cursor' || this.tool === 'transform')
-                nodesSelectedClear();
+                clear(this.nodesSelected);
         },
         doubleTapPointer() {
             if (this.tool !== 'cursor' && this.tool !== 'transform') return;
-            nodesSelectedClear();
+            clear(this.nodesSelected);
             this.nodeFocusHierarchy.pop();
-            this.nodeInFocus.value = this.nodeFocusHierarchy[this.nodeFocusHierarchy.length - 1];
         }
     }
 });
 
+let hierarchyLength = 0;
+const translateHierarchy:Array<Point> = [];
+let firstHierarchyPush = true;
+
 Vue.component('editor', {
     template:`
-        <div
-         ref="canvasContainer"
-         class="${ css.canvasContainer }">
-            <div ref="canvas" style="${ rss({
-                width: 800,
-                height: 600,
-                background: 'white',
-                centerX: true,
-                centerY: true
-            }) }">
-                <PointerListener v-if="focused" @pan="pan" @panstart="panStart" @panend="panEnd" @tap="tap"/>
+        <div class="${ css.canvasContainer }">
+            <div ref="canvasParent" class="${ css.canvasParent }">
+                <div ref="canvas">
+                    <BackgroundPointerListener v-if="focused"
+                     @pan="pan" @panstart="panStart" @panend="panEnd" @tap="tap"/>
 
-                <editor-node
-                 v-for="(child, index) of children"
-                 :key="index"
-                 :node="child"
-                 :parentNodeFocused="focused"
-                 :tool="tool"
-                 :colorPicked="colorPicked"/>
+                    <editor-node
+                     v-for="(child, index) of children"
+                     :key="index"
+                     :node="child"
+                     :parentNodeFocused="focused"
+                     :tool="tool"
+                     :colorPicked="colorPicked"/>
 
-                <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
-                <TransformAnchor v-if="focused && nodesSelected.length > 0 && tool === 'transform'"/>
+                    <transform-overlay v-if="focused && nodesSelected.length > 0" :tool="tool"/>
+                    <TransformAnchor v-if="focused && nodesSelected.length > 0 && tool === 'transform'"/>
 
-                <DrawableBox
-                 :colorPicked="colorPicked"
-                 @push="children.push($event)"
-                 v-if="focused && tool === 'rectangle' && selectionPointer.down">
-                    <EditorBoxInner tagName="div" :background="colorPicked"/>
-                </DrawableBox>
+                    <DrawableBox
+                     :colorPicked="colorPicked"
+                     @push="children.push($event)"
+                     v-if="focused && tool === 'rectangle' && selectionPointer.down">
+                        <EditorBoxInner tagName="div" :background="colorPicked"/>
+                    </DrawableBox>
 
-                <DrawableBox v-if="focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down">
-                    <div class="${ css.selectionDrawableBox }"/>
-                </DrawableBox>
+                    <DrawableBox
+                     v-if="focused && (tool === 'cursor' || tool === 'transform') && selectionPointer.down">
+                        <div class="${ css.selectionDrawableBox }"/>
+                    </DrawableBox>
+                </div>
             </div>
         </div>
     `,
@@ -892,8 +895,13 @@ Vue.component('editor', {
         }
     },
     mounted() {
-        canvasContainer = this.$refs.canvasContainer as any;
-        canvas = this.$refs.canvas as any;
+        canvas = rinss.inline(this.$refs.canvas as any, {
+            width: 800,
+            height: 600,
+            background: 'white',
+            centerX: true,
+            centerY: true
+        });
         
         this.sceneGraph = new EditorNodeData({
             tagName: canvas.tagName.toLowerCase(),
@@ -908,10 +916,19 @@ Vue.component('editor', {
             background: canvas.style.background,
             position: canvas.style.position
         });
-        this.nodeInFocus.value = this.sceneGraph;
         this.nodeFocusHierarchy.push(this.sceneGraph);
         this.children = this.nodeInFocus.value.children;
 
+        canvasContainer = this.$el;
+        this.$nextTick(()=>{
+            const half = canvasParentSize / 2;
+            canvasContainer.scrollLeft =
+                half - (canvas.clientWidth / 2) - ((canvasContainer.clientWidth - canvas.clientWidth) / 2);
+            canvasContainer.scrollTop =
+                half - (canvas.clientHeight / 2) - ((canvasContainer.clientHeight - canvas.clientHeight) / 2);
+        });
+
+        canvasParent = this.$refs.canvasParent as any;
         editorEventss.emitState('mounted');
     },
     watch: {
@@ -919,24 +936,53 @@ Vue.component('editor', {
             selectionPointer.tool = tool;
         },
         nodeFocusHierarchy(arr: Array<EditorNodeData>) {
+            if (firstHierarchyPush) firstHierarchyPush = false;
+            else {
+                const scrollLeft = canvasContainer.scrollLeft;
+                const scrollTop = canvasContainer.scrollTop;
+                this.$nextTick(() => {
+                    canvasContainer.scrollLeft = scrollLeft;
+                    canvasContainer.scrollTop = scrollTop;
+                });
+            }
+
+            const push = arr.length > hierarchyLength;
+            hierarchyLength = arr.length;
+
             const node = arr[arr.length - 1];
-            const center = globalCenter(node.el);
-            const pt = globalToLocal(canvas, center.x, center.y);
+
+            const xOld = rinss.number(canvasParent, 'translateX') || 0;
+            const yOld = rinss.number(canvasParent, 'translateY') || 0;
+            
+            const ptOld = globalCenter(node.el);
             rinss.inline(canvas, {
-                transformOrigin: `${pt.x}px ${pt.y}px`,
-                centerX: true,
-                centerY: true,
-                rotate: -(node.rotate)
+                rotate: globalRotation(canvas) - globalRotation(node.el)
             });
-        },
-        'nodeInFocus.value'(p:IEditorNodeData) {
-            pTrans.setDestination(
-                0, 0, p.el.clientWidth, 0, p.el.clientWidth, p.el.clientHeight, 0, p.el.clientHeight
-            );
-            editorEventss.off('windowSize').on('windowSize', ()=>{
-                const v = globalVertices(p.el);
-                pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+            const ptNew = globalCenter(node.el);
+
+            let translate:Point;
+            if (push) {
+                translate = new Point(xOld - (ptNew.x - ptOld.x), yOld - (ptNew.y - ptOld.y));
+                translateHierarchy.push(translate);
+            }
+            else {
+                translateHierarchy.pop();
+                translate = translateHierarchy[translateHierarchy.length - 1];
+            }
+            rinss.inline(canvasParent, {
+                translateX: translate.x, translateY: translate.y
             });
+            
+            this.$nextTick(()=>{
+                pTrans.setDestination(
+                    0, 0, node.el.clientWidth, 0, node.el.clientWidth, node.el.clientHeight, 0, node.el.clientHeight
+                );
+                editorEventss.off('windowSize').on('windowSize', () => {
+                    const v = globalVertices(node.el);
+                    pTrans.setSource(v[0].x, v[0].y, v[1].x, v[1].y, v[2].x, v[2].y, v[3].x, v[3].y);
+                });
+            });
+            this.nodeInFocus.value = node;
         }
     },
     methods: {
@@ -959,7 +1005,7 @@ Vue.component('editor', {
         },
         tap() {
             if (this.tool === 'cursor' || this.tool === 'transform')
-                nodesSelectedClear();
+                clear(this.nodesSelected);
         }
     }
 });

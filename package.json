@@ -2,10 +2,10 @@
   "dependencies": {
     "ambients-math": "^1.0.1",
     "ambients-modal": "^1.0.7",
-    "ambients-utils": "^1.3.4",
+    "ambients-utils": "^1.3.6",
     "babel-polyfill": "*",
     "color": "^3.0.0",
-    "eventss": "^1.2.0",
+    "eventss": "^1.2.5",
     "hammerjs": "*",
     "lodash": "*",
     "normalize.css": "*",
@@ -26,7 +26,7 @@
     "svg-inline-loader": "*",
     "ts-loader": "^4.4.2",
     "typescript": "^2.9.2",
-    "webpack": "^4.14.0",
+    "webpack": "^4.15.1",
     "webpack-cli": "^2.1.5"
   },
   "false": {}

@@ -1,5 +1,5 @@
 import rinss from 'rinss';
-import { Point, PerspectiveTransform } from 'ambients-math';
+import { Point, PerspectiveTransform, rad2Deg } from 'ambients-math';
 import Vue from 'vue';
 import { SimpleWeakMap, SimpleMap } from 'ambients-utils';
 
@@ -21,6 +21,12 @@ export function globalVertices(el: HTMLElement): Array<Point> {
         globalVertex(el, '100%', '100%'),
         globalVertex(el, '0px', '100%')
     ];
+}
+
+export function globalRotation(el:HTMLElement):number {
+    const v = globalVertices(el);
+    const p0 = v[0], p1 = v[1];
+    return Math.atan2(p1.y - p0.y, p1.x - p0.x) * rad2Deg;
 }
 
 export function globalCenter(el: HTMLElement): Point {
