@@ -728,7 +728,6 @@ Vue.component('editor-node', {
         },
         outerStyle():string {
             return rss({
-                scale: 0.5,//mark
                 position: this.nodeData.position,
                 top: this.nodeData.top,
                 left: this.nodeData.left,
