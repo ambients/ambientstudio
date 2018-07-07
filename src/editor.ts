@@ -7,7 +7,7 @@ import color from 'color';
 import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
 import processSvg from "./processSvg";
-import { localToLocal, globalVertices, globalVertex, globalCenter, globalRotation } from "./editorMath";
+import { localToLocal, globalVertices, globalVertex, globalCenter, globalRotation, globalToLocal } from "./editorMath";
 
 interface IEditorNodeData {
     tagName: string;
@@ -599,15 +599,20 @@ Vue.component('BackgroundPointerListener', {
             this.eventss.from(canvasContainer, 'scroll', 'windowSize');
 
             this.eventss.off('windowSize').on('windowSize', () => {
-                this.width = canvasContainer.clientWidth;
-                this.height = canvasContainer.clientHeight;
+                const o = globalToLocal(this.$parent.$el, 0, 0);
+                const s = globalToLocal(
+                    this.$parent.$el, canvasContainer.clientWidth, canvasContainer.clientHeight
+                );
+                this.width = s.x - o.x, this.height = s.y - o.y;
 
                 this.$nextTick(()=>{
                     const centerContainer = globalCenter(canvasContainer);
                     const centerSelf = globalCenter(this.$el);
-                    const xDiff = centerContainer.x - centerSelf.x;
-                    const yDiff = centerContainer.y - centerSelf.y;
-                    this.left += xDiff - 10, this.top += yDiff - 10;
+                    const xDiff = centerContainer.x - centerSelf.x - 10;
+                    const yDiff = centerContainer.y - centerSelf.y - 10;
+                    const diff = globalToLocal(nodeInFocus.value.el, xDiff, yDiff);
+                    const origin = globalToLocal(nodeInFocus.value.el, 0, 0);
+                    this.left += diff.x - origin.x, this.top += diff.y - origin.y;
                 });
             });
         });
@@ -723,6 +728,7 @@ Vue.component('editor-node', {
         },
         outerStyle():string {
             return rss({
+                scale: 0.5,//mark
                 position: this.nodeData.position,
                 top: this.nodeData.top,
                 left: this.nodeData.left,
@@ -917,10 +923,11 @@ Vue.component('editor', {
             position: canvas.style.position
         });
         this.nodeFocusHierarchy.push(this.sceneGraph);
-        this.children = this.nodeInFocus.value.children;
-
         canvasContainer = this.$el;
+        
         this.$nextTick(()=>{
+            this.children = this.nodeInFocus.value.children
+
             const half = canvasParentSize / 2;
             canvasContainer.scrollLeft =
                 half - (canvas.clientWidth / 2) - ((canvasContainer.clientWidth - canvas.clientWidth) / 2);

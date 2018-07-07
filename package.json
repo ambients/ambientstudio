@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/hammerjs": "*",
     "@types/lodash": "^4.14.110",
-    "@types/node": "^10.5.1",
+    "@types/node": "^10.5.2",
     "css-loader": "*",
     "html-webpack-plugin": "*",
     "style-loader": "*",
