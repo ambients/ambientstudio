@@ -209,7 +209,6 @@ const css = rinss.create({
         position: 'absolute',
         border: '1px solid ' + theme.primary,
         pointerEvents: 'none',
-        zIndex: 100
     },
     transformAnchor: {
         width: 10,
@@ -220,7 +219,7 @@ const css = rinss.create({
         position: 'absolute',
         translateX: '-50%',
         translateY: '-50%',
-        zIndex: 101
+        pointerEvents: 'auto'
     },
     nodePointerListener: {
         fillParent: true,
@@ -849,7 +848,7 @@ let firstHierarchyPush = true;
 Vue.component('editor', {
     template:`
         <div class="${ css.canvasContainer }">
-            <div ref="canvasParent" class="${ css.canvasParent }">
+            <div class="${ css.canvasParent }"><div ref="canvasParent" class="${ css.canvasParent }">
                 <div ref="canvas">
                     <BackgroundPointerListener v-if="focused"
                      @pan="pan" @panstart="panStart" @panend="panEnd" @tap="tap"/>
@@ -877,7 +876,7 @@ Vue.component('editor', {
                         <div class="${ css.selectionDrawableBox }"/>
                     </DrawableBox>
                 </div>
-            </div>
+            </div></div>
         </div>
     `,
     computed: {

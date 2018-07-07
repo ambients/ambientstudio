@@ -3,7 +3,6 @@
     "ambients-math": "^1.0.1",
     "ambients-modal": "^1.0.7",
     "ambients-utils": "^1.3.6",
-    "babel-polyfill": "*",
     "color": "^3.0.0",
     "eventss": "^1.2.5",
     "hammerjs": "*",
