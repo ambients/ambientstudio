@@ -198,12 +198,19 @@ const css = rinss.create({
         pointerEvents: 'auto'
     },
     transformHandleInner: {
+        width: 12,
+        height: 12,
+        centerX: true,
+        centerY: true
+    },
+    transformHandleRendered: {
         width: 8,
         height: 8,
         background: 'white',
         border: '1px solid ' + theme.primary,
         centerX: true,
-        centerY: true
+        centerY: true,
+        pointerEvents: 'none'
     },
     transformOverlay: {
         position: 'absolute',
@@ -329,16 +336,19 @@ const pTrans = new PerspectiveTransform();
 
 Vue.component('TransformHandle', {
     template: `
-        <Hammer class="${css.transformHandle}" :style="computedStyle"
+        <Hammer class="${ css.transformHandle }" :style="outerStyle"
          @panstart="rPanStart" @pan="rPan" @panend="rPanEnd">
-            <div class="${ css.transformHandleInner }"/>
+            <Hammer class="${ css.transformHandleInner }" :style="innerStyle"
+             @mouseover.native="mouseOver" @panstart="panStart" @pan="pan" @panend="panEnd">
+                <div class="${ css.transformHandleRendered }"/>
+            </Hammer>
         </Hammer>
     `,
     props: {
         index: Number
     },
     computed: {
-        computedStyle():string {
+        outerStyle():string {
             if (this.index === 0) return rss({ left: 0, top: 0 });
             else if (this.index === 1) return rss({ left: '50%', top: 0 });
             else if (this.index === 2) return rss({ left: '100%', top: 0 });
@@ -347,13 +357,17 @@ Vue.component('TransformHandle', {
             else if (this.index === 5) return rss({ left: 0, top: '100%' });
             else if (this.index === 6) return rss({ left: '50%', top: '100%' });
             else return rss({ left: '100%', top: '100%' });
+        },
+        innerStyle():string {
+            return rss({ cursor: this.cursor });
         }
     },
     data() {
         return {
             transformOverlay,
             nodesSelected,
-            nodeInFocus
+            nodeInFocus,
+            cursor: ''
         };
     },
     methods: {
@@ -385,6 +399,27 @@ Vue.component('TransformHandle', {
         },
         rPanEnd() {
             this.$nextTick(()=>resetTransformOrigins());
+        },
+        mouseOver(e:MouseEvent) {
+            const center = globalCenter(this.transformOverlay.el);
+            const angle = Math.atan2(e.clientY - center.y, e.clientX - center.x) * rad2Deg + 180;
+            if (angle >= 22.5 && angle < 67.5) this.cursor = 'nwse-resize';
+            else if (angle >= 67.5 && angle < 112.5) this.cursor = 'ns-resize';
+            else if (angle >= 112.5 && angle < 157.5) this.cursor = 'nesw-resize';
+            else if (angle >= 157.5 && angle < 202.5) this.cursor = 'ew-resize';
+            else if (angle >= 202.5 && angle < 247.5) this.cursor = 'nwse-resize';
+            else if (angle >= 247.5 && angle < 292.5) this.cursor = 'ns-resize';
+            else if (angle >= 292.5 && angle < 337.5) this.cursor = 'nesw-resize';
+            else if (angle >= 337.5 && angle <= 360 || angle >= 0 && angle < 22.5) this.cursor = 'ew-resize';
+        },
+        panStart() {
+            //mark
+        },
+        pan() {
+
+        },
+        panEnd() {
+
         }
     }
 });
