@@ -54,6 +54,7 @@ import './outline';
 import './menu-bar';
 import './NewProject';
 import './libraries';
+import './Keyframes';
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -81,10 +82,11 @@ const css = rinss.create({
         height: '100vh',
         display: 'grid',
         gridTemplateColumns: '50px 200px 1fr 300px',
-        gridTemplateRows: '40px 1fr',
+        gridTemplateRows: '40px 1fr 200px',
         gridTemplateAreas: `
             'header header header header'
             'toolbar libraries editor panels'
+            'toolbar libraries keyframes panels'
         `
     },
     test: {
@@ -131,6 +133,8 @@ new Vue({
                 <libraries style="grid-area:libraries"/>
 
                 <editor :tool="tool" :colorPicked="colorPicker.color.hex" style="grid-area:editor"/>
+
+                <Keyframes style="grid-area:keyframes"/>
 
                 <panels style="grid-area:panels">
                     <properties-panel expanded/>
