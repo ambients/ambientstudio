@@ -6,7 +6,6 @@
     "color": "^3.0.0",
     "eventss": "^1.2.5",
     "hammerjs": "*",
-    "lodash": "*",
     "normalize.css": "*",
     "rinss": "^1.5.7",
     "vue": "*",
@@ -17,7 +16,6 @@
   },
   "devDependencies": {
     "@types/hammerjs": "*",
-    "@types/lodash": "^4.14.110",
     "@types/node": "^10.5.2",
     "css-loader": "^1.0.0",
     "html-webpack-plugin": "*",

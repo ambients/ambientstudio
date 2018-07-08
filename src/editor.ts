@@ -367,11 +367,14 @@ Vue.component('TransformHandle', {
             transformOverlay,
             nodesSelected,
             nodeInFocus,
-            cursor: ''
+            cursor: '',
+            scale: false
         };
     },
     methods: {
         rPanStart({ gesture: { center: { x, y } } }) {
+            if (this.scale) return;
+
             const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
             const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
             const pt = pTrans.solve(x, y);
@@ -387,6 +390,8 @@ Vue.component('TransformHandle', {
             applyAnchors();
         },
         rPan({ gesture: { center: { x, y } } }) {
+            if (this.scale) return;
+
             const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
             const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
             const pt = pTrans.solve(x, y);
@@ -398,6 +403,7 @@ Vue.component('TransformHandle', {
                 node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
         },
         rPanEnd() {
+            if (this.scale) return;
             this.$nextTick(()=>resetTransformOrigins());
         },
         mouseOver(e:MouseEvent) {
@@ -412,14 +418,13 @@ Vue.component('TransformHandle', {
             else if (angle >= 292.5 && angle < 337.5) this.cursor = 'nesw-resize';
             else if (angle >= 337.5 && angle <= 360 || angle >= 0 && angle < 22.5) this.cursor = 'ew-resize';
         },
-        panStart() {
-            //mark
+        panStart(e) {
+            this.scale = true;//mark
         },
-        pan() {
-
+        pan(e) {
         },
-        panEnd() {
-
+        panEnd(e) {
+            this.$nextTick(()=>this.scale = false);
         }
     }
 });
@@ -579,35 +584,6 @@ Vue.component('EditorBoxInner', {
     }
 });
 
-Vue.component('NodePointerListener', {
-    template: `
-        <Hammer class="${ css.nodePointerListener }"
-         @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
-    `,
-    methods: {
-        panStart(e) {
-            e.stopPropagation();
-            this.$emit('panstart', e);
-        },
-        pan(e) {
-            e.stopPropagation();
-            this.$emit('pan', e);
-        },
-        panEnd(e) {
-            e.stopPropagation();
-            this.$emit('panend', e);
-        },
-        tap(e) {
-            e.stopPropagation();
-            this.$emit('tap', e);
-        },
-        doubleTap(e) {
-            e.stopPropagation();
-            this.$emit('doubletap', e);
-        }
-    }
-});
-
 const editorEventss = new Eventss().emitState('windowSize').from(window, 'resize', 'windowSize');
 editorEventss.once('mounted', ()=>editorEventss.from(canvasContainer, 'scroll', 'windowSize'));
 editorEventss.debounce('windowSize', 100);
@@ -615,7 +591,11 @@ editorEventss.debounce('windowSize', 100);
 Vue.component('BackgroundPointerListener', {
     template: `
         <Hammer :style="computedStyle"
-         @panstart="panStart" @pan="pan" @panend="panEnd" @tap="tap" @doubletap="doubleTap"/>
+         @panstart="$emit('panstart', $event)"
+         @pan="$emit('pan', $event)"
+         @panend="$emit('panend', $event)"
+         @tap="$emit('tap', $event)"
+         @doubletap="$emit('doubletap', $event)"/>
     `,
     data() {
         return {
@@ -664,28 +644,6 @@ Vue.component('BackgroundPointerListener', {
                 pointerEvents: 'auto'
             });
         }
-    },
-    methods: {
-        panStart(e) {
-            e.stopPropagation();
-            this.$emit('panstart', e);
-        },
-        pan(e) {
-            e.stopPropagation();
-            this.$emit('pan', e);
-        },
-        panEnd(e) {
-            e.stopPropagation();
-            this.$emit('panend', e);
-        },
-        tap(e) {
-            e.stopPropagation();
-            this.$emit('tap', e);
-        },
-        doubleTap(e) {
-            e.stopPropagation();
-            this.$emit('doubletap', e);
-        }
     }
 });
 
@@ -701,7 +659,7 @@ Vue.component('editor-node', {
 
             <component :is="nodeData.tagName" :style="innerStyle"/>
 
-            <NodePointerListener v-if="parentNodeFocused && selectable"
+            <Hammer v-if="parentNodeFocused && selectable" class="${ css.nodePointerListener }"
              @tap="tap" @doubletap="doubleTap" @panstart="panStart" @pan="pan"/>
 
             <editor-node
@@ -878,7 +836,6 @@ Vue.component('editor-node', {
 
 let hierarchyLength = 0;
 const translateHierarchy:Array<Point> = [];
-let firstHierarchyPush = true;
 
 Vue.component('editor', {
     template:`
@@ -958,7 +915,7 @@ Vue.component('editor', {
         this.nodeFocusHierarchy.push(this.sceneGraph);
         canvasContainer = this.$el;
         
-        this.$nextTick(()=>{
+        requestAnimationFrame(()=>{
             this.children = this.nodeInFocus.value.children
 
             const half = canvasParentSize / 2;
@@ -976,16 +933,6 @@ Vue.component('editor', {
             selectionPointer.tool = tool;
         },
         nodeFocusHierarchy(arr: Array<EditorNodeData>) {
-            if (firstHierarchyPush) firstHierarchyPush = false;
-            else {
-                const scrollLeft = canvasContainer.scrollLeft;
-                const scrollTop = canvasContainer.scrollTop;
-                this.$nextTick(() => {
-                    canvasContainer.scrollLeft = scrollLeft;
-                    canvasContainer.scrollTop = scrollTop;
-                });
-            }
-
             const push = arr.length > hierarchyLength;
             hierarchyLength = arr.length;
 
