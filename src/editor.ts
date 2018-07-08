@@ -116,6 +116,8 @@ const transformOverlay = {
     startY: 0,
     x: 0,
     y: 0,
+    startWidth: 0,
+    startHeight: 0,
     width: 0,
     height: 0,
     startAnchorX: 0,
@@ -352,11 +354,11 @@ Vue.component('TransformHandle', {
             if (this.index === 0) return rss({ left: 0, top: 0 });
             else if (this.index === 1) return rss({ left: '50%', top: 0 });
             else if (this.index === 2) return rss({ left: '100%', top: 0 });
-            else if (this.index === 3) return rss({ left: 0, top: '50%' });
-            else if (this.index === 4) return rss({ left: '100%', top: '50%' });
-            else if (this.index === 5) return rss({ left: 0, top: '100%' });
-            else if (this.index === 6) return rss({ left: '50%', top: '100%' });
-            else return rss({ left: '100%', top: '100%' });
+            else if (this.index === 3) return rss({ left: '100%', top: '50%' });
+            else if (this.index === 4) return rss({ left: '100%', top: '100%' });
+            else if (this.index === 5) return rss({ left: '50%', top: '100%' });
+            else if (this.index === 6) return rss({ left: 0, top: '100%' });
+            else return rss({ left: 0, top: '50%' });
         },
         innerStyle():string {
             return rss({ cursor: this.cursor });
@@ -418,13 +420,34 @@ Vue.component('TransformHandle', {
             else if (angle >= 292.5 && angle < 337.5) this.cursor = 'nesw-resize';
             else if (angle >= 337.5 && angle <= 360 || angle >= 0 && angle < 22.5) this.cursor = 'ew-resize';
         },
-        panStart(e) {
-            this.scale = true;//mark
+        panStart() {
+            this.scale = true;
+            this.transformOverlay.startWidth = this.transformOverlay.width;
+            this.transformOverlay.startHeight = this.transformOverlay.height;
+            this.transformOverlay.startX = this.transformOverlay.x;
+            this.transformOverlay.startY = this.transformOverlay.y;
         },
-        pan(e) {
+        pan({ gesture: { deltaX, deltaY } }) {
+            const zero = globalToLocal(this.$el, 0, 0);
+            const delta = globalToLocal(this.$el, deltaX, deltaY);
+
+            console.log(this.index);
+
+            if (this.index === 5)
+                this.transformOverlay.height = this.transformOverlay.startHeight + (delta.y - zero.y);
+            else if (this.index === 3)
+                this.transformOverlay.width = this.transformOverlay.startWidth + (delta.x - zero.x);
+            else if (this.index === 1) {
+                this.transformOverlay.height = this.transformOverlay.startHeight - (delta.y - zero.y);
+            }
+            else if (this.index === 7) {
+                const offset = delta.x - zero.x;
+                this.transformOverlay.width = this.transformOverlay.startWidth - offset;
+                //mark
+            }
         },
         panEnd(e) {
-            this.$nextTick(()=>this.scale = false);
+            requestAnimationFrame(()=>this.scale = false);
         }
     }
 });
@@ -552,9 +575,9 @@ Vue.component('TransformAnchor', {
             this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
             this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
         },
-        pan(e) {
+        pan({ gesture: { deltaX, deltaY } }) {
             const ptStart = pTrans.solve(0, 0);
-            const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
+            const ptDelta = pTrans.solve(deltaX, deltaY);
             const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
             this.transformOverlay.anchorX = this.transformOverlay.startAnchorX + dx;
             this.transformOverlay.anchorY = this.transformOverlay.startAnchorY + dy;
@@ -770,12 +793,12 @@ Vue.component('editor-node', {
                 }
             });
         },
-        pan(e) {
+        pan({ gesture: { deltaX, deltaY } }) {
             if (!this.selectable) return;
 
             this.$nextTick(()=>{
                 const ptStart = pTrans.solve(0, 0);
-                const ptDelta = pTrans.solve(e.gesture.deltaX, e.gesture.deltaY);
+                const ptDelta = pTrans.solve(deltaX, deltaY);
                 const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
 
                 this.transformOverlay.x = this.transformOverlay.startX + dx;
