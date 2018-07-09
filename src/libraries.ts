@@ -11,11 +11,13 @@ const css = rinss.create({
         userSelect:'none',
         display:'grid',
         gridTemplateRows: '40px 1fr',
+        borderRight: '3px solid ' + theme.background,
     },
     libraryMenu:{
         width:200,
         background: theme.white,
         borderBottom: '3px solid ' + theme.background,
+        borderRight: '3px solid ' + theme.background,
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
         paddingLeft: 10,

@@ -5,6 +5,7 @@ import processSvg from "./processSvg";
 import theme from "./theme";
 import './row';
 import Checkbox from "./checkbox";
+import { pushOne, clear, pullOne } from "../node_modules/ambients-utils";
 
 const visibility= processSvg(require('./icons/visibility.svg'));
 const visibilityFilled=processSvg(require('./icons/visibility-filled.svg'));
@@ -31,27 +32,63 @@ const css=rinss.create({
         floatTop: 0,
         marginTop:10,
     },
+    outlineRow:{
+        floatTop:0,
+        height:20,
+        fontSize:13,
+        width:'100%',
+        display: 'grid',
+        gridTemplateColumns: '15px 15px 15px 1fr',
+        gridGap: '5px'
+    },
 });
 
-Vue.component('outline-row',{
-    mixins: [Checkbox],
+const selectedArray:Array<Vue> = [];
+
+Vue.component('outline-row', {
     template:`
-        <row stretch style="${ rss({floatTop:0, height:20, fontSize: 13,})}">
-            <cell shrink><icon name="visibility" :active="isChecked" style="cursor:pointer; margin-right:5px;" size="15px" >
+        <div class="${ css.outlineRow }" :style="computedStyle">
+            <icon name="visibility" style="cursor:pointer" size="15px" >
                 ${visibility}
                 ${visibilityFilled}
-            </icon></cell>
-            <cell shrink><icon name="lock" :active="isChecked" style="cursor:pointer; margin-right:5px;" size="15px">
+            </icon>
+            <icon name="lock" style="cursor:pointer" size="15px">
                 ${lock}
                 ${lockFilled}
-            </icon></cell>
-            <cell shrink><icon style="cursor:pointer; margin-right:5px;" size="15px">
+            </icon>
+            <icon style="cursor:pointer" size="15px">
                 ${placeholder}
                 ${placeholderFilled}
-            </icon></cell>
-            <cell align="left"> <div class="${css.elementName}"><slot></slot></div></cell>
-        </row>
-    `
+            </icon>
+            <div class="${css.elementName}" @click="click"><slot></slot></div>
+        </div>
+    `,
+    data() {
+        return {
+            selectedArray
+        };
+    },
+    computed: {
+        computedStyle():string {
+            return rss({
+                background: this.selected ? 'yellow' : theme.white
+            });
+        },
+        selected():boolean {
+            return this.selectedArray.indexOf(this) > -1;
+        }
+    },
+    methods: {
+        click(e:MouseEvent) {
+            if (!this.selected) {
+                if (!e.shiftKey) clear(this.selectedArray);
+                pushOne(this.selectedArray, this);
+            }
+            else {
+                pullOne(this.selectedArray, this);
+            }
+        }
+    }
 });
 
 Vue.component('outline',{

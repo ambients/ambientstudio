@@ -55,6 +55,7 @@ import './menu-bar';
 import './NewProject';
 import './libraries';
 import './Keyframes';
+import theme from "./theme";
 
 const container = document.createElement('div');
 document.body.appendChild(container);
@@ -91,6 +92,9 @@ const css = rinss.create({
     },
     test: {
         border: '1px solid black'
+    },
+    '<*>': {
+        position: 'relative'
     }
 });
 
@@ -132,7 +136,8 @@ new Vue({
 
                 <libraries style="grid-area:libraries"/>
 
-                <editor :tool="tool" :colorPicked="colorPicker.color.hex" style="grid-area:editor"/>
+                <editor :tool="tool" :colorPicked="colorPicker.color.hex"
+                 style="grid-area:editor; border-bottom: 3px solid ${ theme.background }"/>
 
                 <Keyframes style="grid-area:keyframes"/>
 
