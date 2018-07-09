@@ -12,23 +12,35 @@ const css=rinss.create({
     header:{
         borderBottom: '2px solid ' + theme.background
     },
+    keyframesContainer: {
+        display: 'grid',
+        gridTemplateColumns: '100px 1fr'
+    },
     timeline:{
         height: 20,
         width: '100%',
         floatTop:0,
-        
-    }
+        borderBottom: '1px solid '+ theme.background
+    },
+    timelineBar:{
+        left: 100,
+        width: 100,
+        height: '100%',
+        background: 'red',
+    },
 });
 
 Vue.component('KeyframesContainer',{
     template:`
-        <div>
+        <div class="${ css.keyframesContainer }">
             <div >
-                <outline-row v-for="layer of layers" style="${rss({borderBottom:'1px solid ' + theme.background, })}"/>
+                <outline-row v-for="layer of layers" style="${rss({borderBottom:'1px solid ' + theme.background, height: 20})}">
+                    Stuff
+                </outline-row>
             </div>
             <div style="${rss({borderLeft:'1px solid ' + theme.background, })}">
                 <div class="${ css.timeline }" v-for="layer of layers" >
-                    <div style="${rss({left:100, background:'red', width:100, height:'100%'})}"></div>
+                    <div class="${css.timelineBar}"></div>
                 </div>
             </div>
         </div>
@@ -36,10 +48,10 @@ Vue.component('KeyframesContainer',{
     data() {
         return {
             layers: [
-                { name: 'hyunki' },
-                { name: 'hyunki' },
-                { name: 'hyunki' },
-                { name: 'hyunki' },
+                { name: '1' },
+                { name: '2' },
+                { name: '3' },
+                { name: '4' },
             ]
         };
     }
