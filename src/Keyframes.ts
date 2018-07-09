@@ -1,5 +1,5 @@
 import Vue from "vue";
-import rinss from "rinss";
+import rinss, {rss} from "rinss";
 import theme from './theme';
 import './outline';
 
@@ -10,43 +10,26 @@ const css=rinss.create({
         gridTemplateRows: '40px 1fr',
     },
     header:{
-        borderBottom: '3px solid ' + theme.background
-    },
-    keys:{
-        height: 40,
-        width:'100%',
-        border: '1px solid ' + theme.background,
-
-    },
-    square:{
-        height: 30,
-        width: 30,
-        floatLeft:0,
-    },
-    elementName:{
-        floatLeft:0,
-
-    },
-    keyframesContainer:{
-        display:'grid',
-        gridTemplateColumns:'100px 1fr',
+        borderBottom: '2px solid ' + theme.background
     },
     timeline:{
-        height: 40,
+        height: 20,
         width: '100%',
-        borderBottom: '1px solid black',
         floatTop:0,
+        
     }
 });
 
 Vue.component('KeyframesContainer',{
     template:`
-        <div class="${ css.keyframesContainer }">
-            <div>
-                <outline-row v-for="layer of layers"/>
+        <div>
+            <div >
+                <outline-row v-for="layer of layers" style="${rss({borderBottom:'1px solid ' + theme.background, })}"/>
             </div>
-            <div>
-                <div class="${ css.timeline }" v-for="layer of layers"></div>
+            <div style="${rss({borderLeft:'1px solid ' + theme.background, })}">
+                <div class="${ css.timeline }" v-for="layer of layers" >
+                    <div style="${rss({left:100, background:'red', width:100, height:'100%'})}"></div>
+                </div>
             </div>
         </div>
     `,

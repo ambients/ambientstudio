@@ -36,16 +36,16 @@ const css=rinss.create({
 Vue.component('outline-row',{
     mixins: [Checkbox],
     template:`
-        <row stretch style="${ rss({floatTop:0})}">
-            <cell shrink><icon name="visibility" :active="isChecked" style="cursor:pointer">
+        <row stretch style="${ rss({floatTop:0, height:20, fontSize: 13,})}">
+            <cell shrink><icon name="visibility" :active="isChecked" style="cursor:pointer; margin-right:5px;" size="15px" >
                 ${visibility}
                 ${visibilityFilled}
             </icon></cell>
-            <cell shrink><icon name="lock" :active="isChecked" style="cursor:pointer">
+            <cell shrink><icon name="lock" :active="isChecked" style="cursor:pointer; margin-right:5px;" size="15px">
                 ${lock}
                 ${lockFilled}
             </icon></cell>
-            <cell shrink><icon style="cursor:pointer;">
+            <cell shrink><icon style="cursor:pointer; margin-right:5px;" size="15px">
                 ${placeholder}
                 ${placeholderFilled}
             </icon></cell>
