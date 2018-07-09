@@ -188,34 +188,29 @@ const css = rinss.create({
         border: '1px solid' + theme.primary,
         pointerEvents: 'none'
     },
-    transformHandle: {
+    rotateHandle: {
         width: 30,
         height: 30,
         position: 'absolute',
         translateX: '-50%',
         translateY: '-50%',
+        pointerEvents: 'auto',
         cursor: `url('data:image/svg+xml;utf8,${processSvg(require("./icons/rotate.svg"), true)}') 25 25, auto`,
-        pointerEvents: 'auto'
     },
-    transformHandleInner: {
-        width: 12,
-        height: 12,
-        centerX: true,
-        centerY: true
-    },
-    transformHandleRendered: {
+    scaleHandle: {
         width: 8,
         height: 8,
+        position: 'absolute',
+        translateX: '-50%',
+        translateY: '-50%',
+        pointerEvents: 'auto',
         background: 'white',
-        border: '1px solid ' + theme.primary,
-        centerX: true,
-        centerY: true,
-        pointerEvents: 'none'
+        border: '1px solid ' + theme.primary
     },
     transformOverlay: {
         position: 'absolute',
         border: '1px solid ' + theme.primary,
-        pointerEvents: 'none',
+        pointerEvents: 'none'
     },
     transformAnchor: {
         width: 10,
@@ -334,79 +329,35 @@ function resetTransformOrigins():void {
 
 const pTrans = new PerspectiveTransform();
 
-Vue.component('TransformHandle', {
+Vue.component('ScaleHandle', {
     template: `
-        <Hammer class="${ css.transformHandle }" :style="outerStyle"
-         @panstart="rPanStart" @pan="rPan" @panend="rPanEnd">
-            <Hammer class="${ css.transformHandleInner }" :style="innerStyle"
-             @mouseover.native="mouseOver" @panstart="panStart" @pan="pan" @panend="panEnd">
-                <div class="${ css.transformHandleRendered }"/>
-            </Hammer>
-        </Hammer>
+        <Hammer class="${ css.scaleHandle }" :style="computedStyle"
+         @mouseover.native="mouseover" @panstart="panstart" @pan="pan"/>
     `,
     props: {
         index: Number
     },
-    computed: {
-        outerStyle():string {
-            if (this.index === 0) return rss({ left: 0, top: 0 });
-            else if (this.index === 1) return rss({ left: '50%', top: 0 });
-            else if (this.index === 2) return rss({ left: '100%', top: 0 });
-            else if (this.index === 3) return rss({ left: '100%', top: '50%' });
-            else if (this.index === 4) return rss({ left: '100%', top: '100%' });
-            else if (this.index === 5) return rss({ left: '50%', top: '100%' });
-            else if (this.index === 6) return rss({ left: 0, top: '100%' });
-            else return rss({ left: 0, top: '50%' });
-        },
-        innerStyle():string {
-            return rss({ cursor: this.cursor });
-        }
-    },
     data() {
         return {
             transformOverlay,
-            nodesSelected,
             nodeInFocus,
-            cursor: '',
-            scale: false
+            cursor: ''
         };
     },
+    computed: {
+        computedStyle(): string {
+            if (this.index === 0) return rss({ cursor: this.cursor, left: 0, top: 0 });
+            else if (this.index === 1) return rss({ cursor: this.cursor, left: '50%', top: 0 });
+            else if (this.index === 2) return rss({ cursor: this.cursor, left: '100%', top: 0 });
+            else if (this.index === 3) return rss({ cursor: this.cursor, left: '100%', top: '50%' });
+            else if (this.index === 4) return rss({ cursor: this.cursor, left: '100%', top: '100%' });
+            else if (this.index === 5) return rss({ cursor: this.cursor, left: '50%', top: '100%' });
+            else if (this.index === 6) return rss({ cursor: this.cursor, left: 0, top: '100%' });
+            else return rss({ cursor: this.cursor, left: 0, top: '50%' });
+        }
+    },
     methods: {
-        rPanStart({ center: { x, y } }) {
-            if (this.scale) return;
-
-            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
-            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
-            const pt = pTrans.solve(x, y);
-            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
-            this.transformOverlay.startDeltaRotate = angle;
-            this.transformOverlay.startRotate = this.transformOverlay.rotate;
-
-            for (const node of this.nodesSelected) {
-                node.vue.startRotate = node.rotate;
-                node.vue.startX = node.x;
-                node.vue.startY = node.y;
-            }
-            applyAnchors();
-        },
-        rPan({ center: { x, y } }) {
-            if (this.scale) return;
-
-            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
-            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
-            const pt = pTrans.solve(x, y);
-            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
-            this.transformOverlay.deltaRotate = angle - this.transformOverlay.startDeltaRotate;
-            this.transformOverlay.rotate = this.transformOverlay.startRotate + this.transformOverlay.deltaRotate;
-            
-            for (const node of this.nodesSelected)
-                node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
-        },
-        rPanEnd() {
-            if (this.scale) return;
-            this.$nextTick(()=>resetTransformOrigins());
-        },
-        mouseOver(e:MouseEvent) {
+        mouseover(e: MouseEvent) {
             const center = globalCenter(this.transformOverlay.el);
             const angle = Math.atan2(e.clientY - center.y, e.clientX - center.x) * rad2Deg + 180;
             if (angle >= 22.5 && angle < 67.5) this.cursor = 'nwse-resize';
@@ -418,8 +369,7 @@ Vue.component('TransformHandle', {
             else if (angle >= 292.5 && angle < 337.5) this.cursor = 'nesw-resize';
             else if (angle >= 337.5 && angle <= 360 || angle >= 0 && angle < 22.5) this.cursor = 'ew-resize';
         },
-        panStart() {
-            this.scale = true;
+        panstart() {
             this.transformOverlay.startWidth = this.transformOverlay.width;
             this.transformOverlay.startHeight = this.transformOverlay.height;
             this.transformOverlay.startX = this.transformOverlay.x;
@@ -429,7 +379,7 @@ Vue.component('TransformHandle', {
             const zero = globalToLocal(this.$el, 0, 0);
             const delta = globalToLocal(this.$el, deltaX, deltaY);
 
-            if (this.index === 5) {//mark
+            if (this.index === 5) {
                 const height = this.transformOverlay.startHeight + (delta.y - zero.y);
                 this.transformOverlay.height = height > 2 ? height : 2;
             }
@@ -459,24 +409,96 @@ Vue.component('TransformHandle', {
                 this.transformOverlay.x = this.transformOverlay.startX + d.x - o.x;
                 this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
             }
-        },
-        panEnd(e) {
-            requestAnimationFrame(()=>this.scale = false);
+            else if (this.index === 4) {
+                const width = this.transformOverlay.startWidth + (delta.x - zero.x);
+                this.transformOverlay.width = width > 2 ? width : 2;//mark
+
+                const height = this.transformOverlay.startHeight + (delta.y - zero.y);
+                this.transformOverlay.height = height > 2 ? height : 2;
+            }
         }
+    }
+});
+
+Vue.component('RotateHandle', {
+    template: `
+        <Hammer class="${ css.rotateHandle }" :style="computedStyle"
+         @panstart="panstart" @pan="pan" @panend="panend"/>
+    `,
+    props: {
+        index: Number
+    },
+    data() {
+        return {
+            transformOverlay,
+            nodesSelected
+        };
+    },
+    computed: {
+        computedStyle(): string {
+            if (this.index === 0) return rss({ left: 0, top: 0 });
+            else if (this.index === 1) return rss({ left: '50%', top: 0 });
+            else if (this.index === 2) return rss({ left: '100%', top: 0 });
+            else if (this.index === 3) return rss({ left: '100%', top: '50%' });
+            else if (this.index === 4) return rss({ left: '100%', top: '100%' });
+            else if (this.index === 5) return rss({ left: '50%', top: '100%' });
+            else if (this.index === 6) return rss({ left: 0, top: '100%' });
+            else return rss({ left: 0, top: '50%' });
+        }
+    },
+    methods: {
+        panstart({ center: { x, y } }) {
+            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            const pt = pTrans.solve(x, y);
+            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
+            this.transformOverlay.startDeltaRotate = angle;
+            this.transformOverlay.startRotate = this.transformOverlay.rotate;
+
+            for (const node of this.nodesSelected) {
+                node.vue.startRotate = node.rotate;
+                node.vue.startX = node.x;
+                node.vue.startY = node.y;
+            }
+            applyAnchors();
+        },
+        pan({ center: { x, y } }) {
+            const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
+            const centerY = this.transformOverlay.y + (this.transformOverlay.height / 2);
+            const pt = pTrans.solve(x, y);
+            const angle = Math.atan2(centerY - pt.y, centerX - pt.x) * rad2Deg;
+            this.transformOverlay.deltaRotate = angle - this.transformOverlay.startDeltaRotate;
+            this.transformOverlay.rotate = this.transformOverlay.startRotate + this.transformOverlay.deltaRotate;
+
+            for (const node of this.nodesSelected)
+                node.rotate = node.vue.startRotate + this.transformOverlay.deltaRotate;
+        },
+        panend() {
+            this.$nextTick(() => resetTransformOrigins());
+        },
     }
 });
 
 Vue.component('transform-overlay', {
     template: `
         <div class="${ css.transformOverlay }" :style="computedStyle">
-            <TransformHandle :index="0" v-if="tool === 'transform'"/>
-            <TransformHandle :index="1" v-if="tool === 'transform'"/>
-            <TransformHandle :index="2" v-if="tool === 'transform'"/>
-            <TransformHandle :index="3" v-if="tool === 'transform'"/>
-            <TransformHandle :index="4" v-if="tool === 'transform'"/>
-            <TransformHandle :index="5" v-if="tool === 'transform'"/>
-            <TransformHandle :index="6" v-if="tool === 'transform'"/>
-            <TransformHandle :index="7" v-if="tool === 'transform'"/>
+            <RotateHandle :index="0" v-if="tool === 'transform'"/>
+            <RotateHandle :index="1" v-if="tool === 'transform'"/>
+            <RotateHandle :index="2" v-if="tool === 'transform'"/>
+            <RotateHandle :index="3" v-if="tool === 'transform'"/>
+            <RotateHandle :index="4" v-if="tool === 'transform'"/>
+            <RotateHandle :index="5" v-if="tool === 'transform'"/>
+            <RotateHandle :index="6" v-if="tool === 'transform'"/>
+            <RotateHandle :index="7" v-if="tool === 'transform'"/>
+
+            <ScaleHandle :index="0" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="1" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="2" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="3" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="4" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="5" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="6" v-if="tool === 'transform'"/>
+            <ScaleHandle :index="7" v-if="tool === 'transform'"/>
         </div>
     `,
     props: {
