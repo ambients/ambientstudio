@@ -7,7 +7,7 @@ import color from 'color';
 import * as Hammer from 'hammerjs';
 import { Eventss } from 'eventss';
 import processSvg from "./processSvg";
-import { localToLocal, globalVertices, globalVertex, globalCenter, globalRotation, globalToLocal } from "./editorMath";
+import { localToLocal, globalVertices, globalVertex, globalCenter, globalRotation, globalToLocal, localToGlobal } from "./editorMath";
 
 interface IEditorNodeData {
     tagName: string;
@@ -141,24 +141,22 @@ window.addEventListener('keydown', e => {
 
 Vue.component('Hammer', {
     template: `
-        <div
-         @panstart="$emit('panstart', $event)"
-         @pan="$emit('pan', $event)"
-         @panend="$emit('panend', $event)"
-         @tap="$emit('tap', $event)"
-         @dblclick="$emit('doubletap', $event)">
-            <slot/>
-        </div>
+        <div><slot/></div>
     `,
     mounted() {
         const mc = new Hammer.Manager(this.$el, {
-            domEvents: true,
             recognizers: [
                 [Hammer.Pan, { direction: Hammer.DIRECTION_ALL, threshold: 0 }],
                 [Hammer.Tap, { event: 'tap', interval: 0, threshold: 10 }]
             ]
         });
         this.$on('destroyHammer', () => mc.destroy());
+
+        mc.on('panstart', e=>this.$emit('panstart', e));
+        mc.on('pan', e => this.$emit('pan', e));
+        mc.on('panend', e => this.$emit('panend', e));
+        mc.on('tap', e => this.$emit('tap', e));
+        this.$el.addEventListener('dblclick', e => this.$emit('doubletap', e));
     },
     beforeDestroy() {
         this.$emit('destroyHammer');
@@ -374,7 +372,7 @@ Vue.component('TransformHandle', {
         };
     },
     methods: {
-        rPanStart({ gesture: { center: { x, y } } }) {
+        rPanStart({ center: { x, y } }) {
             if (this.scale) return;
 
             const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
@@ -391,7 +389,7 @@ Vue.component('TransformHandle', {
             }
             applyAnchors();
         },
-        rPan({ gesture: { center: { x, y } } }) {
+        rPan({ center: { x, y } }) {
             if (this.scale) return;
 
             const centerX = this.transformOverlay.x + (this.transformOverlay.width / 2);
@@ -427,23 +425,39 @@ Vue.component('TransformHandle', {
             this.transformOverlay.startX = this.transformOverlay.x;
             this.transformOverlay.startY = this.transformOverlay.y;
         },
-        pan({ gesture: { deltaX, deltaY } }) {
+        pan({ deltaX, deltaY }) {
             const zero = globalToLocal(this.$el, 0, 0);
             const delta = globalToLocal(this.$el, deltaX, deltaY);
 
-            console.log(this.index);
-
-            if (this.index === 5)
-                this.transformOverlay.height = this.transformOverlay.startHeight + (delta.y - zero.y);
-            else if (this.index === 3)
-                this.transformOverlay.width = this.transformOverlay.startWidth + (delta.x - zero.x);
+            if (this.index === 5) {//mark
+                const height = this.transformOverlay.startHeight + (delta.y - zero.y);
+                this.transformOverlay.height = height > 2 ? height : 2;
+            }
+            else if (this.index === 3) {
+                const width = this.transformOverlay.startWidth + (delta.x - zero.x);
+                this.transformOverlay.width = width > 2 ? width : 2;
+            }
             else if (this.index === 1) {
-                this.transformOverlay.height = this.transformOverlay.startHeight - (delta.y - zero.y);
+                let diffY = (delta.y - zero.y);
+                const maxDiffY = this.transformOverlay.startHeight - 2;
+                if (diffY > maxDiffY) diffY = maxDiffY;
+
+                this.transformOverlay.height = this.transformOverlay.startHeight - diffY;
+                const d = localToLocal(this.$el, this.nodeInFocus.value.el, 0, diffY);
+                const o = localToLocal(this.$el, this.nodeInFocus.value.el, 0, 0);
+                this.transformOverlay.x = this.transformOverlay.startX + d.x - o.x;
+                this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
             }
             else if (this.index === 7) {
-                const offset = delta.x - zero.x;
-                this.transformOverlay.width = this.transformOverlay.startWidth - offset;
-                //mark
+                let diffX = (delta.x - zero.x);
+                const maxDiffX = this.transformOverlay.startWidth - 2;
+                if (diffX > maxDiffX) diffX = maxDiffX;
+
+                this.transformOverlay.width = this.transformOverlay.startWidth - diffX;
+                const d = localToLocal(this.$el, this.nodeInFocus.value.el, diffX, 0);
+                const o = localToLocal(this.$el, this.nodeInFocus.value.el, 0, 0);
+                this.transformOverlay.x = this.transformOverlay.startX + d.x - o.x;
+                this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
             }
         },
         panEnd(e) {
@@ -575,7 +589,7 @@ Vue.component('TransformAnchor', {
             this.transformOverlay.startAnchorX = this.transformOverlay.anchorX;
             this.transformOverlay.startAnchorY = this.transformOverlay.anchorY;
         },
-        pan({ gesture: { deltaX, deltaY } }) {
+        pan({ deltaX, deltaY }) {
             const ptStart = pTrans.solve(0, 0);
             const ptDelta = pTrans.solve(deltaX, deltaY);
             const dx = ptDelta.x - ptStart.x, dy = ptDelta.y - ptStart.y;
@@ -775,7 +789,7 @@ Vue.component('editor-node', {
         panStart(e) {
             if (!this.selectable) return;
 
-            if (!e.gesture.srcEvent.shiftKey) {
+            if (!e.srcEvent.shiftKey) {
                 if (!this.selected) this.select();
             }
             else pushOne(this.nodesSelected, this.nodeData);
@@ -793,7 +807,7 @@ Vue.component('editor-node', {
                 }
             });
         },
-        pan({ gesture: { deltaX, deltaY } }) {
+        pan({ deltaX, deltaY }) {
             if (!this.selectable) return;
 
             this.$nextTick(()=>{
@@ -815,7 +829,7 @@ Vue.component('editor-node', {
         },
         tap(e) {
             if (!this.selectable) return;
-            this.select(e.gesture.srcEvent.shiftKey);
+            this.select(e.srcEvent.shiftKey);
         },
         doubleTap(e) {
             if (!this.selectable) return;
@@ -824,11 +838,14 @@ Vue.component('editor-node', {
             clear(this.nodesSelected);
         },
         select(multiple = false) {
-            if (!multiple) clear(this.nodesSelected);
+            if (!multiple) {
+                if (this.nodesSelected.length === 1 && this.nodesSelected[0] === this.nodeData) return;
+                clear(this.nodesSelected);
+            }
             if (!this.selected) pushOne(this.nodesSelected, this.nodeData);
             else pullOne(this.nodesSelected, this.nodeData);
         },
-        panPointer({ gesture: { center: { x, y } } }) {
+        panPointer({ center: { x, y } }) {
             const pt = pTrans.solve(x, y);
             this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
             this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
@@ -836,7 +853,7 @@ Vue.component('editor-node', {
                 this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0
             );
         },
-        panPointerStart({ gesture: { center: { x, y } } }) {
+        panPointerStart({ center: { x, y } }) {
             this.selectionPointer.down = true;
             const pt = pTrans.solve(x, y);
             this.selectionPointer.startX = pt.x;
@@ -996,7 +1013,7 @@ Vue.component('editor', {
         }
     },
     methods: {
-        pan({ gesture: { center: { x, y } } }) {
+        pan({ center: { x, y } }) {
             const pt = pTrans.solve(x, y);
             this.selectionPointer.deltaX = pt.x - this.selectionPointer.startX;
             this.selectionPointer.deltaY = pt.y - this.selectionPointer.startY;
@@ -1004,7 +1021,7 @@ Vue.component('editor', {
                 this.selectionPointer.deltaX, this.selectionPointer.deltaY, 0, 0
             );
         },
-        panStart({ gesture: { center: { x, y } } }) {
+        panStart({ center: { x, y } }) {
             this.selectionPointer.down = true;
             const pt = pTrans.solve(x, y);
             this.selectionPointer.startX = pt.x;
