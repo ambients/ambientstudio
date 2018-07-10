@@ -388,7 +388,7 @@ Vue.component('ScaleHandle', {
                 this.transformOverlay.width = width > 2 ? width : 2;
             }
             else if (this.index === 1) {
-                let diffY = (delta.y - zero.y);
+                let diffY = delta.y - zero.y;
                 const maxDiffY = this.transformOverlay.startHeight - 2;
                 if (diffY > maxDiffY) diffY = maxDiffY;
 
@@ -399,7 +399,7 @@ Vue.component('ScaleHandle', {
                 this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
             }
             else if (this.index === 7) {
-                let diffX = (delta.x - zero.x);
+                let diffX = delta.x - zero.x;
                 const maxDiffX = this.transformOverlay.startWidth - 2;
                 if (diffX > maxDiffX) diffX = maxDiffX;
 
@@ -411,10 +411,64 @@ Vue.component('ScaleHandle', {
             }
             else if (this.index === 4) {
                 const width = this.transformOverlay.startWidth + (delta.x - zero.x);
-                this.transformOverlay.width = width > 2 ? width : 2;//mark
-
                 const height = this.transformOverlay.startHeight + (delta.y - zero.y);
+                this.transformOverlay.width = width > 2 ? width : 2;
                 this.transformOverlay.height = height > 2 ? height : 2;
+            }
+            else if (this.index === 6) {
+                let diffX = delta.x - zero.x;
+                const maxDiffX = this.transformOverlay.startWidth - 2;
+                if (diffX > maxDiffX) diffX = maxDiffX;
+
+                const width = this.transformOverlay.startWidth + diffX;
+                const height = this.transformOverlay.startHeight + (delta.y - zero.y);
+                this.transformOverlay.width = width > 2 ? width : 2;
+                this.transformOverlay.height = height > 2 ? height : 2;
+
+                this.transformOverlay.width = this.transformOverlay.startWidth - diffX;
+                const d = localToLocal(this.$el, this.nodeInFocus.value.el, diffX, 0);
+                const o = localToLocal(this.$el, this.nodeInFocus.value.el, 0, 0);
+                this.transformOverlay.x = this.transformOverlay.startX + d.x - o.x;
+                this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
+            }
+            else if (this.index === 2) {
+                let diffY = delta.y - zero.y;
+                const maxDiffY = this.transformOverlay.startHeight - 2;
+                if (diffY > maxDiffY) diffY = maxDiffY;
+
+                const width = this.transformOverlay.startWidth + (delta.x - zero.x);
+                const height = this.transformOverlay.startHeight + diffY;
+                this.transformOverlay.width = width > 2 ? width : 2;
+                this.transformOverlay.height = height > 2 ? height : 2;
+                
+                this.transformOverlay.height = this.transformOverlay.startHeight - diffY;
+                const d = localToLocal(this.$el, this.nodeInFocus.value.el, 0, diffY);
+                const o = localToLocal(this.$el, this.nodeInFocus.value.el, 0, 0);
+                this.transformOverlay.x = this.transformOverlay.startX + d.x - o.x;
+                this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
+            }
+            else if (this.index === 0) {
+                let diffX = delta.x - zero.x;
+                const maxDiffX = this.transformOverlay.startWidth - 2;
+                if (diffX > maxDiffX) diffX = maxDiffX;
+                
+                let diffY = delta.y - zero.y;
+                const maxDiffY = this.transformOverlay.startHeight - 2;
+                if (diffY > maxDiffY) diffY = maxDiffY;
+
+                const width = this.transformOverlay.startWidth + diffX;
+                const height = this.transformOverlay.startHeight + diffY;
+                this.transformOverlay.width = width > 2 ? width : 2;
+                this.transformOverlay.height = height > 2 ? height : 2;
+
+                this.transformOverlay.width = this.transformOverlay.startWidth - diffX;
+                this.transformOverlay.height = this.transformOverlay.startHeight - diffY;
+
+                const d = localToLocal(this.$el, this.nodeInFocus.value.el, diffX, diffY);
+                const o = localToLocal(this.$el, this.nodeInFocus.value.el, 0, 0);
+
+                this.transformOverlay.x = this.transformOverlay.startX + d.x - o.x;
+                this.transformOverlay.y = this.transformOverlay.startY + d.y - o.y;
             }
         }
     }
