@@ -13,9 +13,6 @@ const borderTop = processSvg(require('./icons/border-top.svg'));
 const borderLeft = processSvg(require('./icons/border-left.svg'));
 const borderRight = processSvg(require('./icons/border-right.svg'));
 const borderBottom = processSvg(require('./icons/border-bottom.svg'));
-
-const colorPalette = require('./icons/font-color.svg');
-const borderThickness = require('./icons/thickness.svg');
 const borderLine = processSvg(require('./icons/line.svg'));
 
 const css = rinss.create({
@@ -30,7 +27,26 @@ const css = rinss.create({
         borderBottom: '1px solid ' + theme.background,
         floatTop: 0,
         margin: 10
-    }
+    },
+    borderColor:{
+        floatTop:0,
+        width:'100%',
+        display: 'grid',
+        gridTemplateColumns: '20px 10px 1fr',
+    },
+    borderStyle:{
+        floatTop:0,
+        marginBottom:10,
+        width:'100%',
+        display:'grid',
+        gridTemplateColumns:'20px 10px 100px 10px 20px 20px 20px 20px 10px'
+    },
+    borderRadius:{
+        floatTop:0,
+        width:'100%',
+        display:'grid',
+        gridTemplateColumns:'20px 1fr 10px 20px 1fr',
+    },
 });
 
 Vue.component('border-type',{
@@ -43,150 +59,138 @@ Vue.component('border-type',{
 Vue.component('border-panel',{
     template:`
     <panel title="Border" expanded>
-        <row stretch style="${rss({floatTop:0})}">
-            <cell shrink><border-type>
+        <div class="${css.borderColor}">
+            <border-type style="${rss({top:20})}">
                 ${borderTop}
-            </border-type></cell>
-            <gap/>
-            <cell>
-                <material-input placeholder="Top thickness"/>
-            </cell>
-        </row>
-        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker color="red"/></cell>
-            <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
-            <gap/>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <div/>
+            <material-input placeholder="Top thickness"/>
+        </div>
+        <div class="${css.borderStyle}">
+            <color-picker color="red"/>
+            <div/>
+            <input class="${css.borderColorInput}" placeholder="Color"/>
+            <div/>
+            <border-type name="TopBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="TopBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="TopBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="TopBorder">
                 ${borderLine}
-            </border-type></cell>
-            <gap/>
-        </row>
+            </border-type>
+            <div/>
+        </div>
 
-        <row stretch style="${rss({floatTop:0})}">
-            <cell shrink><border-type>${borderBottom}</border-type></cell>
-            <gap/>
-            <cell><material-input placeholder="Bottom thickness"/></cell>
-        </row>
-        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker color="red"/></cell>
-            <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
-            <gap/>
-            <cell><border-type name="bottomBorder">
+        <div class="${css.borderColor}">
+            <border-type style="${rss({top:20})}">
+                ${borderBottom}
+            </border-type>
+            <div/>
+            <material-input placeholder="Bottom thickness"/>
+        </div>
+        <div class="${css.borderStyle}">
+            <color-picker color="red"/>
+            <div/>
+            <input class="${css.borderColorInput}" placeholder="Color"/>
+            <div/>
+            <border-type name="BottomBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="bottomBorder">
+            </border-type>
+            <border-type name="BottomBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="bottomBorder">
+            </border-type>
+            <border-type name="BottomBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="bottomBorder">
+            </border-type>
+            <border-type name="BottomBorder">
                 ${borderLine}
-            </border-type></cell>
-            <gap/>
-        </row>
+            </border-type>
+            <div/>
+        </div>
 
-        <row stretch style="${rss({floatTop:0})}">
-            <cell shrink><border-type>
+        <div class="${css.borderColor}">
+            <border-type style="${rss({top:20})}">
                 ${borderLeft}
-            </border-type></cell>
-            <gap/>
-            <cell>
-                <material-input placeholder="Left thickness"/>
-            </cell>
-        </row>
-        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker color="red"/></cell>
-            <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
-            <gap/>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <div/>
+            <material-input placeholder="Left thickness"/>
+        </div>
+        <div class="${css.borderStyle}">
+            <color-picker color="red"/>
+            <div/>
+            <input class="${css.borderColorInput}" placeholder="Color"/>
+            <div/>
+            <border-type name="LeftBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="LeftBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="LeftBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="LeftBorder">
                 ${borderLine}
-            </border-type></cell>
-            <gap/>
-        </row>
+            </border-type>
+            <div/>
+        </div>
 
-        <row stretch style="${rss({floatTop:0})}">
-            <cell shrink><border-type>
+        <div class="${css.borderColor}">
+            <border-type style="${rss({top:20})}">
                 ${borderRight}
-            </border-type></cell>
-            <gap/>
-            <cell>
-                <material-input placeholder="Right thickness"/>
-            </cell>
-        </row>
-        <row stretch style="${rss({floatTop:0, marginBottom:10})}">
-            <cell shrink><color-picker color="red"/></cell>
-            <gap/>
-            <cell><input class="${css.borderColorInput}" placeholder="Color"/></cell>
-            <gap/>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <div/>
+            <material-input placeholder="Right thickness"/>
+        </div>
+        <div class="${css.borderStyle}">
+            <color-picker color="red"/>
+            <div/>
+            <input class="${css.borderColorInput}" placeholder="Color"/>
+            <div/>
+            <border-type name="RightBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="RightBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="RightBorder">
                 ${borderLine}
-            </border-type></cell>
-            <cell><border-type name="topBorder">
+            </border-type>
+            <border-type name="RightBorder">
                 ${borderLine}
-            </border-type></cell>
-            <gap/>
-        </row>
+            </border-type>
+            <div/>
+        </div>
 
         <div class="${ css.separator }"></div>
 
-        <row stretch style="${rss({floatTop:0})}">
-            <cell shrink><border-type>
+        <div class="${css.borderRadius}">
+            <border-type style="${rss({top:20})}">
                 ${borderTopRight}
-            </border-type></cell>
-            <cell>
-                <material-input placeholder="Top right size"/>
-            </cell>
-            <gap/>
-            <cell shrink><border-type style="${rss({rotate:-90})}">
+            </border-type>
+            <material-input placeholder="Radius"/>
+            <div/>
+            <border-type style="${rss({rotate:-90, top:20})}">
                 ${borderTopRight}
-            </border-type></cell>
-            <cell>
-                <material-input placeholder="Top left size"/>
-            </cell>
-        </row>
-        <row stretch style="${rss({floatTop:0})}">
-            <cell shrink><border-type style="${rss({rotate:90})}">
+            </border-type>
+            <material-input placeholder="Radius"/>
+        </div>
+        <div class="${css.borderRadius}">
+            <border-type style="${rss({top:20, rotate:90})}">
                 ${borderTopRight}
-            </border-type></cell>
-            <cell>
-                <material-input placeholder="Bottom right size"/>
-            </cell>
-            <gap/>
-            <cell shrink><border-type style="${rss({rotate:180})}">
+            </border-type>
+            <material-input placeholder="Radius"/>
+            <div/>
+            <border-type style="${rss({rotate:180, top:20})}">
                 ${borderTopRight}
-            </border-type></cell>
-            <cell>
-                <material-input placeholder="Bottom left size"/>
-            </cell>
-        </row>
+            </border-type>
+            <material-input placeholder="Radius"/>
+        </div>
     </panel>
     `,
     props:{

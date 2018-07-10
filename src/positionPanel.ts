@@ -4,7 +4,6 @@ import "./panels";
 import "./materialInput";
 import theme from './theme';
 import processSvg from './processSvg';
-import "./row";
 import "./icon";
 import './iconSlot';
 import Radio from './radio';
@@ -20,7 +19,37 @@ const css = rinss.create({
         background: 'transparent',
         border: 'none',
         fontSize: 13
-    }
+    },
+    alignmentButtons:{
+        floatTop: 10,
+        width: '100%',
+        display:'grid',
+        gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
+        marginLeft:10,
+    },
+    positionButtons:{
+        fontSize: 10,
+        floatTop: 25,
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        marginLeft:15,
+    },
+    position:{
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: '1fr 10px 1fr'
+    },
+    positionMinMax:{
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 10px 1fr 1fr',
+        paddingLeft: 10,
+    },
+    minMax:{
+        display: 'grid',
+        gridTemplateColumns: '10px 40px',
+    },
 });
 
 Vue.component('alignment-button', {
@@ -64,57 +93,57 @@ Vue.component('position-button', {
 Vue.component('position-panel', {
     template: `
         <panel title="Position" :expanded="expanded">
-            <row stretch style="${ rss({ floatTop: 10 }) }">
-                <cell><alignment-button>${ topSVG}</alignment-button></cell>
-                <cell><alignment-button>${ middleSVG}</alignment-button></cell>
-                <cell><alignment-button>${ bottomSVG}</alignment-button></cell>
-                <cell><alignment-button rotated>${ topSVG}</alignment-button></cell>
-                <cell><alignment-button rotated>${ middleSVG}</alignment-button></cell>
-                <cell><alignment-button rotated>${ bottomSVG }</alignment-button></cell>
-            </row>
-            <row stretch style="${ rss({ fontSize: 10, floatTop: 25 }) }">
-                <cell><position-button name="position" text="Relative">
+            <div class="${css.alignmentButtons}">
+                <alignment-button>${ topSVG}</alignment-button>
+                <alignment-button>${ middleSVG}</alignment-button>
+                <alignment-button>${ bottomSVG}</alignment-button>
+                <alignment-button rotated>${ topSVG}</alignment-button>
+                <alignment-button rotated>${ middleSVG}</alignment-button>
+                <alignment-button rotated>${ bottomSVG }</alignment-button>
+            </div>
+            <div class="${css.positionButtons}">
+                <position-button name="position" text="Relative">
                     ${ processSvg(require("./icons/waves.svg")) }
                     ${ processSvg(require("./icons/waves-filled.svg")) }
-                </position-button></cell>
-                <cell><position-button name="position" text="Absolute">
+                </position-button>
+                <position-button name="position" text="Absolute">
                     ${ processSvg(require("./icons/target.svg"))}
                     ${ processSvg(require("./icons/target-filled.svg")) }
-                </position-button></cell>
-                <cell><position-button name="position" text="Fixed">
+                </position-button>
+                <position-button name="position" text="Fixed">
                     ${ processSvg(require("./icons/pin.svg"))}
                     ${ processSvg(require("./icons/pin-filled.svg")) }
-                </position-button></cell>
-            </row>
-            <row stretch style="${ rss({ floatTop: 15 }) }">
-                <cell><material-input placeholder="Left"/></cell>
-                <gap/>
-                <cell><material-input placeholder="Top"/></cell>
-            </row>
-            <row stretch>
-                <cell><material-input placeholder="Width"/></cell>
-                <gap/>
-                <cell><material-input placeholder="Height"/></cell>
-            </row>
-            <row stretch>
-                <cell><row stretch>
-                    <cell shrink><icon size="10px">${minSVG}</icon></cell>
-                    <cell><input class="${css.minMaxInput}" placeholder="min"/></cell>
-                </row></cell>
-                <cell><row stretch>
-                    <cell shrink><icon size="10px">${maxSVG}</icon></cell>
-                    <cell><input class="${css.minMaxInput}" placeholder="max"/></cell>
-                </row></cell>
-                <gap/>
-                <cell><row stretch>
-                    <cell shrink><icon size="10px">${minSVG}</icon></cell>
-                    <cell><input class="${css.minMaxInput}" placeholder="min"/></cell>
-                </row></cell>
-                <cell><row stretch>
-                    <cell shrink><icon size="10px">${maxSVG}</icon></cell>
-                    <cell><input class="${css.minMaxInput}" placeholder="max"/></cell>
-                </row></cell>
-            </row>
+                </position-button>
+            </div>
+            <div class="${css.position}" >
+                <material-input placeholder="Left"/>
+                <div/>
+                <material-input placeholder="Top"/>
+            </div>
+            <div class="${css.position}" style="${ rss({ floatTop: 0 }) }">
+                <material-input placeholder="Width"/>
+                <div/>
+                <material-input placeholder="Height"/>
+            </div>
+            <div class="${css.positionMinMax}">
+                <div class="${css.minMax}">
+                    <icon size="10px">${minSVG}</icon>
+                    <input class="${css.minMaxInput}" placeholder="min"/>
+                </div>
+                <div class="${css.minMax}">
+                    <icon size="10px">${maxSVG}</icon>
+                    <input class="${css.minMaxInput}" placeholder="max"/>
+                </div>
+                <div/>
+                <div class="${css.minMax}">
+                    <icon size="10px">${minSVG}</icon>
+                    <input class="${css.minMaxInput}" placeholder="min"/>
+                </div>
+                <div class="${css.minMax}">
+                    <icon size="10px">${maxSVG}</icon>
+                    <input class="${css.minMaxInput}" placeholder="max"/>
+                </div>
+            </div>
         </panel>
     `,
     props: {

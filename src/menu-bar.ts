@@ -15,11 +15,18 @@ const exporticon = processSvg(require('./icons/export.svg'));
 const css=rinss.create ({
     menuBarTitle:{
         color: theme.textPrimary,
+        textAlign: 'center',
+        
     },
     menuBar:{
         borderBottom: '3px solid ' + theme.background,
         background: theme.white,
-        floatTop:0
+        floatTop:0,
+        height:40,
+        width:'100%',
+        display:'grid',
+        gridTemplateColumns:'10px 20px auto 10px 20px 20px 20px 20px 20px 20px',
+        paddingTop:10,
     },
 });
 
@@ -27,26 +34,26 @@ Vue.component('menu-bar',{
     template:`
         <div style="${rss({userSelect:'none'})}">
             <main-menu v-if="showMenu"/>
-            <row stretch class="${css.menuBar}" style="${rss({height:40})}">
-                <gap/>
-                <cell shrink><icon @click.native="buttonClick" :style="buttonStyle">
+            <div class="${css.menuBar}">
+                <div/>
+                <icon @click.native="buttonClick" :style="buttonStyle">
                     ${menuicon}
-                </icon></cell>
-                <cell><div class="${css.menuBarTitle}">hello</div></cell>
-                <gap/>
-                <cell shrink><icon>
+                </icon>
+                <div class="${css.menuBarTitle}">hello</div>
+                <div/>
+                <icon>
                     ${mobileicon}
-                </icon></cell>
-                <gap/>
-                <cell shrink><icon>
+                </icon>
+                <div/>
+                <icon>
                     ${compileicon}
-                </icon></cell>
-                <gap/>
-                <cell shrink><icon>
+                </icon>
+                <div/>
+                <icon>
                     ${exporticon}
-                </icon></cell>
-                <gap/>
-            </row>
+                </icon>
+                <div/>
+            </div>
         </div>   
         
     `,

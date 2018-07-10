@@ -23,7 +23,8 @@ const css=rinss.create({
         color: theme.textPrimary,
         ':hover':{
             background: theme.background
-        }
+        },
+        // width:'100%',
     },
     separator: {
         width: '100%',
