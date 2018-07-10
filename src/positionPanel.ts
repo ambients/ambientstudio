@@ -25,6 +25,7 @@ const css = rinss.create({
         width: '100%',
         display:'grid',
         gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
+        marginLeft:10,
     },
     positionButtons:{
         fontSize: 10,
@@ -32,7 +33,7 @@ const css = rinss.create({
         width: '100%',
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
-        paddingLeft: 10
+        marginLeft:15,
     },
     position:{
         width: '100%',
