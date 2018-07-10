@@ -15,38 +15,50 @@ const css = rinss.create({
         marginBottom: 10,
         marginTop: 5
     },
+    translate:{
+        floatTop:0,
+        width:'100%',
+        display:'grid',
+        gridTemplateColumns:'1fr 10px 1fr 10px 1fr',
+    },
+    scale:{
+        floatTop:0,
+        width:'100%',
+        display:'grid',
+        gridTemplateColumns:'1fr 10px 1fr',
+    },
 });
 
 Vue.component('transform-panel',{
     template:`
     <panel title="Transform" expanded>
-        <row stretch style="${rss({ floatTop:0})}">
-            <cell><material-input placeholder="Trans. X"/></cell>
-            <gap/>
-            <cell><material-input placeholder="Trans. Y"/></cell>
-            <gap/>
-            <cell><material-input placeholder="Trans. Z"/></cell>
-        </row>
-        <row stretch style="${rss({ floatTop:0})}">
-            <cell><material-input placeholder="Scale X"/></cell>
-            <gap/>
-            <cell><material-input placeholder="Scale Y"/></cell>
-        </row>
+        <div class="${css.translate}">
+            <material-input placeholder="Trans. X"/>
+            <div/>
+            <material-input placeholder="Trans. Y"/>
+            <div/>
+            <material-input placeholder="Trans. Z"/>
+        </div>
+        <div class="${css.scale}">
+            <material-input placeholder="Scale X"/>
+            <div/>
+            <material-input placeholder="Scale Y"/>
+        </div>
 
         <div class="${ css.separator }"></div>
 
-        <row stretch style="${rss({ floatTop:0})}">
-            <cell><material-input placeholder="Rotate X"/></cell>
-            <gap/>
-            <cell><material-input placeholder="Rotate Y"/></cell>
-            <gap/>
-            <cell><material-input placeholder="Rotate Z"/></cell>
-        </row>
-        <row stretch style="${rss({ floatTop:0})}">
-            <cell><material-input placeholder="Skew X"/></cell>
-            <gap/>
-            <cell><material-input placeholder="Skew Y"/></cell>
-        </row>
+        <div class="${css.translate}">
+            <material-input placeholder="Rotate X"/>
+            <div/>
+            <material-input placeholder="Rotate Y"/>
+            <div/>
+            <material-input placeholder="Rotate Z"/>
+        </div>
+        <div class="${css.scale}">
+            <material-input placeholder="Skew X"/>
+            <div/>
+            <material-input placeholder="Skew Y"/>
+        </div>
     </panel>
     `
 });
